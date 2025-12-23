@@ -1,0 +1,180 @@
+---
+alwaysApply: false
+---
+
+# SOW Ruleset for Cursor
+# Based on the uploaded SOW template
+
+---
+
+## 🎯 Purpose
+These rules ensure that all Statements of Work (SOWs) generated in Cursor follow:
+- The exact structure of the uploaded template
+- Professional consulting standards
+- Clear scope, deliverables, and assumptions
+- Accurate alignment with business and technical requirements
+
+All generated SOWs must be complete, structured, and ready for client review.
+
+---
+
+## 🧩 Required SOW Structure
+Every SOW **must** include the following sections in this exact order:
+
+1. **Project Overview**
+   - Executive Summary  
+   - High‑Level Requirements  
+     - Business Requirements  
+     - Technical Requirements  
+   - Success Criteria  
+     - Business Success Criteria  
+     - Technical Success Criteria  
+   - Assumptions  
+   - Customer Responsibilities  
+   - Out of Scope  
+
+2. **Solution Architecture**
+   - Diagram placeholder  
+   - Text description  
+
+3. **Scope, Milestones & Deliverables**
+   - Milestone 1  
+     - Description  
+     - Deliverables  
+   - Milestone 2  
+     - Description  
+     - Deliverables  
+   - (Allow additional milestones if requested)
+
+4. **Cost Estimation**
+   - Cloud Platform Cost Estimation  
+   - 3rd Party Solutions Cost Estimation  
+   - Effort Estimation (table)  
+   - Disclaimer  
+
+---
+
+## 🧭 Writing Rules
+
+### Clarity & Tone
+- Use concise, professional consulting language.
+- Avoid marketing fluff.
+- Use active voice.
+- Use consistent terminology throughout the document.
+
+### Requirements
+- Business and technical requirements must be written as clear, testable statements.
+- Requirements must be grouped under the correct subsections.
+- Avoid ambiguity or assumptions not explicitly stated.
+
+### Success Criteria
+- Must be measurable.
+- Must map directly to the requirements.
+- Must be separated into business and technical categories.
+
+### Assumptions
+- Must be explicit, realistic, and relevant.
+- No hidden assumptions allowed.
+
+### Customer Responsibilities
+- Must clearly define what the customer must provide or perform.
+- Must be actionable and unambiguous.
+
+### Out of Scope
+- Must explicitly list exclusions.
+- Must avoid vague statements like “anything not listed above.”
+
+---
+
+## 🏗️ Solution Architecture Rules
+
+### Diagram
+- Always include a placeholder for a diagram.
+- Provide a clear text description of:
+  - Components
+  - Data flows
+  - Integrations
+  - Key architectural decisions
+
+### Technical Accuracy
+- Architecture must align with the requirements and milestones.
+- Avoid speculative or unvalidated technologies unless requested.
+
+---
+
+## 📅 Milestones & Deliverables Rules
+
+### Milestones
+- Each milestone must include:
+  - A clear description  
+  - A list of deliverables  
+  - Logical sequencing  
+
+### Deliverables
+- Must be concrete, measurable, and reviewable.
+- Avoid vague deliverables like “documentation” without specifying type.
+
+---
+
+## 💰 Cost Estimation Rules
+
+### Cloud Platform Costs
+- Must reference calculators or estimates when applicable.
+- Must not fabricate pricing.
+
+### 3rd Party Costs
+- Must list known costs or state “TBD” if unknown.
+
+### Effort Estimation
+- Must use the table format from the template:
+  - Milestone  
+  - Item  
+  - Effort (days)
+
+### Disclaimer
+- Must include:
+  - 60‑day validity  
+  - T&M billing note  
+
+---
+
+## 📏 Formatting Rules
+
+### Headings
+- Use the exact numbering and hierarchy from the template.
+- Do not rename or reorder sections unless the user explicitly requests it.
+
+### Lists
+- Use bullet points for requirements and success criteria.
+- Use tables for effort estimation.
+
+### Placeholders
+- Use `[text]` or `[diagram]` placeholders when content is not provided.
+
+---
+
+## 🧪 Validation Rules
+Before finalizing a SOW, ensure:
+- All required sections are present.
+- Requirements and success criteria are measurable.
+- Milestones include deliverables.
+- Cost estimation includes all subsections.
+- No contradictions exist between sections.
+
+---
+
+## 🧱 Prohibited Content
+- No marketing language unless explicitly requested.
+- No ambiguous requirements.
+- No mixing business and technical requirements.
+- No missing sections.
+- No speculative architecture.
+
+---
+
+## ✔️ Output Requirements
+When generating a SOW:
+- Follow the exact structure of the uploaded template.
+- Fill all sections unless the user explicitly removes them.
+- Use professional formatting.
+- Produce a complete, client‑ready document.

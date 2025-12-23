@@ -1,0 +1,81 @@
+{
+    "SOW Executive Summary": {
+        "prefix": "sowexec",
+        "body": [
+            "## 1.1. Executive Summary",
+            "${1:Provide a concise overview of the project, objectives, and expected outcomes.}"
+        ],
+        "description": "Insert SOW Executive Summary section"
+    },
+    "SOW Business Requirement": {
+        "prefix": "sowbr",
+        "body": [
+            "- ${1:Business requirement statement}"
+        ],
+        "description": "Insert a business requirement"
+    },
+    "SOW Technical Requirement": {
+        "prefix": "sowtr",
+        "body": [
+            "- ${1:Technical requirement statement}"
+        ],
+        "description": "Insert a technical requirement"
+    },
+    "SOW Success Criteria": {
+        "prefix": "sowsc",
+        "body": [
+            "- ${1:Measurable success criterion}"
+        ],
+        "description": "Insert a success criterion"
+    },
+    "SOW Assumption": {
+        "prefix": "sowassume",
+        "body": [
+            "- ${1:Assumption}"
+        ],
+        "description": "Insert an assumption"
+    },
+    "SOW Customer Responsibility": {
+        "prefix": "sowcust",
+        "body": [
+            "- ${1:Customer responsibility}"
+        ],
+        "description": "Insert a customer responsibility"
+    },
+    "SOW Out of Scope Item": {
+        "prefix": "sowout",
+        "body": [
+            "- ${1:Out of scope item}"
+        ],
+        "description": "Insert an out-of-scope item"
+    },
+    "SOW Milestone Block": {
+        "prefix": "sowmile",
+        "body": [
+            "## ${1:Milestone X}: ${2:Name}",
+            "${3:Description}",
+            "",
+            "**Deliverables:**",
+            "- ${4:Deliverable 1}",
+            "- ${5:Deliverable 2}",
+            ""
+        ],
+        "description": "Insert a milestone block"
+    },
+    "SOW Effort Row": {
+        "prefix": "soweffort",
+        "body": [
+            "| ${1:Milestone} | ${2:Item} | ${3:Effort (days)} |"
+        ],
+        "description": "Insert an effort estimation table row"
+    },
+    "SOW Architecture Diagram Description": {
+        "prefix": "sowarch",
+        "body": [
+            "[diagram]",
+            "",
+            "${1:Describe the architecture, components, data flows, and integrations.}"
+        ],
+        "description": "Insert architecture diagram placeholder and description"
+    }
+}

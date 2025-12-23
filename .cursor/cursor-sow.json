@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "rules": [
+        "./sow-rules.mdc"
+    ],
+    "style": {
+        "tone": "professional",
+        "writing": "structured",
+        "format": "markdown",
+        "verbosity": "high",
+        "avoid": [
+            "marketing fluff",
+            "ambiguous requirements"
+        ]
+    },
+    "documentTypes": {
+        "sow": {
+            "template": "./templates/sow.md"
+        }
+    },
+    "autoApplyRules": true,
+    "defaultModelBehavior": {
+        "enforceStructure": true,
+        "expandSections": true,
+        "requireAcceptanceCriteria": false
+    }
+}

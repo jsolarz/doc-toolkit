@@ -1,0 +1,212 @@
+---
+description: IDesign Method principles for architecture and design
+globs: **/*.cs, **/*.md, **/design.md
+alwaysApply: true
+---
+
+# IDesign Method™ Guidelines
+
+## Overview
+
+The IDesign Method™ focuses on capturing critical run-time design aspects beyond logical tiers. It emphasizes **volatility-based decomposition**, proper component taxonomy, and run-time behavior documentation.
+
+## Core Principle: Volatility-Based Decomposition
+
+**The Foundation**: Decompose a system based on **volatility (change)**, not functionality.
+
+### The Problem with Functional Decomposition
+- Decomposing based on requirements (e.g., "Sales Service," "Shipping Service") is the "classic mistake"
+- Requirements change constantly, so a design based on requirements will constantly break
+- Functional decomposition often results in:
+  - "God Objects" (too big)
+  - Explosion of tiny services (too small) requiring client orchestration
+
+### The Solution: Encapsulation by Volatility
+- Identify areas of the system that could change over time:
+  - The database (storage technology)
+  - The logic (business rules)
+  - The workflow (orchestration)
+  - The security protocol
+  - The user interface
+- Encapsulate each volatility in a component
+- When a change occurs (e.g., switching from PDF to HTML), it should be contained within one specific component without rippling through the rest of the system
+
+### The Vault Metaphor
+Conceptually, the architecture is a series of "vaults." When a change occurs, it should be contained within one specific vault (component) without rippling through the rest of the system.
+
+## Component Taxonomy
+
+IDesign enforces a strict separation of concerns through a standard taxonomy. Components are defined by the type of volatility they encapsulate:
+
+| Component Type | Role | Volatility Encapsulated |
+|---------------|------|------------------------|
+| **Manager** | Orchestration (The "When") | Encapsulates the sequence or workflow. It knows when to do things but not how to do them. |
+| **Engine** | Business Logic (The "How") | Encapsulates proprietary business rules and algorithms. It does not perform I/O; it performs calculations and logic. |
+| **Accessor** | Resource Abstraction (The "Where") | Encapsulates external resources (Database, Cloud, File System). It hides where data is stored and the technology used to access it. |
+| **Client** | Initiation | Encapsulates the volatility of the user interface or triggering system (e.g., Mobile vs. Web vs. Scheduled Task). |
+
+## Core Principles
+
+### 1. Service-Oriented Architecture
+- Factor architecture into independent services based on **volatility**, not functionality
+- Each service encapsulates a specific type of volatility
+- Services communicate through well-defined boundaries
+- Maximize internal decoupling through service boundaries
+
+### 2. Closed Architecture Pattern
+- Components can only call components in the tier immediately underneath
+- No cross-tier calls (e.g., UI cannot directly call data access)
+- Clear separation of concerns across layers
+- Utilities (hosting, logging, security) can be used by all components
+
+### 3. Assembly Allocation
+- Document which components go to which assemblies
+- Client applications → Application assemblies
+- Business logic → Class libraries
+- Services → Class libraries (can be hosted later)
+- Host applications → Application assemblies (when not using WAS)
+
+### 4. Run-Time Process Allocation
+- Document which services run in which processes
+- Group assemblies that share the same process (enclose in box notation)
+- Consider fault isolation and security isolation needs
+- Document hosting decisions (self-hosted, IIS, WAS, in-proc)
+
+### 5. Identity Management
+- Document identity boundaries (box notation)
+- Further from client = less relevant client identity
+- Services can run under different identities
+- Document impersonation decisions
+
+### 6. Authentication and Authorization
+- **Authentication**: Mark with solid bar at service boundaries
+- **Authorization**: Mark with patterned bar at service boundaries
+- Authenticate at every service boundary crossing
+- Each tier authenticates only its immediate callers
+- Authorization is meaningless without authentication
+- In-proc services may skip authentication but still authorize
+
+### 7. Transaction Boundaries
+- Document transaction roots, participating services, and resources
+- Mark transaction boundaries (box notation)
+- Document transaction flow across service boundaries
+
+## Design Notations
+
+### Box Notation
+- **Assembly Allocation**: Box around assemblies in same assembly
+- **Process Allocation**: Box around assemblies in same process
+- **Identity Boundary**: Box around components sharing identity
+- **Transaction Boundary**: Box around transaction scope
+
+### Bar Notation
+- **Solid Bar**: Authentication boundary
+- **Patterned Bar**: Authorization boundary
+
+## Component Interaction Patterns
+
+### The Call Chain (The "Staircase" vs. The "Fork")
+
+A healthy IDesign architecture avoids:
+- **"Forks"**: Where a client calls many services directly
+- **"Staircases"**: Where A calls B, which calls C, which calls D
+
+Instead, use structured flow:
+
+1. **Client → Manager**: The Client calls a Manager to initiate a use case. The client should not contain business logic; it merely triggers the flow.
+2. **Manager → Engine/Accessor**: The Manager orchestrates the activity. It calls Accessors to get data and Engines to process that data.
+3. **Engines are "Pure"**: Engines typically do not call Accessors directly. They accept data as parameters, process it, and return a result. This keeps the business logic pure and testable without mocking databases.
+4. **Accessors are "Dumb"**: Accessors do not contain business logic. They simply perform Create, Read, Update, Delete (CRUD) operations or external API calls.
+
+### Data Exchange: IDs vs. Fat Entities
+
+To prevent coupling, components should not pass large data objects (Entities) between them.
+
+- **Pass IDs**: Services should share IDs (e.g., CourseID, UserID) rather than whole objects. This allows a component to retrieve only the data it needs using the ID, rather than depending on a massive "Customer Object" passed from upstream.
+- **Stable Contracts**: Interfaces should be designed around stable business concepts, not volatile implementation details. For example, pass a BookingID rather than a volatile Price value that might change based on business rules.
+
+### Cross-Component Communication (The Message Bus)
+
+For communication between different subsystems or asynchronous operations, components should not call each other directly.
+
+- **The Message Bus**: Use a message bus (Pub/Sub) for cross-component communication.
+- **Decoupling**: A component publishes an event (e.g., "File Ingested") to the bus. Other components subscribe to it. This encapsulates the volatility of who needs to know about the event. The publisher doesn't care if a mobile app, a log, or a database is listening.
+
+## Application to Documentation Toolkit
+
+### Component Taxonomy
+
+**Clients** (Initiation - UI volatility):
+- `InitCommand`, `GenerateCommand`, `IndexCommand`, `SearchCommand`, `GraphCommand`, `SummarizeCommand`, `ValidateCommand`
+
+**Managers** (Orchestration - workflow volatility):
+- `SemanticIndexService`: Orchestrates indexing workflow
+- `SemanticSearchService`: Orchestrates search workflow
+- `KnowledgeGraphService`: Orchestrates graph generation workflow
+- `SummarizeService`: Orchestrates summarization workflow
+
+**Engines** (Business Logic - algorithm volatility):
+- `EmbeddingService`: Encapsulates embedding algorithm (ONNX model could change)
+- `DocumentExtractionService`: Encapsulates extraction logic (format support could change)
+
+**Accessors** (Resource Abstraction - storage/technology volatility):
+- `VectorStorageService`: Abstracts vector storage (file format could change)
+- `TemplateService`: Abstracts template storage (template location could change)
+- `ProjectService`: Abstracts file system operations (could move to cloud)
+
+### Service Layer Structure
+```
+Clients (Commands)
+  ↓
+Managers (Orchestration)
+  ↓
+Engines (Business Logic) + Accessors (Resource Abstraction)
+  ↓
+Models (Data Layer)
+```
+
+### Call Chain Example
+
+**Use Case: Build Semantic Index**
+
+```
+IndexCommand (Client)
+  ↓ (Service Boundary)
+SemanticIndexService (Manager)
+  ↓ (Service Boundary)
+DocumentExtractionService (Engine) → EmbeddingService (Engine) → VectorStorageService (Accessor)
+  ↓ (Data Boundary)
+IndexEntry (Model)
+```
+
+### Service Boundaries
+- **Clients** → **Managers**: Service boundary (authentication/authorization if needed)
+- **Managers** → **Engines/Accessors**: Service boundary (closed architecture - only call down)
+- **Engines** → **Accessors**: Avoid direct calls (Engines should receive data as parameters)
+- **Services** → **Models**: Data boundary (no authentication needed)
+
+## Coding Standards Alignment
+
+When implementing services:
+1. **One Service = One Responsibility**: Each service should have a single, well-defined purpose
+2. **Service Boundaries**: All inter-service communication goes through service interfaces
+3. **Closed Architecture**: Services only call services in the layer immediately below
+4. **No Direct Data Access**: Services don't directly access file system or external resources without abstraction
+5. **Dependency Injection**: Services should accept dependencies through constructor
+6. **Error Handling**: Services should handle errors at boundaries and propagate appropriately
+
+## Documentation Requirements
+
+When designing or documenting architecture:
+1. **Assembly Allocation Diagram**: Show which components go to which assemblies
+2. **Process Allocation Diagram**: Show which services run in which processes
+3. **Identity Boundaries**: Document identity management decisions
+4. **Authentication/Authorization**: Mark authentication and authorization boundaries
+5. **Transaction Boundaries**: Document transaction scopes
+6. **Call Chains**: Show use case call chains through the architecture
+
+## References
+
+- IDesign Method™ Version 2.5 (June 2010)
+- IDesign Design Standard
+- IDesign C# Coding Standard 3.1

@@ -1,0 +1,39 @@
+{
+    "version": 1,
+    "rules": [
+        "./rules.mdc"
+    ],
+    "style": {
+        "tone": "professional",
+        "writing": "structured",
+        "format": "markdown",
+        "verbosity": "high",
+        "avoid": [
+            "marketing fluff",
+            "ambiguous requirements"
+        ]
+    },
+    "documentTypes": {
+        "prd": {
+            "template": "./templates/prd.md"
+        },
+        "rfp": {
+            "template": "./templates/rfp.md"
+        },
+        "tender": {
+            "template": "./templates/tender.md"
+        },
+        "architecture": {
+            "template": "./templates/architecture.md"
+        },
+        "solution": {
+            "template": "./templates/solution.md"
+        }
+    },
+    "autoApplyRules": true,
+    "defaultModelBehavior": {
+        "enforceStructure": true,
+        "expandSections": true,
+        "requireAcceptanceCriteria": true
+    }
+}

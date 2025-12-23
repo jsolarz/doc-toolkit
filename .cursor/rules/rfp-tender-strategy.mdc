@@ -1,0 +1,10 @@
+---
+description: Formatting for government and corporate tenders
+globs: tenders/**/*.md, proposals/*.md
+alwaysApply: false
+---
+# RFP Compliance Rules
+- **Bid Strategy**: Always map responses to specific RFP Section IDs (e.g., "Ref: 4.2.1").
+- **Language**: Use persuasive but factual language. Use "Comply" or "Exceeds" where applicable.
+- **Evidence**: Always refer to @case-studies.md or @company-profile.md to back up claims.
+- **Formatting**: Include an 'Executive Summary' and 'Risk Mitigation' table by default.

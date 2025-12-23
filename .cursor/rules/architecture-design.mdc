@@ -1,0 +1,47 @@
+---
+description: Technical architecture and solution proposal rules
+globs: architecture/**/*.md, design/*.md, **/design.md
+alwaysApply: false
+---
+# Architect Guidelines
+
+## IDesign Method™ Compliance
+
+All architecture documents must follow the IDesign Method™ principles:
+
+1. **Service-Oriented Architecture**: Factor into independent services
+2. **Closed Architecture Pattern**: Components only call down one tier
+3. **Assembly Allocation**: Document which components go to which assemblies
+4. **Process Allocation**: Document which services run in which processes
+5. **Identity Boundaries**: Document identity management decisions
+6. **Authentication/Authorization**: Mark boundaries with solid/patterned bars
+7. **Transaction Boundaries**: Document transaction scopes
+
+## Required Architecture Diagrams
+
+1. **Static Architecture View**: Show logical services and components
+2. **Call Chain Diagrams**: Show use case flows through architecture
+3. **Assembly Allocation Diagram**: Box notation for assemblies
+4. **Process Allocation Diagram**: Box notation for processes
+5. **Identity Boundaries**: Box notation for identity scopes
+6. **Authentication/Authorization Boundaries**: Solid/patterned bar notation
+7. **Transaction Boundaries**: Box notation for transaction scopes
+
+## Framework and Tools
+
+- **Framework**: Use IDesign Method™ notations (boxes and bars) for run-time aspects
+- **Visuals**: Use Mermaid.js for logic flows, ASCII/text for IDesign Method™ diagrams
+- **Security**: Dedicate sections to:
+  - Identity Management
+  - Authentication boundaries (solid bar)
+  - Authorization boundaries (patterned bar)
+  - Data Sovereignty
+  - Encryption at Rest/Transit
+- **Trade-offs**: Include an "Alternatives Considered" section explaining why the chosen solution is optimal
+
+## Service Boundaries
+
+- Document all service boundaries explicitly
+- Show which services can call which other services (closed architecture)
+- Mark authentication and authorization at each boundary
+- Document transaction flow across boundaries

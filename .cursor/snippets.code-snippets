@@ -1,0 +1,94 @@
+{
+    "PRD Section": {
+        "prefix": "prdsec",
+        "body": [
+            "## ${1:Section Title}",
+            "",
+            "${2:Describe this section clearly and concisely.}",
+            ""
+        ],
+        "description": "Insert a PRD section block"
+    },
+    "User Story": {
+        "prefix": "userstory",
+        "body": [
+            "### User Story",
+            "As a **${1:persona}**, I want **${2:feature}**, so that **${3:value}**.",
+            "",
+            "**Acceptance Criteria:**",
+            "- ${4:Criterion 1}",
+            "- ${5:Criterion 2}",
+            ""
+        ],
+        "description": "Insert a user story with acceptance criteria"
+    },
+    "NFR Block": {
+        "prefix": "nfr",
+        "body": [
+            "### Non‑Functional Requirements",
+            "- Performance: ${1:Requirement}",
+            "- Security: ${2:Requirement}",
+            "- Reliability: ${3:Requirement}",
+            "- Scalability: ${4:Requirement}",
+            "- Compliance: ${5:Requirement}",
+            ""
+        ],
+        "description": "Insert a non-functional requirements block"
+    },
+    "RFP Requirement": {
+        "prefix": "rfpreq",
+        "body": [
+            "### Requirement: ${1:Title}",
+            "${2:Detailed description of the requirement.}",
+            "",
+            "**Evaluation Criteria:**",
+            "- ${3:Criterion 1}",
+            "- ${4:Criterion 2}",
+            ""
+        ],
+        "description": "Insert an RFP requirement block"
+    },
+    "Tender Compliance Row": {
+        "prefix": "compliance",
+        "body": [
+            "| ${1:Requirement} | ${2:Response} | ${3:Y/N} |"
+        ],
+        "description": "Insert a compliance matrix row"
+    },
+    "Architecture Component": {
+        "prefix": "component",
+        "body": [
+            "### Component: ${1:Name}",
+            "**Responsibilities:**",
+            "- ${2:Responsibility 1}",
+            "- ${3:Responsibility 2}",
+            "",
+            "**Interfaces:**",
+            "- ${4:API / Integration}",
+            ""
+        ],
+        "description": "Insert an architecture component block"
+    },
+    "Architecture Diagram Description": {
+        "prefix": "archdiag",
+        "body": [
+            "### Diagram: ${1:Name}",
+            "Describe the diagram in detail:",
+            "- Components involved",
+            "- Data flows",
+            "- External systems",
+            "- Key interactions",
+            ""
+        ],
+        "description": "Insert a diagram description block"
+    },
+    "Solution Benefit Block": {
+        "prefix": "benefit",
+        "body": [
+            "### Benefit: ${1:Title}",
+            "${2:Explain the measurable or qualitative benefit.}",
+            ""
+        ],
+        "description": "Insert a solution benefit section"
+    }
+}

@@ -1,0 +1,15 @@
+You are generating a new document using the workspace rules.
+
+Document type: [PRD / RFP / Tender / Architecture / Solution / Custom]
+Document title: [TITLE]
+Audience: [AUDIENCE]
+Context: [PROJECT CONTEXT]
+
+Instructions:
+- Use the correct template from `/templates/`
+- Follow all rules in `.cursor/rules.mdc`
+- Fill every section with high‑quality, professional content
+- Add acceptance criteria where required
+- Add diagrams as text descriptions
+- Ensure clarity, structure, and business alignment
+- Produce a complete, stakeholder‑ready document
