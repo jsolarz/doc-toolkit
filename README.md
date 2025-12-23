@@ -29,10 +29,17 @@ And to initialize new project workspaces with:
 /doc-toolkit/
     /src/
         /DocToolkit/          # C# CLI Application
-            /Commands/         # CLI command implementations
-            /Services/         # Business logic services
+            /Accessors/        # Storage volatility (Accessors)
+            /Engines/          # Algorithm volatility (Engines)
+            /Managers/         # Workflow volatility (Managers)
+            /ifx/              # Infrastructure folder
+                /Commands/     # CLI command implementations (Clients)
+                /Events/       # Event definitions
+                /Infrastructure/ # DI, Event Bus, etc.
+                /Interfaces/   # All interfaces
+                /Models/       # Data models
+                Program.cs      # Application entry point
             DocToolkit.csproj
-            Program.cs
 
     /templates/               # Document templates
         prd.md
@@ -270,10 +277,13 @@ brew install poppler tesseract
 
 The CLI application uses the following NuGet packages (automatically restored):
 - `Microsoft.ML.OnnxRuntime` - For semantic embeddings
+- `Microsoft.Data.Sqlite` - For event persistence
+- `Microsoft.Extensions.DependencyInjection` - For dependency injection
 - `DocumentFormat.OpenXml` - For DOCX/PPTX text extraction
 - `UglyToad.PdfPig` - For PDF text extraction
+- `Spectre.Console` - For beautiful CLI interface
 
-**Note**: Python is no longer required! The CLI is fully C# native.
+**Note**: Python is no longer required! The CLI is fully C# native with dependency injection and event bus.
 
 ### ONNX Model Setup
 

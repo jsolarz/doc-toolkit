@@ -162,25 +162,26 @@ Event Bus (decouples managers)
 
 ## Implementation Priority
 
-### Phase 1: Immediate (Breaking Changes)
+### Phase 1: Immediate (Breaking Changes) ✅ COMPLETE
 1. ✅ Rename all components to proper taxonomy
 2. ✅ Extract business logic from SummarizeManager
 3. ✅ Create interfaces for all components
 
-### Phase 2: Short Term (High Value)
-4. ⚠️ Implement dependency injection
-5. ⚠️ Update all constructors to use interfaces
-6. ⚠️ Update Commands to use DI
+### Phase 2: Short Term (High Value) ✅ COMPLETE
+4. ✅ Implement dependency injection
+5. ✅ Update all constructors to use interfaces
+6. ✅ Update Commands to use DI
 
-### Phase 3: Medium Term (Decoupling)
-7. ⚠️ Implement simple event bus
-8. ⚠️ Add event publishing to managers
-9. ⚠️ Add event subscriptions (optional)
+### Phase 3: Medium Term (Decoupling) ✅ COMPLETE
+7. ✅ Implement event bus with SQLite persistence
+8. ✅ Add event publishing to managers
+9. ✅ Add retry policies and event persistence
+10. ✅ Reorganize project structure (ifx/ folder)
 
 ### Phase 4: Long Term (Optional)
-10. ⚠️ Consider message queue for async processing
-11. ⚠️ Add retry policies
-12. ⚠️ Add observability
+11. ⚠️ Consider message queue for async processing (future)
+12. ⚠️ Add observability and monitoring (future)
+13. ⚠️ Add event subscriptions for cross-manager communication (future)
 
 ## Detailed Recommendations
 
@@ -189,42 +190,46 @@ Event Bus (decouples managers)
 **Folder Structure**:
 ```
 src/DocToolkit/
-├── Commands/          (Clients)
-├── Managers/          (Workflow Orchestration)
-├── Engines/           (Algorithms)
-├── Accessors/         (Storage)
-├── Interfaces/        (Abstractions)
-│   ├── IManagers/
-│   ├── IEngines/
-│   └── IAccessors/
-├── Events/            (Event definitions)
-└── Infrastructure/    (Event bus, DI setup)
+├── Accessors/          (Storage volatility)
+├── Engines/            (Algorithm volatility)
+├── Managers/           (Workflow volatility)
+└── ifx/                (Infrastructure)
+    ├── Commands/       (UI volatility - Clients)
+    ├── Events/         (Event definitions)
+    ├── Infrastructure/ (Event bus, DI setup)
+    ├── Interfaces/     (Abstractions)
+    │   ├── IManagers/
+    │   ├── IEngines/
+    │   └── IAccessors/
+    ├── Models/         (Data models)
+    └── Program.cs      (Application entry point)
 ```
 
-### 2. Event Bus Implementation
+### 2. Event Bus Implementation ✅ COMPLETE
 
-**Simple In-Memory Event Bus** (for now):
-- Synchronous event handling
-- In-memory storage
-- Type-safe subscriptions
+**Event Bus with SQLite Persistence**:
+- ✅ Synchronous and asynchronous event handling
+- ✅ SQLite-based event persistence
+- ✅ Type-safe subscriptions
+- ✅ Automatic retry policies (max 3 retries, 5-minute intervals)
+- ✅ Background retry timer
+- ✅ Failed event recovery
 
 **Future Enhancement**:
-- Async event handling
-- Message queue (RabbitMQ, Azure Service Bus)
-- Event persistence
-- Retry policies
+- ⚠️ Message queue (RabbitMQ, Azure Service Bus) for distributed scenarios
+- ⚠️ Event subscriptions for cross-manager communication
 
-### 3. Dependency Injection
+### 3. Dependency Injection ✅ COMPLETE
 
-**Use Microsoft.Extensions.DependencyInjection**:
-- Already part of .NET
-- No additional dependencies
-- Well-documented
-- Industry standard
+**Microsoft.Extensions.DependencyInjection**:
+- ✅ Fully implemented
+- ✅ All components use constructor injection
+- ✅ Custom `CommandTypeRegistrar` for Spectre.Console.Cli integration
+- ✅ Service lifetimes configured (Singleton for Engines/Accessors, Scoped for Managers)
 
-**Registration**:
+**Registration** (in `ServiceConfiguration.cs`):
 ```csharp
-services.AddSingleton<IEventBus, InMemoryEventBus>();
+services.AddSingleton<IEventBus, EventBus>();
 services.AddSingleton<IEmbeddingEngine, EmbeddingEngine>();
 services.AddScoped<ISemanticIndexManager, SemanticIndexManager>();
 // ...

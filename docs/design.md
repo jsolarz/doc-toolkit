@@ -72,9 +72,9 @@ The architecture follows the IDesign Method™ component taxonomy:
 | Component Type | Components | Volatility Encapsulated |
 |---------------|------------|------------------------|
 | **Client** | `InitCommand`, `GenerateCommand`, `IndexCommand`, `SearchCommand`, `GraphCommand`, `SummarizeCommand`, `ValidateCommand` | User interface volatility (CLI could become Web/API) |
-| **Manager** | `SemanticIndexService`, `SemanticSearchService`, `KnowledgeGraphService`, `SummarizeService` | Workflow volatility (orchestration logic) |
-| **Engine** | `EmbeddingService`, `DocumentExtractionService` | Algorithm volatility (embedding models, extraction logic) |
-| **Accessor** | `VectorStorageService`, `TemplateService`, `ProjectService` | Storage volatility (file system, storage technology) |
+| **Manager** | `SemanticIndexManager`, `SemanticSearchManager`, `KnowledgeGraphManager`, `SummarizeManager` | Workflow volatility (orchestration logic) |
+| **Engine** | `EmbeddingEngine`, `DocumentExtractionEngine`, `TextChunkingEngine`, `SimilarityEngine`, `EntityExtractionEngine`, `SummarizationEngine` | Algorithm volatility (embedding models, extraction logic) |
+| **Accessor** | `VectorStorageAccessor`, `TemplateAccessor`, `ProjectAccessor` | Storage volatility (file system, storage technology) |
 
 ### Static Architecture View
 
@@ -140,9 +140,9 @@ The architecture follows the IDesign Method™ component taxonomy:
 ```
 IndexCommand (Client)
   ↓ (Service Boundary - Client → Manager)
-SemanticIndexService (Manager)
+SemanticIndexManager (Manager)
   ↓ (Service Boundary - Manager → Engine/Accessor)
-DocumentExtractionService (Engine) → EmbeddingService (Engine) → VectorStorageService (Accessor)
+DocumentExtractionEngine (Engine) → EmbeddingEngine (Engine) → VectorStorageAccessor (Accessor)
   ↓ (Data Boundary)
 IndexEntry (Model)
 ```
@@ -154,14 +154,32 @@ IndexEntry (Model)
 ```
 SearchCommand (Client)
   ↓ (Service Boundary)
-SemanticSearchService (Manager)
+SemanticSearchManager (Manager)
   ↓ (Service Boundary)
-VectorStorageService (Accessor) → EmbeddingService (Engine)
+VectorStorageAccessor (Accessor) → EmbeddingEngine (Engine) → SimilarityEngine (Engine)
   ↓ (Data Boundary)
 SearchResult (Model)
 ```
 
 **Pattern**: Manager orchestrates Accessor (get data) and Engine (process data). Engine receives data as parameter (pure function).
+
+## Project Structure
+
+The project follows a clean folder structure with infrastructure separated from business logic:
+
+```
+src/DocToolkit/
+├── Accessors/          # Storage volatility (Accessors)
+├── Engines/            # Algorithm volatility (Engines)
+├── Managers/            # Workflow volatility (Managers)
+└── ifx/                # Infrastructure folder
+    ├── Commands/        # UI volatility (Clients)
+    ├── Events/          # Event definitions
+    ├── Infrastructure/  # DI, Event Bus, etc.
+    ├── Interfaces/      # All interfaces
+    ├── Models/          # Data models
+    └── Program.cs       # Application entry point
+```
 
 ## Assembly Allocation
 
@@ -171,13 +189,19 @@ All components are in a single assembly: `DocToolkit.dll`
 ┌────────────────────────────────────┐
 │      DocToolkit Assembly           │
 │  ┌──────────────────────────────┐  │
-│  │ Commands (Application Layer) │  │
+│  │ Commands (Client Layer)      │  │
 │  └──────────────────────────────┘  │
 │  ┌──────────────────────────────┐  │
-│  │ Services (Business Logic)    │  │
+│  │ Managers (Orchestration)    │  │
+│  └──────────────────────────────┘  │
+│  ┌──────────────────────────────┐  │
+│  │ Engines + Accessors          │  │
 │  └──────────────────────────────┘  │
 │  ┌──────────────────────────────┐  │
 │  │ Models (Data Layer)          │  │
+│  └──────────────────────────────┘  │
+│  ┌──────────────────────────────┐  │
+│  │ Infrastructure (DI, Events) │  │
 │  └──────────────────────────────┘  │
 └────────────────────────────────────┘
 ```
@@ -237,6 +261,52 @@ All services run under the same identity (the user running the CLI):
 - Document transaction roots and participating services
 - Transaction flow across service boundaries
 
+## Event Bus Architecture
+
+**Current State**: Event Bus implemented with SQLite persistence
+
+The toolkit includes a robust event bus for decoupled cross-component communication:
+
+- **Event Bus**: In-memory pub/sub with SQLite persistence
+- **Event Persistence**: All events saved to SQLite database (`events.db`)
+- **Retry Policies**: Automatic retry of failed events (max 3 retries, 5-minute intervals)
+- **Event Types**: `IndexBuiltEvent`, `GraphBuiltEvent`, `SummaryCreatedEvent`, `DocumentProcessedEvent`
+
+**Architecture**:
+```
+Manager (Publisher)
+    ↓
+EventBus (Pub/Sub)
+    ↓
+EventPersistence (SQLite)
+    ↓
+Subscribers (Handlers)
+```
+
+**Benefits**:
+- Zero coupling between managers
+- Reliable event delivery (persisted to database)
+- Automatic retry of failed events
+- Follows IDesign Method™ message bus pattern
+
+## Dependency Injection
+
+**Current State**: Full dependency injection implemented
+
+All components use constructor injection with interfaces:
+
+- **DI Container**: Microsoft.Extensions.DependencyInjection
+- **Service Lifetimes**: 
+  - Engines: Singleton (stateless or expensive to create)
+  - Accessors: Singleton (stateless)
+  - Managers: Scoped (may have state per operation)
+- **Type Resolution**: Custom `CommandTypeRegistrar` for Spectre.Console.Cli integration
+
+**Benefits**:
+- Loose coupling (depend on interfaces, not concrete types)
+- Testability (easy to inject mocks)
+- Flexibility (swap implementations without code changes)
+
 ## Component Descriptions
 
 ### 1. Command Layer (Application)
@@ -257,10 +327,10 @@ All services run under the same identity (the user running the CLI):
 **Purpose**: Encapsulate workflow volatility. Knows "when" to do things, not "how".
 
 **Managers**:
-- `SemanticIndexService`: Orchestrates indexing workflow (extract → embed → store)
-- `SemanticSearchService`: Orchestrates search workflow (load → embed → search)
-- `KnowledgeGraphService`: Orchestrates graph generation workflow (extract → analyze → build)
-- `SummarizeService`: Orchestrates summarization workflow (extract → summarize → output)
+- `SemanticIndexManager`: Orchestrates indexing workflow (extract → embed → store)
+- `SemanticSearchManager`: Orchestrates search workflow (load → embed → search)
+- `KnowledgeGraphManager`: Orchestrates graph generation workflow (extract → analyze → build)
+- `SummarizeManager`: Orchestrates summarization workflow (extract → summarize → output)
 
 **Service Boundaries**: Managers call Engines and Accessors. They orchestrate the workflow but don't contain business logic.
 
@@ -268,8 +338,12 @@ All services run under the same identity (the user running the CLI):
 **Purpose**: Encapsulate algorithm volatility. Knows "how" to do things. Pure functions (no I/O).
 
 **Engines**:
-- `EmbeddingService`: Encapsulates embedding algorithm (ONNX model could change)
-- `DocumentExtractionService`: Encapsulates extraction logic (format support could change)
+- `EmbeddingEngine`: Encapsulates embedding algorithm (ONNX model could change)
+- `DocumentExtractionEngine`: Encapsulates extraction logic (format support could change)
+- `TextChunkingEngine`: Encapsulates text chunking strategy (size, overlap, method)
+- `SimilarityEngine`: Encapsulates similarity calculation (cosine, euclidean, etc.)
+- `EntityExtractionEngine`: Encapsulates entity/topic extraction (regex, NLP, ML models)
+- `SummarizationEngine`: Encapsulates summarization strategy (extractive, abstractive)
 
 **Service Boundaries**: Engines are "pure" - they accept data as parameters and return results. They should not call Accessors directly.
 
@@ -277,9 +351,9 @@ All services run under the same identity (the user running the CLI):
 **Purpose**: Encapsulate storage volatility. Knows "where" data is stored. Dumb CRUD operations.
 
 **Accessors**:
-- `VectorStorageService`: Abstracts vector storage (file format could change to database)
-- `TemplateService`: Abstracts template storage (location could change to cloud)
-- `ProjectService`: Abstracts file system operations (could move to cloud storage)
+- `VectorStorageAccessor`: Abstracts vector storage (file format could change to database)
+- `TemplateAccessor`: Abstracts template storage (location could change to cloud)
+- `ProjectAccessor`: Abstracts file system operations (could move to cloud storage)
 
 **Service Boundaries**: Accessors are "dumb" - they perform CRUD operations only. No business logic.
 
@@ -371,11 +445,16 @@ All services run under the same identity (the user running the CLI):
 - Configuration files linking to toolkit resources
 
 ### External Dependencies
-- **Python 3.10+**: Core processing engine
-- **PowerShell 5+**: Script execution environment
-- **Sentence Transformers**: Embedding generation
-- **Poppler**: PDF text extraction
-- **Tesseract**: OCR for images
+- **.NET 8.0 SDK**: Core runtime
+- **Microsoft.ML.OnnxRuntime**: Semantic embeddings (ONNX models)
+- **Microsoft.Data.Sqlite**: Event persistence
+- **DocumentFormat.OpenXml**: DOCX/PPTX text extraction
+- **UglyToad.PdfPig**: PDF text extraction
+- **Spectre.Console**: CLI user interface
+- **PowerShell 5+**: Script execution environment (legacy scripts)
+- **Python 3.10+**: Legacy scripts only (optional)
+- **Poppler**: PDF text extraction (optional, for advanced features)
+- **Tesseract**: OCR for images (optional)
 
 ## Performance Considerations
 
