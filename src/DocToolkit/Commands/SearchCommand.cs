@@ -2,13 +2,27 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
 using DocToolkit.Models;
-using DocToolkit.Managers;
-using DocToolkit.Accessors;
+using DocToolkit.Interfaces.Managers;
+using DocToolkit.Interfaces.Accessors;
 
 namespace DocToolkit.Commands;
 
 public sealed class SearchCommand : Command<SearchCommand.Settings>
 {
+    private readonly ISemanticSearchManager _searchManager;
+    private readonly IVectorStorageAccessor _storageAccessor;
+
+    /// <summary>
+    /// Initializes a new instance of the SearchCommand.
+    /// </summary>
+    /// <param name="searchManager">Semantic search manager</param>
+    /// <param name="storageAccessor">Vector storage accessor</param>
+    public SearchCommand(ISemanticSearchManager searchManager, IVectorStorageAccessor storageAccessor)
+    {
+        _searchManager = searchManager ?? throw new ArgumentNullException(nameof(searchManager));
+        _storageAccessor = storageAccessor ?? throw new ArgumentNullException(nameof(storageAccessor));
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Search query")]
@@ -35,8 +49,7 @@ public sealed class SearchCommand : Command<SearchCommand.Settings>
             return 1;
         }
 
-        var storageAccessor = new VectorStorageAccessor();
-        if (!storageAccessor.IndexExists(settings.IndexPath))
+        if (!_storageAccessor.IndexExists(settings.IndexPath))
         {
             AnsiConsole.MarkupLine($"[red]Error:[/] Semantic index not found at: {settings.IndexPath}");
             AnsiConsole.MarkupLine("[dim]Run 'doc index' first to build the index[/]");
@@ -49,8 +62,7 @@ public sealed class SearchCommand : Command<SearchCommand.Settings>
         List<Models.SearchResult> results;
         try
         {
-            using var searchManager = new SemanticSearchManager();
-            results = searchManager.Search(settings.Query, settings.IndexPath, settings.TopK);
+            results = _searchManager.Search(settings.Query, settings.IndexPath, settings.TopK);
         }
         catch (Exception ex)
         {

@@ -1,12 +1,23 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using DocToolkit.Managers;
+using DocToolkit.Interfaces.Managers;
 
 namespace DocToolkit.Commands;
 
 public sealed class IndexCommand : Command<IndexCommand.Settings>
 {
+    private readonly ISemanticIndexManager _indexManager;
+
+    /// <summary>
+    /// Initializes a new instance of the IndexCommand.
+    /// </summary>
+    /// <param name="indexManager">Semantic index manager</param>
+    public IndexCommand(ISemanticIndexManager indexManager)
+    {
+        _indexManager = indexManager ?? throw new ArgumentNullException(nameof(indexManager));
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Source directory (default: ./source)")]
@@ -51,20 +62,17 @@ public sealed class IndexCommand : Command<IndexCommand.Settings>
         );
 
         bool result;
-        using (var indexManager = new SemanticIndexManager())
+        result = progress.Start(ctx =>
         {
-            result = progress.Start(ctx =>
-            {
-                var task = ctx.AddTask("[green]Processing files...[/]");
-                return indexManager.BuildIndex(
+            var task = ctx.AddTask("[green]Processing files...[/]");
+            return _indexManager.BuildIndex(
                     settings.SourcePath,
                     settings.OutputPath,
                     settings.ChunkSize,
                     settings.ChunkOverlap,
                     progress => task.Increment(progress)
                 );
-            });
-        }
+        });
 
         if (result)
         {

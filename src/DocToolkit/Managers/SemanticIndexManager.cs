@@ -2,9 +2,6 @@ using DocToolkit.Models;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
 using DocToolkit.Interfaces.Accessors;
-using DocToolkit.Services.Engines;
-using DocToolkit.Engines;
-using DocToolkit.Accessors;
 
 namespace DocToolkit.Managers;
 
@@ -24,12 +21,23 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
     private readonly IVectorStorageAccessor _storage;
     private readonly ITextChunkingEngine _chunkingEngine;
 
-    public SemanticIndexManager()
+    /// <summary>
+    /// Initializes a new instance of the SemanticIndexManager.
+    /// </summary>
+    /// <param name="extractor">Document extraction engine</param>
+    /// <param name="embedding">Embedding engine</param>
+    /// <param name="storage">Vector storage accessor</param>
+    /// <param name="chunkingEngine">Text chunking engine</param>
+    public SemanticIndexManager(
+        IDocumentExtractionEngine extractor,
+        IEmbeddingEngine embedding,
+        IVectorStorageAccessor storage,
+        ITextChunkingEngine chunkingEngine)
     {
-        _extractor = new DocumentExtractionEngine();
-        _embedding = new EmbeddingEngine();
-        _storage = new VectorStorageAccessor();
-        _chunkingEngine = new TextChunkingEngine();
+        _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
+        _embedding = embedding ?? throw new ArgumentNullException(nameof(embedding));
+        _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+        _chunkingEngine = chunkingEngine ?? throw new ArgumentNullException(nameof(chunkingEngine));
     }
 
     /// <summary>

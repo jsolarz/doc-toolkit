@@ -1,12 +1,23 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using DocToolkit.Accessors;
+using DocToolkit.Interfaces.Accessors;
 
 namespace DocToolkit.Commands;
 
 public sealed class InitCommand : Command<InitCommand.Settings>
 {
+    private readonly IProjectAccessor _projectAccessor;
+
+    /// <summary>
+    /// Initializes a new instance of the InitCommand.
+    /// </summary>
+    /// <param name="projectAccessor">Project accessor</param>
+    public InitCommand(IProjectAccessor projectAccessor)
+    {
+        _projectAccessor = projectAccessor ?? throw new ArgumentNullException(nameof(projectAccessor));
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Project name")]
@@ -23,26 +34,24 @@ public sealed class InitCommand : Command<InitCommand.Settings>
             return 1;
         }
 
-        var projectAccessor = new ProjectAccessor();
-        
         AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
             .Start("Initializing project...", ctx =>
             {
                 ctx.Status = "Creating directory structure";
-                projectAccessor.CreateDirectories(settings.Name);
+                _projectAccessor.CreateDirectories(settings.Name);
 
                 ctx.Status = "Setting up Cursor configuration";
-                projectAccessor.CreateCursorConfig(settings.Name);
+                _projectAccessor.CreateCursorConfig(settings.Name);
 
                 ctx.Status = "Creating README";
-                projectAccessor.CreateReadme(settings.Name);
+                _projectAccessor.CreateReadme(settings.Name);
 
                 ctx.Status = "Creating .gitignore";
-                projectAccessor.CreateGitIgnore(settings.Name);
+                _projectAccessor.CreateGitIgnore(settings.Name);
 
                 ctx.Status = "Initializing Git repository";
-                projectAccessor.InitializeGit(settings.Name);
+                _projectAccessor.InitializeGit(settings.Name);
             });
 
         var panel = new Panel(

@@ -2,9 +2,6 @@ using DocToolkit.Models;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
 using DocToolkit.Interfaces.Accessors;
-using DocToolkit.Services.Engines;
-using DocToolkit.Engines;
-using DocToolkit.Accessors;
 
 namespace DocToolkit.Managers;
 
@@ -23,11 +20,20 @@ public class SemanticSearchManager : ISemanticSearchManager, IDisposable
     private readonly IVectorStorageAccessor _storage;
     private readonly ISimilarityEngine _similarityEngine;
 
-    public SemanticSearchManager()
+    /// <summary>
+    /// Initializes a new instance of the SemanticSearchManager.
+    /// </summary>
+    /// <param name="embedding">Embedding engine</param>
+    /// <param name="storage">Vector storage accessor</param>
+    /// <param name="similarityEngine">Similarity engine</param>
+    public SemanticSearchManager(
+        IEmbeddingEngine embedding,
+        IVectorStorageAccessor storage,
+        ISimilarityEngine similarityEngine)
     {
-        _embedding = new EmbeddingEngine();
-        _storage = new VectorStorageAccessor();
-        _similarityEngine = new SimilarityEngine();
+        _embedding = embedding ?? throw new ArgumentNullException(nameof(embedding));
+        _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+        _similarityEngine = similarityEngine ?? throw new ArgumentNullException(nameof(similarityEngine));
     }
 
     /// <summary>

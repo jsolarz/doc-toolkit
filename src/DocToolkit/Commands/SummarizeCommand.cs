@@ -1,12 +1,23 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using DocToolkit.Managers;
+using DocToolkit.Interfaces.Managers;
 
 namespace DocToolkit.Commands;
 
 public sealed class SummarizeCommand : Command<SummarizeCommand.Settings>
 {
+    private readonly ISummarizeManager _summarizeManager;
+
+    /// <summary>
+    /// Initializes a new instance of the SummarizeCommand.
+    /// </summary>
+    /// <param name="summarizeManager">Summarize manager</param>
+    public SummarizeCommand(ISummarizeManager summarizeManager)
+    {
+        _summarizeManager = summarizeManager ?? throw new ArgumentNullException(nameof(summarizeManager));
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Source directory (default: ./source)")]
@@ -33,8 +44,6 @@ public sealed class SummarizeCommand : Command<SummarizeCommand.Settings>
             return 1;
         }
 
-        var summarizeManager = new SummarizeManager();
-
         AnsiConsole.MarkupLine($"[cyan]Summarizing source files from:[/] {settings.SourcePath}");
 
         var progress = AnsiConsole.Progress();
@@ -50,7 +59,7 @@ public sealed class SummarizeCommand : Command<SummarizeCommand.Settings>
         var result = progress.Start(ctx =>
         {
             var task = ctx.AddTask("[green]Processing files...[/]");
-            return summarizeManager.SummarizeSource(
+            return _summarizeManager.SummarizeSource(
                 settings.SourcePath,
                 settings.OutputFile,
                 settings.MaxChars,

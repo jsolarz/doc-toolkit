@@ -3,8 +3,6 @@ using System.Text.Json;
 using DocToolkit.Models;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
-using DocToolkit.Services.Engines;
-using DocToolkit.Engines;
 
 namespace DocToolkit.Managers;
 
@@ -22,10 +20,17 @@ public class KnowledgeGraphManager : IKnowledgeGraphManager
     private readonly IDocumentExtractionEngine _extractor;
     private readonly IEntityExtractionEngine _extractionEngine;
 
-    public KnowledgeGraphManager()
+    /// <summary>
+    /// Initializes a new instance of the KnowledgeGraphManager.
+    /// </summary>
+    /// <param name="extractor">Document extraction engine</param>
+    /// <param name="extractionEngine">Entity extraction engine</param>
+    public KnowledgeGraphManager(
+        IDocumentExtractionEngine extractor,
+        IEntityExtractionEngine extractionEngine)
     {
-        _extractor = new DocumentExtractionEngine();
-        _extractionEngine = new EntityExtractionEngine();
+        _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
+        _extractionEngine = extractionEngine ?? throw new ArgumentNullException(nameof(extractionEngine));
     }
 
     /// <summary>

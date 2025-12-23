@@ -1,12 +1,23 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using DocToolkit.Accessors;
+using DocToolkit.Interfaces.Accessors;
 
 namespace DocToolkit.Commands;
 
 public sealed class GenerateCommand : Command<GenerateCommand.Settings>
 {
+    private readonly ITemplateAccessor _templateAccessor;
+
+    /// <summary>
+    /// Initializes a new instance of the GenerateCommand.
+    /// </summary>
+    /// <param name="templateAccessor">Template accessor</param>
+    public GenerateCommand(ITemplateAccessor templateAccessor)
+    {
+        _templateAccessor = templateAccessor ?? throw new ArgumentNullException(nameof(templateAccessor));
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Document type (prd, rfp, tender, sow, architecture, solution, sla, spec, api, data)")]
@@ -32,13 +43,11 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
             return 1;
         }
 
-        var templateAccessor = new TemplateAccessor();
-
-        if (!templateAccessor.TemplateExists(settings.Type))
+        if (!_templateAccessor.TemplateExists(settings.Type))
         {
             AnsiConsole.MarkupLine($"[red]Error:[/] Template '{settings.Type}' not found");
             
-            var available = templateAccessor.GetAvailableTemplates();
+            var available = _templateAccessor.GetAvailableTemplates();
             var table = new Table();
             table.AddColumn("Available Templates");
             foreach (var template in available)
@@ -49,7 +58,7 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
             return 1;
         }
 
-        var outputPath = templateAccessor.GenerateDocument(settings.Type, settings.Name, settings.Output);
+        var outputPath = _templateAccessor.GenerateDocument(settings.Type, settings.Name, settings.Output);
 
         var panel = new Panel(
             new Rows(

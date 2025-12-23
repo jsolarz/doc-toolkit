@@ -1,8 +1,18 @@
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using DocToolkit.Commands;
+using DocToolkit.Infrastructure;
 
-var app = new CommandApp();
+// Setup dependency injection
+var services = new ServiceCollection();
+services.AddDocToolkitServices();
+
+// Create type registrar for Spectre.Console.Cli
+var typeRegistrar = new CommandTypeRegistrar(services);
+
+// Create command app with DI support
+var app = new CommandApp(typeRegistrar);
 
 app.Configure(config =>
 {
@@ -50,4 +60,11 @@ AnsiConsole.Write(
 AnsiConsole.MarkupLine("[dim]Professional documentation generation made beautiful[/]");
 AnsiConsole.WriteLine();
 
-return app.Run(args);
+try
+{
+    return app.Run(args);
+}
+finally
+{
+    // Type resolver is disposed by CommandApp
+}

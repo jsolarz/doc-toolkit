@@ -1,12 +1,23 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System.ComponentModel;
-using DocToolkit.Managers;
+using DocToolkit.Interfaces.Managers;
 
 namespace DocToolkit.Commands;
 
 public sealed class GraphCommand : Command<GraphCommand.Settings>
 {
+    private readonly IKnowledgeGraphManager _graphManager;
+
+    /// <summary>
+    /// Initializes a new instance of the GraphCommand.
+    /// </summary>
+    /// <param name="graphManager">Knowledge graph manager</param>
+    public GraphCommand(IKnowledgeGraphManager graphManager)
+    {
+        _graphManager = graphManager ?? throw new ArgumentNullException(nameof(graphManager));
+    }
+
     public sealed class Settings : CommandSettings
     {
         [Description("Source directory (default: ./source)")]
@@ -40,11 +51,10 @@ public sealed class GraphCommand : Command<GraphCommand.Settings>
             }
         );
 
-        var graphManager = new KnowledgeGraphManager();
         var result = progress.Start(ctx =>
         {
             var task = ctx.AddTask("[green]Processing files...[/]");
-            return graphManager.BuildGraph(
+            return _graphManager.BuildGraph(
                 settings.SourcePath,
                 settings.OutputPath,
                 progress => task.Increment(progress)

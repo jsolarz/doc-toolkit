@@ -1,8 +1,6 @@
 using System.Text;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
-using DocToolkit.Services.Engines;
-using DocToolkit.Engines;
 
 namespace DocToolkit.Managers;
 
@@ -25,11 +23,17 @@ public class SummarizeManager : ISummarizeManager
     /// <summary>
     /// Initializes a new instance of the SummarizeManager.
     /// </summary>
-    public SummarizeManager()
+    /// <param name="extractor">Document extraction engine</param>
+    /// <param name="summarizationEngine">Summarization engine</param>
+    /// <param name="entityExtractionEngine">Entity extraction engine</param>
+    public SummarizeManager(
+        IDocumentExtractionEngine extractor,
+        ISummarizationEngine summarizationEngine,
+        IEntityExtractionEngine entityExtractionEngine)
     {
-        _extractor = new DocumentExtractionEngine();
-        _summarizationEngine = new SummarizationEngine();
-        _entityExtractionEngine = new EntityExtractionEngine();
+        _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
+        _summarizationEngine = summarizationEngine ?? throw new ArgumentNullException(nameof(summarizationEngine));
+        _entityExtractionEngine = entityExtractionEngine ?? throw new ArgumentNullException(nameof(entityExtractionEngine));
     }
 
     /// <summary>
