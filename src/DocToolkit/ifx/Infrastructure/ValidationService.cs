@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Reflection;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Service for validating setup and dependencies.

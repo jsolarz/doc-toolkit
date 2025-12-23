@@ -1,6 +1,6 @@
 using System.Text.Json;
-using DocToolkit.Models;
-using DocToolkit.Interfaces.Accessors;
+using DocToolkit.ifx.Interfaces.IAccessors;
+using DocToolkit.ifx.Models;
 
 namespace DocToolkit.Accessors;
 

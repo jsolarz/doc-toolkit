@@ -1,4 +1,4 @@
-namespace DocToolkit.Interfaces.Accessors;
+namespace DocToolkit.ifx.Interfaces.IAccessors;
 
 /// <summary>
 /// Accessor interface for document template operations.

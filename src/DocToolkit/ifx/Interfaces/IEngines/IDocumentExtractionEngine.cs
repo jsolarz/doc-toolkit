@@ -1,4 +1,4 @@
-namespace DocToolkit.Interfaces.Engines;
+namespace DocToolkit.ifx.Interfaces.IEngines;
 
 /// <summary>
 /// Engine interface for text extraction from various document formats.

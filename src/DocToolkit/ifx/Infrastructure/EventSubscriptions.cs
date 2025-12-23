@@ -1,7 +1,6 @@
-using DocToolkit.Events;
-using DocToolkit.Infrastructure;
+using DocToolkit.ifx.Events;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Configures event subscriptions for cross-manager communication.

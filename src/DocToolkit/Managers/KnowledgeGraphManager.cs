@@ -1,10 +1,10 @@
 using System.Text;
 using System.Text.Json;
-using DocToolkit.Models;
-using DocToolkit.Interfaces.Managers;
-using DocToolkit.Interfaces.Engines;
-using DocToolkit.Infrastructure;
-using DocToolkit.Events;
+using DocToolkit.ifx.Events;
+using DocToolkit.ifx.Infrastructure;
+using DocToolkit.ifx.Interfaces.IEngines;
+using DocToolkit.ifx.Interfaces.IManagers;
+using DocToolkit.ifx.Models;
 
 namespace DocToolkit.Managers;
 

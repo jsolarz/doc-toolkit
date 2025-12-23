@@ -1,4 +1,4 @@
-using DocToolkit.Interfaces.Accessors;
+using DocToolkit.ifx.Interfaces.IAccessors;
 
 namespace DocToolkit.Accessors;
 

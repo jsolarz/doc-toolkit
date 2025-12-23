@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
-using DocToolkit.Interfaces.Accessors;
+using DocToolkit.ifx.Interfaces.IAccessors;
 
 namespace DocToolkit.Accessors;
 

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Type registrar for Spectre.Console.Cli that uses dependency injection.

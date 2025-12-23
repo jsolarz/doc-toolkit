@@ -1,8 +1,8 @@
+using DocToolkit.ifx.Infrastructure;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using DocToolkit.Infrastructure;
 
-namespace DocToolkit.Commands;
+namespace DocToolkit.ifx.Commands;
 
 public sealed class ValidateCommand : Command
 {

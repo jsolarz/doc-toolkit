@@ -1,8 +1,8 @@
-using Microsoft.Data.Sqlite;
 using System.Text.Json;
-using DocToolkit.Events;
+using DocToolkit.ifx.Events;
+using Microsoft.Data.Sqlite;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Handles event persistence to SQLite database.

@@ -1,6 +1,6 @@
-using DocToolkit.Models;
+using DocToolkit.ifx.Models;
 
-namespace DocToolkit.Interfaces.Managers;
+namespace DocToolkit.ifx.Interfaces.IManagers;
 
 /// <summary>
 /// Manager interface for semantic search workflow.

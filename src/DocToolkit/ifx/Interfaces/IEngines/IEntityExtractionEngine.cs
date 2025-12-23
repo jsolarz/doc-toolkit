@@ -1,4 +1,4 @@
-namespace DocToolkit.Interfaces.Engines;
+namespace DocToolkit.ifx.Interfaces.IEngines;
 
 /// <summary>
 /// Engine interface for entity and topic extraction from text.

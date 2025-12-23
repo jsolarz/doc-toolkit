@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
-using DocToolkit.Events;
+using DocToolkit.ifx.Events;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Simple in-memory event bus with persistence and retry policies.

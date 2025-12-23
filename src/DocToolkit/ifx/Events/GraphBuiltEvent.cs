@@ -1,4 +1,4 @@
-namespace DocToolkit.Events;
+namespace DocToolkit.ifx.Events;
 
 /// <summary>
 /// Event published when a knowledge graph is built.

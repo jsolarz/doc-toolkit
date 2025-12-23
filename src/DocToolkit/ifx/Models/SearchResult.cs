@@ -1,4 +1,4 @@
-namespace DocToolkit.Models;
+namespace DocToolkit.ifx.Models;
 
 public class SearchResult
 {

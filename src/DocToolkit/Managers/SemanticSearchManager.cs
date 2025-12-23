@@ -1,7 +1,7 @@
-using DocToolkit.Models;
-using DocToolkit.Interfaces.Managers;
-using DocToolkit.Interfaces.Engines;
-using DocToolkit.Interfaces.Accessors;
+using DocToolkit.ifx.Interfaces.IAccessors;
+using DocToolkit.ifx.Interfaces.IEngines;
+using DocToolkit.ifx.Interfaces.IManagers;
+using DocToolkit.ifx.Models;
 
 namespace DocToolkit.Managers;
 

@@ -1,4 +1,4 @@
-namespace DocToolkit.Events;
+namespace DocToolkit.ifx.Events;
 
 /// <summary>
 /// Base interface for all events in the system.

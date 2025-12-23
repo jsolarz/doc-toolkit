@@ -1,9 +1,9 @@
+using System.ComponentModel;
+using DocToolkit.ifx.Interfaces.IAccessors;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System.ComponentModel;
-using DocToolkit.Interfaces.Accessors;
 
-namespace DocToolkit.Commands;
+namespace DocToolkit.ifx.Commands;
 
 public sealed class GenerateCommand : Command<GenerateCommand.Settings>
 {

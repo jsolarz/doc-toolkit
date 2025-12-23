@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using DocToolkit.Interfaces.Engines;
+using DocToolkit.ifx.Interfaces.IEngines;
 
 namespace DocToolkit.Engines;
 

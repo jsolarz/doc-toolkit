@@ -1,9 +1,9 @@
+using System.ComponentModel;
+using DocToolkit.ifx.Interfaces.IManagers;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using System.ComponentModel;
-using DocToolkit.Interfaces.Managers;
 
-namespace DocToolkit.Commands;
+namespace DocToolkit.ifx.Commands;
 
 public sealed class GraphCommand : Command<GraphCommand.Settings>
 {

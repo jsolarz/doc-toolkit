@@ -1,6 +1,6 @@
-using DocToolkit.Events;
+using DocToolkit.ifx.Events;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Event bus interface for pub/sub communication.

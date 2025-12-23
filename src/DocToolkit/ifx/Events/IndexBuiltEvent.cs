@@ -1,4 +1,4 @@
-namespace DocToolkit.Events;
+namespace DocToolkit.ifx.Events;
 
 /// <summary>
 /// Event published when a semantic index is built.

@@ -1,12 +1,12 @@
-using Microsoft.Extensions.DependencyInjection;
-using DocToolkit.Interfaces.Managers;
-using DocToolkit.Interfaces.Engines;
-using DocToolkit.Interfaces.Accessors;
-using DocToolkit.Managers;
-using DocToolkit.Engines;
 using DocToolkit.Accessors;
+using DocToolkit.Engines;
+using DocToolkit.ifx.Interfaces.IAccessors;
+using DocToolkit.ifx.Interfaces.IEngines;
+using DocToolkit.ifx.Interfaces.IManagers;
+using DocToolkit.Managers;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace DocToolkit.Infrastructure;
+namespace DocToolkit.ifx.Infrastructure;
 
 /// <summary>
 /// Service configuration for dependency injection.

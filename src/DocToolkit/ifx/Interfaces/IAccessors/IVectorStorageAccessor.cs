@@ -1,6 +1,6 @@
-using DocToolkit.Models;
+using DocToolkit.ifx.Models;
 
-namespace DocToolkit.Interfaces.Accessors;
+namespace DocToolkit.ifx.Interfaces.IAccessors;
 
 /// <summary>
 /// Accessor interface for vector storage operations.

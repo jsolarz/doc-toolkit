@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace DocToolkit.Models;
+namespace DocToolkit.ifx.Models;
 
 public class IndexEntry
 {

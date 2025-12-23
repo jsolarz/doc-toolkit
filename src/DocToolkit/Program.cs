@@ -1,8 +1,8 @@
+using DocToolkit.ifx.Commands;
+using DocToolkit.ifx.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using DocToolkit.Commands;
-using DocToolkit.Infrastructure;
 
 // Setup dependency injection
 var services = new ServiceCollection();
