@@ -1,6 +1,5 @@
 using DocToolkit.Accessors;
 using DocToolkit.ifx.Models;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Accessors;
@@ -33,10 +32,30 @@ public class VectorStorageAccessorTests
         var loaded = _accessor.LoadVectors(_testDir);
 
         // Assert
-        loaded.Should().HaveCount(3);
-        loaded[0].Should().BeEquivalentTo(vectors[0]);
-        loaded[1].Should().BeEquivalentTo(vectors[1]);
-        loaded[2].Should().BeEquivalentTo(vectors[2]);
+        Assert.Equal(3, loaded.Length);
+        Assert.Equal(vectors[0], loaded[0], new FloatArrayComparer());
+        Assert.Equal(vectors[1], loaded[1], new FloatArrayComparer());
+        Assert.Equal(vectors[2], loaded[2], new FloatArrayComparer());
+    }
+
+    private class FloatArrayComparer : IEqualityComparer<float[]>
+    {
+        public bool Equals(float[]? x, float[]? y)
+        {
+            if (x == null && y == null) return true;
+            if (x == null || y == null) return false;
+            if (x.Length != y.Length) return false;
+            for (int i = 0; i < x.Length; i++)
+            {
+                if (Math.Abs(x[i] - y[i]) > 0.0001f) return false;
+            }
+            return true;
+        }
+
+        public int GetHashCode(float[] obj)
+        {
+            return obj?.GetHashCode() ?? 0;
+        }
     }
 
     [Fact]
@@ -54,9 +73,9 @@ public class VectorStorageAccessorTests
         var loaded = _accessor.LoadIndex(_testDir);
 
         // Assert
-        loaded.Should().HaveCount(2);
-        loaded[0].File.Should().Be("file1.txt");
-        loaded[1].File.Should().Be("file2.txt");
+        Assert.Equal(2, loaded.Count);
+        Assert.Equal("file1.txt", loaded[0].File);
+        Assert.Equal("file2.txt", loaded[1].File);
     }
 
     [Fact]
@@ -69,7 +88,7 @@ public class VectorStorageAccessorTests
         var result = _accessor.IndexExists(nonExistentPath);
 
         // Assert
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Fact]
@@ -77,13 +96,15 @@ public class VectorStorageAccessorTests
     {
         // Arrange
         var entries = new List<IndexEntry> { new() { File = "test.txt", Index = 0 } };
+        var vectors = new[] { new float[] { 0.1f, 0.2f, 0.3f } };
+        _accessor.SaveVectors(vectors, _testDir);
         _accessor.SaveIndex(entries, _testDir);
 
         // Act
         var result = _accessor.IndexExists(_testDir);
 
         // Assert
-        result.Should().BeTrue();
+        Assert.True(result);
     }
 
     [Fact]
@@ -97,7 +118,7 @@ public class VectorStorageAccessorTests
         var loaded = _accessor.LoadVectors(_testDir);
 
         // Assert
-        loaded.Should().BeEmpty();
+        Assert.Empty(loaded);
     }
 
     [Fact]
@@ -111,6 +132,6 @@ public class VectorStorageAccessorTests
         var loaded = _accessor.LoadIndex(_testDir);
 
         // Assert
-        loaded.Should().BeEmpty();
+        Assert.Empty(loaded);
     }
 }

@@ -1,5 +1,4 @@
 using DocToolkit.Engines;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Engines;
@@ -23,7 +22,7 @@ public class SimilarityEngineTests
         var result = _engine.CosineSimilarity(vector, vector);
 
         // Assert
-        result.Should().BeApproximately(1.0, 0.0001);
+        Assert.True(Math.Abs(1.0 - result) < 0.0001);
     }
 
     [Fact]
@@ -37,7 +36,7 @@ public class SimilarityEngineTests
         var result = _engine.CosineSimilarity(vectorA, vectorB);
 
         // Assert
-        result.Should().BeApproximately(0.0, 0.0001);
+        Assert.True(Math.Abs(0.0 - result) < 0.0001);
     }
 
     [Fact]
@@ -51,7 +50,7 @@ public class SimilarityEngineTests
         var result = _engine.CosineSimilarity(vectorA, vectorB);
 
         // Assert
-        result.Should().BeApproximately(-1.0, 0.0001);
+        Assert.True(Math.Abs(-1.0 - result) < 0.0001);
     }
 
     [Fact]
@@ -99,7 +98,7 @@ public class SimilarityEngineTests
         var result = _engine.CosineSimilarity(vectorA, vectorB);
 
         // Assert
-        result.Should().Be(0.0);
+        Assert.Equal(0.0, result);
     }
 
     [Fact]
@@ -113,7 +112,7 @@ public class SimilarityEngineTests
         var result = _engine.CosineSimilarity(vectorA, vectorB);
 
         // Assert
-        result.Should().BeApproximately(0.707, 0.01);
+        Assert.True(Math.Abs(0.707 - result) < 0.01);
     }
 
     [Fact]
@@ -127,7 +126,7 @@ public class SimilarityEngineTests
         var result = _engine.FindTopSimilar(queryVector, vectors, 5);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -141,9 +140,9 @@ public class SimilarityEngineTests
         var result = _engine.FindTopSimilar(queryVector, vectors, 5);
 
         // Assert
-        result.Should().HaveCount(1);
-        result[0].index.Should().Be(0);
-        result[0].score.Should().BeApproximately(1.0, 0.0001);
+        Assert.Single(result);
+        Assert.Equal(0, result[0].index);
+        Assert.True(Math.Abs(1.0 - result[0].score) < 0.0001);
     }
 
     [Fact]
@@ -163,9 +162,9 @@ public class SimilarityEngineTests
         var result = _engine.FindTopSimilar(queryVector, vectors, 2);
 
         // Assert
-        result.Should().HaveCount(2);
-        result[0].score.Should().BeGreaterThan(result[1].score);
-        result[0].index.Should().Be(0); // Most similar
+        Assert.Equal(2, result.Count);
+        Assert.True(result[0].score > result[1].score);
+        Assert.Equal(0, result[0].index); // Most similar
     }
 
     [Fact]
@@ -183,7 +182,7 @@ public class SimilarityEngineTests
         var result = _engine.FindTopSimilar(queryVector, vectors, 10);
 
         // Assert
-        result.Should().HaveCount(2);
+        Assert.Equal(2, result.Count);
     }
 
     [Fact]
@@ -202,10 +201,10 @@ public class SimilarityEngineTests
         var result = _engine.FindTopSimilar(queryVector, vectors, 3);
 
         // Assert
-        result.Should().HaveCount(3);
+        Assert.Equal(3, result.Count);
         for (int i = 0; i < result.Count - 1; i++)
         {
-            result[i].score.Should().BeGreaterThanOrEqualTo(result[i + 1].score);
+            Assert.True(result[i].score >= result[i + 1].score);
         }
     }
 }

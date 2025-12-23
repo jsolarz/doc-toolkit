@@ -1,5 +1,4 @@
 using DocToolkit.Engines;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Engines;
@@ -20,7 +19,7 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractEntities("");
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -30,7 +29,7 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractEntities(null!);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -43,12 +42,12 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractEntities(text);
 
         // Assert
-        result.Should().NotBeEmpty();
+        Assert.NotEmpty(result);
         // The engine extracts capitalized phrases - check for any entity containing these words
         var allEntities = string.Join(" ", result);
-        allEntities.Should().Contain("Manager");
-        allEntities.Should().Contain("Requirements");
-        allEntities.Should().Contain("Architect");
+        Assert.Contains("Manager", allEntities);
+        Assert.Contains("Requirements", allEntities);
+        Assert.Contains("Architect", allEntities);
     }
 
     [Fact]
@@ -61,8 +60,8 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractEntities(text);
 
         // Assert
-        result.Should().NotContain("The");
-        result.Should().NotContain("And");
+        Assert.DoesNotContain("The", result);
+        Assert.DoesNotContain("And", result);
     }
 
     [Fact]
@@ -75,8 +74,8 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractEntities(text);
 
         // Assert
-        result.Should().NotContain("Hi");
-        result.Should().NotContain("AI");
+        Assert.DoesNotContain("Hi", result);
+        Assert.DoesNotContain("AI", result);
     }
 
     [Fact]
@@ -89,8 +88,8 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractEntities(text);
 
         // Assert
-        result.Should().Contain("Project Manager");
-        result.Should().NotContain("project manager");
+        Assert.Contains("Project Manager", result);
+        Assert.DoesNotContain("project manager", result);
     }
 
     [Fact]
@@ -100,7 +99,7 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractTopics("");
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -110,7 +109,7 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractTopics(null!);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -125,13 +124,13 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractTopics(text, 5);
 
         // Assert
-        result.Should().HaveCountLessThanOrEqualTo(5);
+        Assert.True(result.Count <= 5);
         // Verify stop words are filtered
-        result.Should().NotContain("project"); // Stop word
-        result.Should().NotContain("requirements"); // Stop word
-        result.Should().NotContain("system"); // Stop word
-        result.Should().NotContain("application"); // Stop word
-        result.Should().NotContain("management"); // Stop word
+        Assert.DoesNotContain("project", result); // Stop word
+        Assert.DoesNotContain("requirements", result); // Stop word
+        Assert.DoesNotContain("system", result); // Stop word
+        Assert.DoesNotContain("application", result); // Stop word
+        Assert.DoesNotContain("management", result); // Stop word
     }
 
     [Fact]
@@ -144,7 +143,10 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractTopics(text);
 
         // Assert
-        result.Should().AllSatisfy(topic => topic.Length.Should().BeGreaterThanOrEqualTo(5));
+        foreach (var topic in result)
+        {
+            Assert.True(topic.Length >= 5);
+        }
     }
 
     [Fact]
@@ -157,7 +159,7 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractTopics(text, 10);
 
         // Assert
-        result.Should().HaveCountLessThanOrEqualTo(10);
+        Assert.True(result.Count <= 10);
     }
 
     [Fact]
@@ -170,16 +172,16 @@ public class EntityExtractionEngineTests
         var result = _engine.ExtractTopics(text);
 
         // Assert
-        result.Should().NotContain("project");
-        result.Should().NotContain("requirements");
-        result.Should().NotContain("system");
-        result.Should().NotContain("solution");
-        result.Should().NotContain("cloud");
-        result.Should().NotContain("customer");
-        result.Should().NotContain("service");
-        result.Should().NotContain("document");
-        result.Should().NotContain("management");
-        result.Should().NotContain("application");
+        Assert.DoesNotContain("project", result);
+        Assert.DoesNotContain("requirements", result);
+        Assert.DoesNotContain("system", result);
+        Assert.DoesNotContain("solution", result);
+        Assert.DoesNotContain("cloud", result);
+        Assert.DoesNotContain("customer", result);
+        Assert.DoesNotContain("service", result);
+        Assert.DoesNotContain("document", result);
+        Assert.DoesNotContain("management", result);
+        Assert.DoesNotContain("application", result);
     }
 
     [Fact]
@@ -200,7 +202,7 @@ public class EntityExtractionEngineTests
             
             if (word1Index >= 0 && word2Index >= 0)
             {
-                word1Index.Should().BeLessThan(word2Index);
+                Assert.True(word1Index < word2Index);
             }
         }
     }

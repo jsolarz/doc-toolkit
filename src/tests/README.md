@@ -31,7 +31,15 @@ tests/DocToolkit.Tests/
 
 ### Run All Tests
 ```bash
+# Standard xUnit output
 dotnet test
+
+# With detailed output
+dotnet test --logger "console;verbosity=detailed"
+
+# Using the test runner (with Spectre.Console formatting)
+cd src/tests/DocToolkit.Tests
+dotnet run -- test
 ```
 
 ### Run Specific Test Category
@@ -44,10 +52,28 @@ dotnet test --filter Category=Integration
 ```
 
 ### Run Benchmarks
+
+Benchmarks use Spectre.Console for beautiful output:
+
 ```bash
-cd tests/DocToolkit.Tests
+cd src/tests/DocToolkit.Tests
+
+# Run all benchmarks
 dotnet run -c Release -- benchmark
+
+# Run specific benchmark
+dotnet run -c Release -- bench textchunking
+dotnet run -c Release -- bench similarity
+dotnet run -c Release -- bench entity
+dotnet run -c Release -- bench summarization
 ```
+
+The benchmark runner will display:
+- Beautiful formatted tables with results
+- Mean execution time
+- Error and standard deviation
+- Memory allocation (Gen 0, Gen 1, Gen 2)
+- Total execution time
 
 ## Test Coverage
 
@@ -80,7 +106,7 @@ dotnet run -c Release -- benchmark
 
 - **Total Tests**: 50+
 - **Test Framework**: xUnit
-- **Assertion Library**: FluentAssertions
+- **Assertion Library**: xUnit Assert (standard .NET testing)
 - **Mocking Framework**: Moq
 - **Benchmarking**: BenchmarkDotNet
 

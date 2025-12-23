@@ -4,7 +4,6 @@ using DocToolkit.ifx.Infrastructure;
 using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IEngines;
 using DocToolkit.Managers;
-using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -45,7 +44,7 @@ public class SemanticIndexManagerTests
         var result = _manager.BuildIndex(sourcePath, "./output", 100, 20);
 
         // Assert
-        result.Should().BeFalse();
+        Assert.False(result);
     }
 
     [Fact]
@@ -60,7 +59,7 @@ public class SemanticIndexManagerTests
             var result = _manager.BuildIndex(tempDir, "./output", 100, 20);
 
             // Assert
-            result.Should().BeFalse();
+            Assert.False(result);
         }
         finally
         {
@@ -93,7 +92,7 @@ public class SemanticIndexManagerTests
             var result = _manager.BuildIndex(tempDir, outputDir, 100, 20);
 
             // Assert
-            result.Should().BeTrue();
+            Assert.True(result);
             _mockExtractor.Verify(x => x.ExtractText(It.IsAny<string>()), Times.AtLeastOnce);
             _mockChunking.Verify(x => x.ChunkText(It.IsAny<string>(), 100, 20), Times.AtLeastOnce);
             _mockEmbedding.Verify(x => x.GenerateEmbedding(It.IsAny<string>()), Times.AtLeastOnce);
@@ -130,7 +129,7 @@ public class SemanticIndexManagerTests
             var result = _manager.BuildIndex(tempDir, outputDir, 100, 20);
 
             // Assert
-            result.Should().BeFalse();
+            Assert.False(result);
             _mockChunking.Verify(x => x.ChunkText(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Never);
         }
         finally
@@ -168,9 +167,9 @@ public class SemanticIndexManagerTests
             var result = _manager.BuildIndex(tempDir, outputDir, 100, 20, progress => progressValues.Add(progress));
 
             // Assert
-            result.Should().BeTrue();
-            progressValues.Should().NotBeEmpty();
-            progressValues.Last().Should().Be(100.0);
+            Assert.True(result);
+            Assert.NotEmpty(progressValues);
+            Assert.Equal(100.0, progressValues.Last());
         }
         finally
         {

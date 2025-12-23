@@ -451,7 +451,7 @@ All components use constructor injection with interfaces:
 - Configuration files linking to toolkit resources
 
 ### External Dependencies
-- **.NET 8.0 SDK**: Core runtime
+- **.NET 9.0 SDK**: Core runtime
 - **Microsoft.ML.OnnxRuntime**: Semantic embeddings (ONNX models)
 - **Microsoft.Data.Sqlite**: Event persistence
 - **DocumentFormat.OpenXml**: DOCX/PPTX text extraction

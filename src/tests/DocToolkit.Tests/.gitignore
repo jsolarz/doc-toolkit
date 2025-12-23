@@ -1,0 +1,33 @@
+# Build results
+bin/
+obj/
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+
+# Coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# Benchmark results
+BenchmarkDotNet.Artifacts/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio
+.vs/
+*.userprefs
+
+# Temporary test files
+*.tmp
+*.log

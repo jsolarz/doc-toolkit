@@ -2,7 +2,6 @@ using DocToolkit.Engines;
 using DocToolkit.ifx.Events;
 using DocToolkit.ifx.Infrastructure;
 using DocToolkit.Managers;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Integration;
@@ -58,8 +57,8 @@ public class SemanticIndexingIntegrationTests : IDisposable
         var results = _similarityEngine.FindTopSimilar(queryVector, chunkVectors, topK: 3);
 
         // Assert
-        chunks.Should().NotBeEmpty();
-        results.Should().HaveCountLessThanOrEqualTo(3);
+        Assert.NotEmpty(chunks);
+        Assert.True(results.Count <= 3);
     }
 
     public void Dispose()

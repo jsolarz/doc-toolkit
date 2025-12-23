@@ -4,7 +4,7 @@ using DocToolkit.Engines;
 
 namespace DocToolkit.Tests.Benchmarks;
 
-[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net90)]
 [MemoryDiagnoser]
 public class SummarizationBenchmarks
 {

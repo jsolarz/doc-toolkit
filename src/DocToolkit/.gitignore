@@ -1,0 +1,44 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+Folder.DotSettings.user
+
+# Rider
+.idea/
+*.sln.iml
+
+# Visual Studio
+.vs/
+*.userprefs
+
+# Test results
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+
+# Coverage reports
+coverage/
+*.coverage
+*.coveragexml
+
+# Benchmark results
+BenchmarkDotNet.Artifacts/
+
+# Event database (local)
+events.db
+*.db-shm
+*.db-wal
+
+# ONNX model cache (if any)
+*.onnx.cache
+
+# Temporary files
+*.tmp
+*.log
+*.cache

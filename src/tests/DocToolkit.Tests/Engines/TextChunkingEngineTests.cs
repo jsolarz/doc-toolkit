@@ -1,5 +1,4 @@
 using DocToolkit.Engines;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Engines;
@@ -20,7 +19,7 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText("", 100, 20);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -30,7 +29,7 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText("   \n\t  ", 100, 20);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -40,7 +39,7 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(null!, 100, 20);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -53,8 +52,8 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, 100, 20);
 
         // Assert
-        result.Should().HaveCount(1);
-        result[0].Should().Be(text);
+        Assert.Single(result);
+        Assert.Equal(text, result[0]);
     }
 
     [Fact]
@@ -68,9 +67,12 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, 50, 10);
 
         // Assert
-        result.Should().HaveCountGreaterThan(1);
-        result.Should().AllSatisfy(chunk => 
-            chunk.Split(' ').Length.Should().BeLessThanOrEqualTo(50));
+        Assert.True(result.Count > 1);
+        foreach (var chunk in result)
+        {
+            var wordCount = chunk.Split(' ').Length;
+            Assert.True(wordCount <= 50);
+        }
     }
 
     [Fact]
@@ -84,7 +86,7 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, 20, 10);
 
         // Assert
-        result.Should().HaveCountGreaterThan(1);
+        Assert.True(result.Count > 1);
         
         // Check that chunks overlap
         for (int i = 0; i < result.Count - 1; i++)
@@ -94,7 +96,7 @@ public class TextChunkingEngineTests
             
             // Should have some overlap
             var overlap = currentWords.Intersect(nextWords).Count();
-            overlap.Should().BeGreaterThan(0);
+            Assert.True(overlap > 0);
         }
     }
 
@@ -108,8 +110,11 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, 10, 2);
 
         // Assert
-        result.Should().NotBeEmpty();
-        result.Should().AllSatisfy(chunk => chunk.Should().NotBeNullOrWhiteSpace());
+        Assert.NotEmpty(result);
+        foreach (var chunk in result)
+        {
+            Assert.False(string.IsNullOrWhiteSpace(chunk));
+        }
     }
 
     [Theory]
@@ -127,12 +132,12 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, chunkSize, overlap);
 
         // Assert
-        result.Should().NotBeEmpty();
-        result.Should().AllSatisfy(chunk => 
+        Assert.NotEmpty(result);
+        foreach (var chunk in result)
         {
             var wordCount = chunk.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
-            wordCount.Should().BeLessThanOrEqualTo(chunkSize);
-        });
+            Assert.True(wordCount <= chunkSize);
+        }
     }
 
     [Fact]
@@ -146,7 +151,7 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, 20, 0);
 
         // Assert
-        result.Should().HaveCount(5); // 100 words / 20 words per chunk = 5 chunks
+        Assert.Equal(5, result.Count); // 100 words / 20 words per chunk = 5 chunks
     }
 
     [Fact]
@@ -159,7 +164,7 @@ public class TextChunkingEngineTests
         var result = _engine.ChunkText(text, 3, 5); // Overlap > chunk size
 
         // Assert
-        result.Should().NotBeEmpty();
+        Assert.NotEmpty(result);
         // Should still produce chunks, just with minimal step
     }
 }

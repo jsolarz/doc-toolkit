@@ -1,6 +1,5 @@
 using DocToolkit.ifx.Events;
 using DocToolkit.ifx.Infrastructure;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Infrastructure;
@@ -27,7 +26,7 @@ public class EventBusTests : IDisposable
         _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
 
         // Assert
-        eventReceived.Should().BeTrue();
+        Assert.True(eventReceived);
     }
 
     [Fact]
@@ -42,7 +41,7 @@ public class EventBusTests : IDisposable
         _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
 
         // Assert
-        callCount.Should().Be(2);
+        Assert.Equal(2, callCount);
     }
 
     [Fact]
@@ -61,7 +60,7 @@ public class EventBusTests : IDisposable
 
         // Assert
         Thread.Sleep(100); // Wait for async handler
-        eventReceived.Should().BeTrue();
+        Assert.True(eventReceived);
     }
 
     [Fact]
@@ -78,8 +77,8 @@ public class EventBusTests : IDisposable
         _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
 
         // Assert
-        indexEventReceived.Should().BeTrue();
-        graphEventReceived.Should().BeFalse();
+        Assert.True(indexEventReceived);
+        Assert.False(graphEventReceived);
     }
 
     [Fact]
@@ -97,7 +96,26 @@ public class EventBusTests : IDisposable
     public void Dispose()
     {
         _eventBus?.Dispose();
-        if (File.Exists(_testDbPath))
-            File.Delete(_testDbPath);
+        
+        // Wait a bit for SQLite to release the file lock
+        Thread.Sleep(100);
+        
+        // Retry deletion in case file is still locked
+        for (int i = 0; i < 5; i++)
+        {
+            try
+            {
+                if (File.Exists(_testDbPath))
+                    File.Delete(_testDbPath);
+                break;
+            }
+            catch (IOException)
+            {
+                if (i < 4)
+                {
+                    Thread.Sleep(100);
+                }
+            }
+        }
     }
 }

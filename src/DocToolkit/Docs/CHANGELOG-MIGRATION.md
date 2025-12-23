@@ -242,7 +242,7 @@ private string ExtractText(string filePath)
 - Python installation instructions
 
 **Add**:
-- .NET 8.0 requirement (already present)
+- .NET 10.0 requirement (upgraded from .NET 8.0)
 - ONNX model information
 - Document format support details
 

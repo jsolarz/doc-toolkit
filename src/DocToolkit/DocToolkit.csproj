@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>DocToolkit</RootNamespace>
@@ -21,7 +21,10 @@
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.0" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.0" />
     <PackageReference Include="UglyToad.PdfPig" Version="0.1.9-alpha001-patch1" />
-    <!-- Note: PdfPig uses newer core dependencies. Warnings are safe to ignore. -->
+    <!-- Explicitly reference PdfPig dependencies to resolve NU1603 warnings -->
+    <PackageReference Include="UglyToad.PdfPig.Tokens" Version="1.7.0-custom-5" />
+    <PackageReference Include="UglyToad.PdfPig.Tokenization" Version="1.7.0-custom-5" />
+    <PackageReference Include="UglyToad.PdfPig.Fonts" Version="1.7.0-custom-5" />
   </ItemGroup>
 
 </Project>

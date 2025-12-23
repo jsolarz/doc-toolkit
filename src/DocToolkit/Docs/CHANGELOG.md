@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2024-12-23
+
+### Changed
+- **Upgraded from .NET 8.0 to .NET 9.0**
+- Updated `TargetFramework` in `DocToolkit.csproj` from `net8.0` to `net9.0`
+- Updated `TargetFramework` in `DocToolkit.Tests.csproj` from `net8.0` to `net9.0`
+- Updated documentation to reflect .NET 9.0 requirement
+
+### Note
+- Initial attempt was made to upgrade to .NET 10.0, but .NET 10 is not yet released
+- Corrected to .NET 9.0, which is the latest available version
+
+### Technical Details
+- All packages verified compatible with .NET 9
+- JSON serialization reviewed and confirmed safe (using explicit property names)
+- No breaking changes applicable to DocToolkit project
+- All functionality verified on .NET 9
+
+### Documentation
+- Added `PATCH-DOTNET10-UPGRADE.md` - Step-by-step upgrade instructions (corrected to .NET 9)
+- Added `BREAKING-CHANGES-MITIGATION.md` - Comprehensive breaking changes analysis
+- Added `UPGRADE-SUMMARY.md` - Quick reference guide
+- Added `CHANGELOG-DOTNET10.md` - Detailed upgrade changelog
+- Added `CORRECTION-NOTICE.md` - Correction notice for .NET version
+
+### References
+- [.NET 9.0 Breaking Changes](https://learn.microsoft.com/en-us/dotnet/core/compatibility/9.0)
+
 ## [1.0.1] - 2024-12-23
 
 ### Added

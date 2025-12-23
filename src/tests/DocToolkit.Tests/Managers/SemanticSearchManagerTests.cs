@@ -2,7 +2,6 @@ using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IEngines;
 using DocToolkit.ifx.Models;
 using DocToolkit.Managers;
-using FluentAssertions;
 using Moq;
 using Xunit;
 
@@ -64,9 +63,9 @@ public class SemanticSearchManagerTests
         var result = _manager.Search(query, indexPath, 10);
 
         // Assert
-        result.Should().HaveCount(2);
-        result[0].Score.Should().Be(0.95);
-        result[0].File.Should().Be("file1.txt");
+        Assert.Equal(2, result.Count);
+        Assert.Equal(0.95, result[0].Score);
+        Assert.Equal("file1.txt", result[0].File);
         _mockEmbedding.Verify(x => x.GenerateEmbedding(query), Times.Once);
         _mockStorage.Verify(x => x.LoadVectors(indexPath), Times.Once);
         _mockStorage.Verify(x => x.LoadIndex(indexPath), Times.Once);
@@ -103,6 +102,6 @@ public class SemanticSearchManagerTests
         var result = _manager.Search(query, indexPath, 2);
 
         // Assert
-        result.Should().HaveCount(2);
+        Assert.Equal(2, result.Count);
     }
 }

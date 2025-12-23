@@ -242,7 +242,7 @@ Outputs:
 ## 🛠 Requirements
 
 ### CLI Application Requirements
-- **.NET 8.0 SDK** or later
+- **.NET 9.0 SDK** or later
 - **ONNX Model** (all-MiniLM-L6-v2.onnx, ~90MB) - See [README-MODEL.md](src/DocToolkit/README-MODEL.md)
 - **Poppler** (optional, for advanced PDF features)
 - **Tesseract** (optional, for OCR)

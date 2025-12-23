@@ -1,5 +1,4 @@
 using DocToolkit.Engines;
-using FluentAssertions;
 using Xunit;
 
 namespace DocToolkit.Tests.Engines;
@@ -20,7 +19,7 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText("");
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -30,7 +29,7 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(null!);
 
         // Assert
-        result.Should().BeEmpty();
+        Assert.Empty(result);
     }
 
     [Fact]
@@ -43,7 +42,7 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(text);
 
         // Assert
-        result.Should().Be(text);
+        Assert.Equal(text, result);
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(text);
 
         // Assert
-        result.Should().Be(text);
+        Assert.Equal(text, result);
     }
 
     [Fact]
@@ -73,10 +72,10 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(text, maxSentences: 5);
 
         // Assert
-        result.Should().NotBe(text);
-        result.Length.Should().BeLessThan(text.Length);
+        Assert.NotEqual(text, result);
+        Assert.True(result.Length < text.Length);
         var resultSentences = result.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-        resultSentences.Length.Should().BeLessThanOrEqualTo(5);
+        Assert.True(resultSentences.Length <= 5);
     }
 
     [Fact]
@@ -94,7 +93,7 @@ public class SummarizationEngineTests
 
         // Assert
         var resultSentences = result.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-        resultSentences.Length.Should().BeLessThanOrEqualTo(3);
+        Assert.True(resultSentences.Length <= 3);
     }
 
     [Fact]
@@ -107,9 +106,9 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(text, maxSentences: 10);
 
         // Assert
-        result.Should().Contain("First sentence");
-        result.Should().Contain("Second sentence");
-        result.Should().Contain("Third sentence");
+        Assert.Contains("First sentence", result);
+        Assert.Contains("Second sentence", result);
+        Assert.Contains("Third sentence", result);
     }
 
     [Fact]
@@ -122,8 +121,8 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(text, maxSentences: 2);
 
         // Assert
-        result.Should().Contain("First sentence");
-        result.Should().Contain("Second sentence");
+        Assert.Contains("First sentence", result);
+        Assert.Contains("Second sentence", result);
     }
 
     [Fact]
@@ -141,7 +140,7 @@ public class SummarizationEngineTests
 
         // Assert
         var resultSentences = result.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-        resultSentences.Length.Should().BeLessThanOrEqualTo(5);
+        Assert.True(resultSentences.Length <= 5);
     }
 
     [Fact]
@@ -157,8 +156,8 @@ public class SummarizationEngineTests
         var result = _engine.SummarizeText(text, maxSentences: 5);
 
         // Assert
-        result.Length.Should().BeLessThan(text.Length);
-        result.Should().NotBeNullOrWhiteSpace();
-        result.Should().EndWith(".");
+        Assert.True(result.Length < text.Length);
+        Assert.False(string.IsNullOrWhiteSpace(result));
+        Assert.EndsWith(".", result);
     }
 }
