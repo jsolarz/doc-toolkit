@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using DocToolkit.Interfaces.Engines;
 
-namespace DocToolkit.Services.Engines;
+namespace DocToolkit.Engines;
 
 /// <summary>
 /// Engine for entity and topic extraction from text.

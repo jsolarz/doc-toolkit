@@ -178,10 +178,12 @@ Event Bus (decouples managers)
 9. ✅ Add retry policies and event persistence
 10. ✅ Reorganize project structure (ifx/ folder)
 
-### Phase 4: Long Term (Optional)
-11. ⚠️ Consider message queue for async processing (future)
-12. ⚠️ Add observability and monitoring (future)
-13. ⚠️ Add event subscriptions for cross-manager communication (future)
+### Phase 4: Event Subscriptions & Cleanup ✅ COMPLETE
+11. ✅ Add event subscriptions for cross-manager communication
+12. ✅ Add basic event logging/observability
+13. ✅ Clean up legacy Services folder (moved engines, removed duplicates)
+14. ✅ Move ValidationService to Infrastructure folder
+15. ✅ Configure event subscriptions in Program.cs
 
 ## Detailed Recommendations
 

@@ -28,7 +28,7 @@ If you are an AI agent involved in the task, read this guide **VERY, VERY** care
 14. **Identity Management**: Document identity boundaries and security decisions
 15. **Authentication & Authorization**: Mark authentication (solid bar) and authorization (patterned bar) at service boundaries
 16. **Transaction Boundaries**: Document transaction scopes and flow
-17. **Message Bus**: Use pub/sub for cross-component communication (future)
+17. **Message Bus**: Use pub/sub for cross-component communication ✅ IMPLEMENTED
 
 See `.cursor/rules/idesign-method.mdc` for detailed IDesign Method™ guidelines.
 
@@ -86,8 +86,10 @@ When creating or modifying services:
 - **One Service = One Responsibility**: Each service has a single, well-defined purpose
 - **Service Boundaries**: All inter-service communication through well-defined interfaces
 - **Closed Architecture**: Services only call services in the layer immediately below
-- **Dependency Injection**: Services accept dependencies through constructor
+- **Dependency Injection**: Services accept dependencies through constructor ✅ IMPLEMENTED
 - **Error Handling**: Handle errors at service boundaries
+- **Event Bus**: Use event bus for cross-manager communication ✅ IMPLEMENTED (Phase 3)
+- **Component Taxonomy**: Use IDesign Method™ taxonomy (Managers, Engines, Accessors, Clients) ✅ IMPLEMENTED
 
 ## Architecture Documentation
 
@@ -97,3 +99,6 @@ When updating `docs/design.md`:
 3. Show identity and security boundaries
 4. Document transaction boundaries where applicable
 5. Follow closed architecture pattern in all diagrams
+6. Document event bus architecture and subscriptions
+7. Document dependency injection configuration
+8. Include current project structure (Managers/, Engines/, Accessors/, ifx/)

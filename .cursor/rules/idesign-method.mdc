@@ -140,29 +140,50 @@ For communication between different subsystems or asynchronous operations, compo
 - `InitCommand`, `GenerateCommand`, `IndexCommand`, `SearchCommand`, `GraphCommand`, `SummarizeCommand`, `ValidateCommand`
 
 **Managers** (Orchestration - workflow volatility):
-- `SemanticIndexService`: Orchestrates indexing workflow
-- `SemanticSearchService`: Orchestrates search workflow
-- `KnowledgeGraphService`: Orchestrates graph generation workflow
-- `SummarizeService`: Orchestrates summarization workflow
+- `SemanticIndexManager`: Orchestrates indexing workflow
+- `SemanticSearchManager`: Orchestrates search workflow
+- `KnowledgeGraphManager`: Orchestrates graph generation workflow
+- `SummarizeManager`: Orchestrates summarization workflow
 
 **Engines** (Business Logic - algorithm volatility):
-- `EmbeddingService`: Encapsulates embedding algorithm (ONNX model could change)
-- `DocumentExtractionService`: Encapsulates extraction logic (format support could change)
+- `EmbeddingEngine`: Encapsulates embedding algorithm (ONNX model could change)
+- `DocumentExtractionEngine`: Encapsulates extraction logic (format support could change)
+- `TextChunkingEngine`: Encapsulates text chunking strategy (size, overlap, method)
+- `SimilarityEngine`: Encapsulates similarity calculation (cosine, euclidean, etc.)
+- `EntityExtractionEngine`: Encapsulates entity/topic extraction (regex, NLP, ML models)
+- `SummarizationEngine`: Encapsulates summarization strategy (extractive, abstractive)
 
 **Accessors** (Resource Abstraction - storage/technology volatility):
-- `VectorStorageService`: Abstracts vector storage (file format could change)
-- `TemplateService`: Abstracts template storage (template location could change)
-- `ProjectService`: Abstracts file system operations (could move to cloud)
+- `VectorStorageAccessor`: Abstracts vector storage (file format could change)
+- `TemplateAccessor`: Abstracts template storage (template location could change)
+- `ProjectAccessor`: Abstracts file system operations (could move to cloud)
 
 ### Service Layer Structure
 ```
-Clients (Commands)
+Clients (Commands in ifx/Commands/)
   ↓
-Managers (Orchestration)
+Managers (Orchestration in Managers/)
   ↓
-Engines (Business Logic) + Accessors (Resource Abstraction)
+Engines (Business Logic in Engines/) + Accessors (Resource Abstraction in Accessors/)
   ↓
-Models (Data Layer)
+Models (Data Layer in ifx/Models/)
+  ↓
+Event Bus (Pub/Sub in ifx/Infrastructure/)
+```
+
+### Project Structure
+```
+src/DocToolkit/
+├── Accessors/          # Storage volatility (Accessors)
+├── Engines/            # Algorithm volatility (Engines)
+├── Managers/           # Workflow volatility (Managers)
+└── ifx/                # Infrastructure folder
+    ├── Commands/        # UI volatility (Clients)
+    ├── Events/          # Event definitions
+    ├── Infrastructure/  # DI, Event Bus, etc.
+    ├── Interfaces/     # All interfaces
+    ├── Models/          # Data models
+    └── Program.cs       # Application entry point
 ```
 
 ### Call Chain Example
@@ -172,9 +193,9 @@ Models (Data Layer)
 ```
 IndexCommand (Client)
   ↓ (Service Boundary)
-SemanticIndexService (Manager)
+SemanticIndexManager (Manager)
   ↓ (Service Boundary)
-DocumentExtractionService (Engine) → EmbeddingService (Engine) → VectorStorageService (Accessor)
+DocumentExtractionEngine (Engine) → EmbeddingEngine (Engine) → VectorStorageAccessor (Accessor)
   ↓ (Data Boundary)
 IndexEntry (Model)
 ```
@@ -183,17 +204,27 @@ IndexEntry (Model)
 - **Clients** → **Managers**: Service boundary (authentication/authorization if needed)
 - **Managers** → **Engines/Accessors**: Service boundary (closed architecture - only call down)
 - **Engines** → **Accessors**: Avoid direct calls (Engines should receive data as parameters)
+- **Managers** → **Event Bus**: Event publishing for cross-manager communication (decoupled)
 - **Services** → **Models**: Data boundary (no authentication needed)
+
+### Event Bus Architecture
+- **Event Bus**: In-memory pub/sub with SQLite persistence ✅ IMPLEMENTED
+- **Event Persistence**: All events saved to SQLite database (`events.db`)
+- **Retry Policies**: Automatic retry of failed events (max 3 retries, 5-minute intervals)
+- **Event Types**: `IndexBuiltEvent`, `GraphBuiltEvent`, `SummaryCreatedEvent`, `DocumentProcessedEvent`
+- **Subscriptions**: Configured at application startup in `EventSubscriptions.ConfigureSubscriptions()`
 
 ## Coding Standards Alignment
 
 When implementing services:
 1. **One Service = One Responsibility**: Each service should have a single, well-defined purpose
-2. **Service Boundaries**: All inter-service communication goes through service interfaces
+2. **Service Boundaries**: All inter-service communication goes through service interfaces ✅ IMPLEMENTED
 3. **Closed Architecture**: Services only call services in the layer immediately below
 4. **No Direct Data Access**: Services don't directly access file system or external resources without abstraction
-5. **Dependency Injection**: Services should accept dependencies through constructor
+5. **Dependency Injection**: Services should accept dependencies through constructor ✅ IMPLEMENTED (Phase 2)
 6. **Error Handling**: Services should handle errors at boundaries and propagate appropriately
+7. **Event Publishing**: Managers publish events for cross-manager communication ✅ IMPLEMENTED (Phase 3)
+8. **Component Taxonomy**: Use IDesign Method™ names (Manager, Engine, Accessor, Client) ✅ IMPLEMENTED (Phase 1)
 
 ## Documentation Requirements
 

@@ -289,6 +289,12 @@ Subscribers (Handlers)
 - Automatic retry of failed events
 - Follows IDesign Method™ message bus pattern
 
+**Event Subscriptions**:
+- Event subscriptions configured at application startup
+- Console logging for major events (IndexBuiltEvent, GraphBuiltEvent, SummaryCreatedEvent, DocumentProcessedEvent)
+- Optional cross-manager subscriptions can be enabled (e.g., auto-rebuild graph when index changes)
+- All subscriptions managed centrally in `EventSubscriptions.ConfigureSubscriptions()`
+
 ## Dependency Injection
 
 **Current State**: Full dependency injection implemented

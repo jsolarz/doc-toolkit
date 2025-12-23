@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2024-12-23
+
+### Added
+- Event subscriptions for cross-manager communication
+- Event logging/observability (console output for major events)
+- EventSubscriptions configuration class for centralized subscription management
+- ValidationService moved to Infrastructure folder
+
+### Changed
+- Moved all Engine classes from `Services/Engines/` to `Engines/` folder
+- Updated all Engine namespaces from `DocToolkit.Services.Engines` to `DocToolkit.Engines`
+- Removed legacy Services folder (all components now in proper IDesign folders)
+- Event subscriptions now configured at application startup in Program.cs
+- DocumentProcessedEvent now published during indexing workflow
+
+### Architecture Improvements
+- **Phase 4**: Event subscriptions and project cleanup ✅
+- All components now in proper IDesign folders (Managers, Engines, Accessors, ifx/Infrastructure)
+- Event-driven communication enabled between managers
+
 ## [1.0.0] - 2024-12-23
 
 ### Added

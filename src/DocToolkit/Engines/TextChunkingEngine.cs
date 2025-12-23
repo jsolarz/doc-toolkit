@@ -1,6 +1,6 @@
 using DocToolkit.Interfaces.Engines;
 
-namespace DocToolkit.Services.Engines;
+namespace DocToolkit.Engines;
 
 /// <summary>
 /// Engine for text chunking operations.

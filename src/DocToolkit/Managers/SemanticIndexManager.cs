@@ -93,6 +93,16 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
                     continue;
                 }
 
+                // Publish event: Document processed
+                _eventBus.Publish(new DocumentProcessedEvent
+                {
+                    FilePath = file,
+                    ExtractedText = text,
+                    FileSize = new FileInfo(file).Length,
+                    FileType = Path.GetExtension(file),
+                    CharacterCount = text.Length
+                });
+
                 // Orchestrate: Chunk text (Engine)
                 var chunks = _chunkingEngine.ChunkText(text, chunkSize, chunkOverlap);
 

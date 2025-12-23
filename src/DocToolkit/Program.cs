@@ -7,6 +7,11 @@ using DocToolkit.Infrastructure;
 // Setup dependency injection
 var services = new ServiceCollection();
 services.AddDocToolkitServices();
+var serviceProvider = services.BuildServiceProvider();
+
+// Configure event subscriptions for cross-manager communication
+var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+EventSubscriptions.ConfigureSubscriptions(eventBus, serviceProvider);
 
 // Create type registrar for Spectre.Console.Cli
 var typeRegistrar = new CommandTypeRegistrar(services);
