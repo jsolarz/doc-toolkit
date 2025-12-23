@@ -21,6 +21,24 @@ public static class ServiceConfiguration
     /// <returns>Service collection for chaining</returns>
     public static IServiceCollection AddDocToolkitServices(this IServiceCollection services)
     {
+        // Infrastructure - Event Bus with persistence
+        var eventDbPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "DocToolkit",
+            "events.db");
+        
+        // Ensure directory exists
+        var eventDbDir = Path.GetDirectoryName(eventDbPath);
+        if (!string.IsNullOrEmpty(eventDbDir) && !Directory.Exists(eventDbDir))
+        {
+            Directory.CreateDirectory(eventDbDir);
+        }
+
+        services.AddSingleton<IEventBus>(sp => new EventBus(
+            dbPath: eventDbPath,
+            maxRetries: 3,
+            retryInterval: TimeSpan.FromMinutes(5)));
+
         // Engines (Singleton - stateless or expensive to create)
         services.AddSingleton<IDocumentExtractionEngine, DocumentExtractionEngine>();
         services.AddSingleton<IEmbeddingEngine, EmbeddingEngine>();

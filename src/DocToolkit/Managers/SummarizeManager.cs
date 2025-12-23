@@ -1,6 +1,8 @@
 using System.Text;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
+using DocToolkit.Infrastructure;
+using DocToolkit.Events;
 
 namespace DocToolkit.Managers;
 
@@ -19,6 +21,7 @@ public class SummarizeManager : ISummarizeManager
     private readonly IDocumentExtractionEngine _extractor;
     private readonly ISummarizationEngine _summarizationEngine;
     private readonly IEntityExtractionEngine _entityExtractionEngine;
+    private readonly IEventBus _eventBus;
 
     /// <summary>
     /// Initializes a new instance of the SummarizeManager.
@@ -26,14 +29,17 @@ public class SummarizeManager : ISummarizeManager
     /// <param name="extractor">Document extraction engine</param>
     /// <param name="summarizationEngine">Summarization engine</param>
     /// <param name="entityExtractionEngine">Entity extraction engine</param>
+    /// <param name="eventBus">Event bus for publishing events</param>
     public SummarizeManager(
         IDocumentExtractionEngine extractor,
         ISummarizationEngine summarizationEngine,
-        IEntityExtractionEngine entityExtractionEngine)
+        IEntityExtractionEngine entityExtractionEngine,
+        IEventBus eventBus)
     {
         _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
         _summarizationEngine = summarizationEngine ?? throw new ArgumentNullException(nameof(summarizationEngine));
         _entityExtractionEngine = entityExtractionEngine ?? throw new ArgumentNullException(nameof(entityExtractionEngine));
+        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
     }
 
     /// <summary>
@@ -138,6 +144,15 @@ public class SummarizeManager : ISummarizeManager
         }
 
         File.WriteAllText(outputFile, output.ToString());
+
+        // Publish event: Summary created
+        _eventBus.Publish(new SummaryCreatedEvent
+        {
+            SummaryPath = outputFile,
+            FileCount = processed,
+            SourcePath = sourcePath
+        });
+
         return true;
     }
 }

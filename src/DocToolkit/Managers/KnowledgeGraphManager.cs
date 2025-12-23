@@ -3,6 +3,8 @@ using System.Text.Json;
 using DocToolkit.Models;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
+using DocToolkit.Infrastructure;
+using DocToolkit.Events;
 
 namespace DocToolkit.Managers;
 
@@ -19,18 +21,22 @@ public class KnowledgeGraphManager : IKnowledgeGraphManager
 {
     private readonly IDocumentExtractionEngine _extractor;
     private readonly IEntityExtractionEngine _extractionEngine;
+    private readonly IEventBus _eventBus;
 
     /// <summary>
     /// Initializes a new instance of the KnowledgeGraphManager.
     /// </summary>
     /// <param name="extractor">Document extraction engine</param>
     /// <param name="extractionEngine">Entity extraction engine</param>
+    /// <param name="eventBus">Event bus for publishing events</param>
     public KnowledgeGraphManager(
         IDocumentExtractionEngine extractor,
-        IEntityExtractionEngine extractionEngine)
+        IEntityExtractionEngine extractionEngine,
+        IEventBus eventBus)
     {
         _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
         _extractionEngine = extractionEngine ?? throw new ArgumentNullException(nameof(extractionEngine));
+        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
     }
 
     /// <summary>
@@ -214,6 +220,16 @@ public class KnowledgeGraphManager : IKnowledgeGraphManager
         SaveJson(graph, outputPath);
         SaveGraphviz(graph, outputPath);
         SaveMarkdown(graph, entityGlobalCounts, topicGlobalCounts, outputPath);
+
+        // Publish event: Graph built
+        _eventBus.Publish(new GraphBuiltEvent
+        {
+            GraphPath = outputPath,
+            FileCount = nodes.File.Count,
+            EntityCount = nodes.Entity.Count,
+            TopicCount = nodes.Topic.Count,
+            SourcePath = sourcePath
+        });
 
         return true;
     }

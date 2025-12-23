@@ -2,6 +2,8 @@ using DocToolkit.Models;
 using DocToolkit.Interfaces.Managers;
 using DocToolkit.Interfaces.Engines;
 using DocToolkit.Interfaces.Accessors;
+using DocToolkit.Infrastructure;
+using DocToolkit.Events;
 
 namespace DocToolkit.Managers;
 
@@ -20,6 +22,7 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
     private readonly IEmbeddingEngine _embedding;
     private readonly IVectorStorageAccessor _storage;
     private readonly ITextChunkingEngine _chunkingEngine;
+    private readonly IEventBus _eventBus;
 
     /// <summary>
     /// Initializes a new instance of the SemanticIndexManager.
@@ -28,16 +31,19 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
     /// <param name="embedding">Embedding engine</param>
     /// <param name="storage">Vector storage accessor</param>
     /// <param name="chunkingEngine">Text chunking engine</param>
+    /// <param name="eventBus">Event bus for publishing events</param>
     public SemanticIndexManager(
         IDocumentExtractionEngine extractor,
         IEmbeddingEngine embedding,
         IVectorStorageAccessor storage,
-        ITextChunkingEngine chunkingEngine)
+        ITextChunkingEngine chunkingEngine,
+        IEventBus eventBus)
     {
         _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
         _embedding = embedding ?? throw new ArgumentNullException(nameof(embedding));
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         _chunkingEngine = chunkingEngine ?? throw new ArgumentNullException(nameof(chunkingEngine));
+        _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
     }
 
     /// <summary>
@@ -127,6 +133,15 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
         // Orchestrate: Save vectors and index (Accessor)
         _storage.SaveVectors(vectors.ToArray(), outputPath);
         _storage.SaveIndex(entries, outputPath);
+
+        // Publish event: Index built
+        _eventBus.Publish(new IndexBuiltEvent
+        {
+            IndexPath = outputPath,
+            EntryCount = entries.Count,
+            VectorCount = vectors.Count,
+            SourcePath = sourcePath
+        });
 
         return true;
     }
