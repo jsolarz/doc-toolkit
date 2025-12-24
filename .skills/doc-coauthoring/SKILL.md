@@ -378,6 +378,12 @@ Announce document completion. Provide a few final tips:
 - Do not use emojis, icons, or horizontal rules (---) in documentation files.
 - Keep documentation clean and concise.
 
+**Documentation Location Rules:**
+- Global project documentation: Place in `docs/` folder (architecture, PRD, specs, technical docs, etc.)
+- Source code specific documentation: Place in `src/` folder (either `src/DocToolkit/Docs/` or `src/tests/DocToolkit.Tests/Docs/`)
+- Root level: Only essential files (README.md, CHANGELOG.md, ONBOARDING.md, LICENSE)
+- Do NOT create documentation in multiple locations or temporary folders
+
 **Quality over Speed:**
 - Don't rush through stages
 - Each iteration should make meaningful improvements

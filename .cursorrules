@@ -1,0 +1,53 @@
+# Documentation Toolkit - Master Rules
+
+This file serves as the master linker for all AI instruction files. It references the consolidated prompt system in `/prompts/`.
+
+## Project Identity
+
+**Project**: Documentation Toolkit  
+**Purpose**: A reusable framework for generating professional documents and building semantic knowledge bases for projects  
+**Tech Stack**: C# (.NET 9.0), Spectre.Console, Microsoft.ML.OnnxRuntime, SQLite, Microsoft.Extensions.DependencyInjection  
+**Architecture**: IDesign Method™ (volatility-based decomposition)
+
+## Prompt System Structure
+
+All AI instructions are consolidated in the `/prompts/` directory:
+
+### Core Rules
+- **`prompts/core/prompt_spec.md`**: Global reasoning, universal coding conventions, safety constraints, file management rules
+- **`prompts/core/style_guide.md`**: Naming conventions, documentation tone, formatting rules, document structure
+
+### Model-Specific Overrides
+- **`prompts/models/cursor_overrides.md`**: Cursor IDE integration, @-symbol usage, codebase indexing
+- **`prompts/models/claude_overrides.md`**: Claude AI model integration, reasoning guidelines
+- **`prompts/models/openai_overrides.md`**: OpenAI GPT model integration, prompt engineering
+
+### Agent Instructions
+- **`prompts/agents/agents.md`**: Agent roles, responsibilities, development workflow, IDesign Method™ principles
+
+## Key Principles
+
+1. **IDesign Method™ Compliance**: All architecture follows volatility-based decomposition
+2. **File Management**: No unnecessary files, targeted edits only, one CHANGELOG.md, one PATCH-*.md per change set
+3. **Documentation Location**: Global docs in `docs/`, source-specific docs in `src/`, essential files in root
+4. **Clean Formatting**: No emojis, icons, or horizontal rules in documentation
+5. **Always Update**: README.md, docs/design.md, CHANGELOG.md after changes
+
+## Quick Reference
+
+- **Coding Standards**: See `prompts/core/prompt_spec.md` (IDesign C# Coding Standard 3.1)
+- **Style Guide**: See `prompts/core/style_guide.md`
+- **Architecture**: See `prompts/agents/agents.md` (IDesign Method™ principles)
+- **Document Templates**: See `/templates/` directory
+
+## Legacy Rule Files
+
+The following rule files in `.cursor/rules/` are still active but will be migrated:
+- `.cursor/rules/00-core-instructions.mdc` - Core document writing rules
+- `.cursor/rules/idesign-method.mdc` - IDesign Method™ guidelines
+- `.cursor/rules/architecture-design.mdc` - Architecture document rules
+- `.cursor/rules/prd-standard.mdc` - PRD rules
+- `.cursor/rules/rfp-tender-strategy.mdc` - RFP/Tender rules
+- `.cursor/rules/sow-rules.mdc` - SOW rules
+
+These will be consolidated into the `/prompts/` structure in future updates.

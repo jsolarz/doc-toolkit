@@ -94,6 +94,38 @@ CRITICAL: Follow these rules for all file operations:
    - Update relevant documentation files
 6. Do not use emojis, icons, or horizontal rules (---) in documentation files. Keep formatting clean and professional.
 7. Keep documentation clean and concise. Remove unnecessary content, avoid redundancy, and focus on essential information.
+
+## Documentation Location Rules
+
+CRITICAL: Follow these rules for documentation placement:
+
+1. **Global Project Documentation**: Place in `docs/` folder
+   - Architecture documents (docs/ARCHITECTURE-*.md)
+   - Product requirements (docs/PRD-*.md)
+   - Data models (docs/DATA-*.md)
+   - Engineering specs (docs/SPEC-*.md)
+   - Solution proposals (docs/SOLUTION-*.md)
+   - Technical documentation (docs/TECHNICAL-DOCUMENTATION.md)
+   - System design (docs/design.md)
+   - Code standards (docs/CODE-DOCUMENTATION-STANDARDS.md)
+   - Developer guides (docs/DEVELOPER-QUICK-REFERENCE.md)
+   - Compliance documents (docs/IDESIGN-CSHARP-CODING-STANDARD-COMPLIANCE.md)
+
+2. **Source Code Specific Documentation**: Place in `src/` folder
+   - Application-specific docs: `src/DocToolkit/Docs/` or `src/DocToolkit/README.md`
+   - Test-specific docs: `src/tests/DocToolkit.Tests/README.md` or `src/tests/DocToolkit.Tests/Docs/`
+   - Component-specific docs: Co-located with source code (e.g., `src/DocToolkit/Engines/README.md`)
+
+3. **Root Level Documentation**: Only essential project files
+   - README.md (project overview)
+   - CHANGELOG.md (project changelog)
+   - ONBOARDING.md (project onboarding)
+   - LICENSE (if applicable)
+
+4. **Do NOT create documentation in**:
+   - Multiple locations for the same content
+   - Temporary or intermediary folders
+   - Root directory (except essential files listed above)
 ```
 
 ## Service Layer Rules

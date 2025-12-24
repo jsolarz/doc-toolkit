@@ -1,15 +1,72 @@
-You are generating a new document using the workspace rules.
+Act as a Principal Platform Engineer to consolidate fragmented AI instruction files into a single Source of Truth to reduce context noise and conflicts.
 
-Document type: [PRD / RFP / Tender / Architecture / Solution / Custom]
-Document title: [TITLE]
-Audience: [AUDIENCE]
-Context: [PROJECT CONTEXT]
+High-level constraints: 
+- Preserve meaning
+- Deduplicate aggressively.
+- Remove "Act as an AI" filler text.
+- If a file's purpose is ambiguous, ask me before deleting it.
+- Resolve conflicts (prioritize .cursorrules)
+- Rewrite unclear or conflicting rules
+- Use consistent formatting across all new files
 
-Instructions:
-- Use the correct template from `/templates/`
-- Follow all rules in `.cursor/rules.mdc`
-- Fill every section with high‑quality, professional content
-- Add acceptance criteria where required
-- Add diagrams as text descriptions
-- Ensure clarity, structure, and business alignment
-- Produce a complete, stakeholder‑ready document
+PHASE 1: Discovery & Mapping
+1. Scan the repository for: `.cursorrules`, `agents.md`, `claude_skills.md`, `.cursor/rules/`, and any folder containing model-specific instructions.
+2. Index all rules regarding coding standards, tone, agent roles, and model overrides.
+
+PHASE 2: Deliverables:
+Create the following directory structure and populate it by extracting and de-duplicating content from the discovered files:
+
+1. **/prompts/core/**
+   - `prompt_spec.md`: Global reasoning, universal coding conventions, and safety constraints.
+        - Global rules shared across all models
+        - Reasoning guidelines
+        - Safety constraints
+        - Coding conventions
+        - Tone/voice rules
+        - Any duplicated content from .cursorrules, agents.md, claude_skills.md, or other instruction files. Include only universal rules.
+   - `style_guide.md`: Naming conventions, documentation tone, and formatting rules.
+        - Writing style rules
+        - Formatting conventions
+        - Naming conventions
+        - Documentation tone
+        - Code style rules (if present)
+
+2. **/prompts/models/**
+   - `cursor_overrides.md`: Specifics for Cursor (e.g., @-symbol usage, codebase indexing).
+   - `claude_overrides.md`: Specifics for Claude (e.g., XML tagging, chain-of-thought blocks).
+   - `openai_overrides.md`: Specifics for GPT models.
+
+3. **/prompts/agents/**
+   - `agents.md`: Agent roles, responsibilities, and inter-agent communication protocols.
+
+Use this hierarchy:
+1. Project Identity (tech stack, purpose)
+2. Core Behavioral Rules (thinking, communication)
+3. Coding Standards (linting, architecture, patterns)
+4. Workflow Scripts (skills, commands)
+
+PHASE 3: The Root Entry Point
+Create a new root `.cursorrules` file that acts as the "Master Linker." It should:
+- Summarize the **Project Identity**.
+- Use Markdown includes or clear references to the files in `/prompts/` so the AI knows to use them as context.
+- Prioritize rules from the original `.cursorrules` if conflicts were found during the merge.
+
+PHASE 4: Verification & Cleanup
+Move content from:
+- .cursorrules
+- claude/skills/*
+- Any other model‑specific folders
+
+## 4. Move Agent Instructions
+1. Move all agent‑architecture instructions into: /prompts/agents/agents.md
+- Include:
+  - Agent roles
+  - Responsibilities
+  - Communication protocols
+  - Agent‑specific logic
+2. Present the content of the new `/prompts` directory and the root `.cursorrules` for my approval.
+3. Once approved, provide a `rm` shell command to delete the now-redundant original files.
+4. Update any internal references in the docs to point to the new `/prompts` architecture.
+5. Remove redundant files
+6. Update references in code/docs to the new structure
+7. Ensure no duplicated rules remain
