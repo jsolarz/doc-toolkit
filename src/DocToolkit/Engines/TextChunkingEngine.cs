@@ -30,7 +30,10 @@ public class TextChunkingEngine : ITextChunkingEngine
         var words = text.Split(new[] { ' ', '\n', '\r', '\t' },
             StringSplitOptions.RemoveEmptyEntries);
 
-        var chunks = new List<string>();
+        // Pre-allocate chunks list with capacity estimate to reduce reallocations
+        // Estimate: text length / (chunkSize * average word length ~5 chars)
+        var estimatedChunks = Math.Max(1, text.Length / (chunkSize * 5));
+        var chunks = new List<string>(estimatedChunks);
         int i = 0;
 
         while (i < words.Length)

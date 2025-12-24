@@ -11,11 +11,6 @@ public class DocumentProcessedEvent : BaseEvent
     public string FilePath { get; set; } = string.Empty;
 
     /// <summary>
-    /// Extracted text content.
-    /// </summary>
-    public string ExtractedText { get; set; } = string.Empty;
-
-    /// <summary>
     /// File size in bytes.
     /// </summary>
     public long FileSize { get; set; }

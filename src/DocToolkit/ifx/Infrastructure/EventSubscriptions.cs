@@ -16,7 +16,9 @@ public static class EventSubscriptions
     /// <param name="serviceProvider">Service provider for resolving managers</param>
     public static void ConfigureSubscriptions(IEventBus eventBus, IServiceProvider serviceProvider)
     {
-        var logger = serviceProvider.GetService<ILogger<EventSubscriptions>>();
+        // Get logger factory and create logger (EventSubscriptions is static, so we use a string category)
+        var loggerFactory = serviceProvider.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+        var logger = loggerFactory?.CreateLogger("DocToolkit.Events");
         // Example: KnowledgeGraphManager could subscribe to IndexBuiltEvent
         // to automatically rebuild graph when index changes
         // This is commented out as it's optional - uncomment if needed

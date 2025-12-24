@@ -93,7 +93,8 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
         }
         catch (Exception ex)
         {
-            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", ext, filePath);
+            var fileType = Path.GetExtension(filePath);
+            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", fileType, filePath);
             return string.Empty;
         }
     }
@@ -132,7 +133,8 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
         }
         catch (Exception ex)
         {
-            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", ext, filePath);
+            var fileType = Path.GetExtension(filePath);
+            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", fileType, filePath);
             return string.Empty;
         }
     }
@@ -157,7 +159,8 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
         }
         catch (Exception ex)
         {
-            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", ext, filePath);
+            var fileType = Path.GetExtension(filePath);
+            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", fileType, filePath);
             return string.Empty;
         }
     }

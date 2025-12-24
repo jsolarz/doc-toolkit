@@ -81,14 +81,18 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
             return false;
         }
 
-        var files = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories).ToList();
-        var totalFiles = files.Count;
+        // Use array directly instead of ToList() to avoid allocation
+        var files = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+        var totalFiles = files.Length;
         var processedFiles = 0;
 
         _logger.LogInformation("Starting index build from {SourcePath} ({FileCount} files)", sourcePath, totalFiles);
 
-        var entries = new List<IndexEntry>();
-        var vectors = new List<float[]>();
+        // Pre-allocate collections with capacity estimate to reduce reallocations
+        // Estimate: average 5 chunks per file (conservative estimate)
+        var estimatedCapacity = Math.Max(1, totalFiles * 5);
+        var entries = new List<IndexEntry>(estimatedCapacity);
+        var vectors = new List<float[]>(estimatedCapacity);
 
         foreach (var file in files)
         {
@@ -103,10 +107,11 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
                 }
 
                 // Publish event: Document processed
+                // Note: ExtractedText removed to reduce memory allocations
+                // Subscribers can read file if needed using FilePath
                 _eventBus.Publish(new DocumentProcessedEvent
                 {
                     FilePath = file,
-                    ExtractedText = text,
                     FileSize = new FileInfo(file).Length,
                     FileType = Path.GetExtension(file),
                     CharacterCount = text.Length

@@ -63,7 +63,9 @@ public class SimilarityEngine : ISimilarityEngine
         float[][] vectors,
         int topK)
     {
-        var scores = new List<(int index, double score)>();
+        // Pre-allocate scores list with known size (topK) to avoid reallocations
+        // We'll add all scores first, then sort and take topK
+        var scores = new List<(int index, double score)>(vectors.Length);
 
         for (int i = 0; i < vectors.Length; i++)
         {
