@@ -13,18 +13,14 @@ alwaysApply: true
 - Style: Use active voice. Avoid "fluff" words (e.g., "groundbreaking," "seamless").
 - Formatting: Use Markdown with clear H1-H3 hierarchy. Use Tables for comparisons.
 
----
-
-## 🎯 Purpose
+## Purpose
 These rules ensure all generated documents are:
 - Clear, structured, and professional
 - Technically accurate and business‑aligned
 - Consistent across document types
 - Ready for stakeholder review without major edits
 
----
-
-## 🧭 Global Writing Principles
+## Global Writing Principles
 
 ### Clarity
 - Use short, direct sentences.
@@ -48,7 +44,7 @@ These rules ensure all generated documents are:
 
 ---
 
-## 🧩 Universal Document Structure
+## Universal Document Structure
 All documents must include the following sections unless explicitly removed:
 
 1. **Executive Summary**
@@ -64,7 +60,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 📘 PRD (Product Requirements Document) Rules
+## PRD (Product Requirements Document) Rules
 
 ### Required Sections
 - Product Overview
@@ -84,7 +80,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 📄 RFP (Request for Proposal) Rules
+## RFP (Request for Proposal) Rules
 
 ### Required Sections
 - Background & Context
@@ -102,7 +98,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 📝 Tender Response Rules
+## Tender Response Rules
 
 ### Required Sections
 - Executive Summary
@@ -121,7 +117,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 🏗️ Architecture Design Document Rules
+## Architecture Design Document Rules
 
 ### Required Sections
 - Architecture Overview
@@ -142,7 +138,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 💡 Solution Proposal Rules
+## Solution Proposal Rules
 
 ### Required Sections
 - Executive Summary
@@ -161,7 +157,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 📏 Formatting Rules
+## Formatting Rules
 
 ### Headings
 - Use H1 for document title only.
@@ -177,7 +173,7 @@ All documents must include the following sections unless explicitly removed:
 
 ---
 
-## 🧪 Validation Rules
+## Validation Rules
 
 Before finalizing any document:
 - Check for missing sections.
@@ -188,7 +184,7 @@ Before finalizing any document:
 
 ---
 
-## 🧠 Decision Log Rules
+## Decision Log Rules
 
 Every document must include:
 - Decisions made
@@ -198,7 +194,7 @@ Every document must include:
 
 ---
 
-## 🔒 Security & Compliance Rules
+## Security & Compliance Rules
 
 When applicable:
 - Include data protection requirements.
@@ -208,7 +204,7 @@ When applicable:
 
 ---
 
-## 🧼 Style Consistency Rules
+## Style Consistency Rules
 
 - Use consistent terminology across the entire document.
 - Define all acronyms on first use.
@@ -217,19 +213,33 @@ When applicable:
 
 ---
 
-## 🧱 Prohibited Content
+## Prohibited Content
 
 - No marketing fluff unless explicitly requested.
 - No speculative claims without evidence.
 - No ambiguous requirements.
 - No mixing business, functional, and technical layers.
 
----
-
-## ✔️ Output Requirements
+## Output Requirements
 
 When generating a document:
 - Follow the exact structure defined in these rules.
 - Fill all sections unless the user explicitly removes them.
 - Use professional formatting.
 - Ensure the document is ready for stakeholder review.
+
+## File Management Rules
+
+CRITICAL: Follow these rules for all file operations:
+
+1. Do not generate unnecessary files. Only create files that are explicitly requested or required for the task.
+2. Do not delete and recreate whole files. Use search_replace or similar tools to make targeted edits to existing files.
+3. Use one CHANGELOG.md file in the root directory. Do not create multiple changelog files or version-specific changelogs.
+4. Use one PATCH-*.md file per set of required changes. This file will be deleted after changes are applied. Do not create multiple patch files for the same change set.
+5. Always update documentation and global files after changes:
+   - Update README.md if project structure or usage changes
+   - Update docs/design.md if architecture changes
+   - Update CHANGELOG.md with all changes
+   - Update relevant documentation files
+6. Do not use emojis, icons, or horizontal rules (---) in documentation files. Keep formatting clean and professional.
+7. Keep documentation clean and concise. Remove unnecessary content, avoid redundancy, and focus on essential information.

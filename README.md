@@ -358,11 +358,34 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ---
 
+---
+
+## 📚 Documentation
+
+### Project Documentation
+- **[PRD](docs/PRD-Documentation-Toolkit.md)** - Product Requirements Document
+- **[Architecture](docs/ARCHITECTURE-Documentation-Toolkit.md)** - Architecture Design Document
+- **[Data Model](docs/DATA-Documentation-Toolkit.md)** - Data Model Document
+- **[Engineering Spec](docs/SPEC-Documentation-Toolkit.md)** - Engineering Specification
+- **[Solution Proposal](docs/SOLUTION-Documentation-Toolkit.md)** - Solution Proposal
+
+### Technical Documentation
+- **[Technical Documentation](docs/TECHNICAL-DOCUMENTATION.md)** - Complete technical reference
+- **[System Design](docs/design.md)** - IDesign Method™ system design
+- **[Code Documentation Standards](docs/CODE-DOCUMENTATION-STANDARDS.md)** - Documentation guidelines
+- **[Developer Quick Reference](docs/DEVELOPER-QUICK-REFERENCE.md)** - Quick reference guide
+
+### Standards & Compliance
+- **[IDesign C# Coding Standard Compliance](docs/IDESIGN-CSHARP-CODING-STANDARD-COMPLIANCE.md)** - Coding standard compliance
+- **[IDesign Method™ Guidelines](.cursor/rules/idesign-method.mdc)** - Architecture guidelines
+
+---
+
 ## 📝 Version
 
 Current version: **1.0.0**
 
-See [CHANGELOG.md](CHANGELOG.md) for version history and changes.
+See [CHANGELOG.md](CHANGELOG.md) for complete version history and all development steps.
 
 ---
 
@@ -381,11 +404,11 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 ## 🧩 Extending the Toolkit
 
 You can add:
-- New templates  
-- New rulesets  
+- New templates (add to `/templates/`)  
+- New rulesets (add to `/.cursor/rules/`)  
 - New snippets  
-- New automation scripts  
-- New semantic models  
-- New graph extractors  
+- New automation scripts (add to `/scripts/`)  
+- New semantic models (update `EmbeddingEngine`)  
+- New graph extractors (update `EntityExtractionEngine`)  
 
 Just keep everything inside `/doc-toolkit/`.

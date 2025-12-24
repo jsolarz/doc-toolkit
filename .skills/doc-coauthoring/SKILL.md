@@ -369,6 +369,15 @@ Announce document completion. Provide a few final tips:
 - Provide artifact link after every change
 - Never use artifacts for brainstorming lists - that's just conversation
 
+**File Management Rules:**
+- Do not generate unnecessary files. Only create files that are explicitly requested.
+- Do not delete and recreate whole files. Use search_replace or similar tools for targeted edits.
+- Use one CHANGELOG.md file in the root directory. Do not create multiple changelog files.
+- Use one PATCH-*.md file per set of required changes. This file will be deleted after changes are applied.
+- Always update documentation and global files after changes (README.md, docs/design.md, CHANGELOG.md).
+- Do not use emojis, icons, or horizontal rules (---) in documentation files.
+- Keep documentation clean and concise.
+
 **Quality over Speed:**
 - Don't rush through stages
 - Each iteration should make meaningful improvements

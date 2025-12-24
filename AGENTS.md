@@ -78,6 +78,22 @@ Where possible, include sample prompts, expected outputs, or example conversatio
 9. Documentation is key
 Always keep the README.md and Design.md files up to date when making changes to the code or the design of the app.
 Document architecture decisions using IDesign Method™ notations (assembly allocation, process allocation, boundaries).
+
+## File Management Rules
+
+CRITICAL: Follow these rules for all file operations:
+
+1. Do not generate unnecessary files. Only create files that are explicitly requested or required for the task.
+2. Do not delete and recreate whole files. Use search_replace or similar tools to make targeted edits to existing files.
+3. Use one CHANGELOG.md file in the root directory. Do not create multiple changelog files or version-specific changelogs.
+4. Use one PATCH-*.md file per set of required changes. This file will be deleted after changes are applied. Do not create multiple patch files for the same change set.
+5. Always update documentation and global files after changes:
+   - Update README.md if project structure or usage changes
+   - Update docs/design.md if architecture changes
+   - Update CHANGELOG.md with all changes
+   - Update relevant documentation files
+6. Do not use emojis, icons, or horizontal rules (---) in documentation files. Keep formatting clean and professional.
+7. Keep documentation clean and concise. Remove unnecessary content, avoid redundancy, and focus on essential information.
 ```
 
 ## Service Layer Rules
