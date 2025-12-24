@@ -1,5 +1,7 @@
 using DocToolkit.ifx.Events;
 using DocToolkit.ifx.Infrastructure;
+using Microsoft.Extensions.Logging;
+using Moq;
 using Xunit;
 
 namespace DocToolkit.Tests.Infrastructure;
@@ -12,7 +14,8 @@ public class EventBusTests : IDisposable
     public EventBusTests()
     {
         _testDbPath = Path.Combine(Path.GetTempPath(), $"test_events_{Guid.NewGuid()}.db");
-        _eventBus = new EventBus(_testDbPath, maxRetries: 3, retryInterval: TimeSpan.FromSeconds(1));
+        var mockLogger = new Mock<ILogger<EventBus>>();
+        _eventBus = new EventBus(mockLogger.Object, _testDbPath, maxRetries: 3, retryInterval: TimeSpan.FromSeconds(1));
     }
 
     [Fact]

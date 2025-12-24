@@ -4,6 +4,7 @@ using DocToolkit.ifx.Infrastructure;
 using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IEngines;
 using DocToolkit.Managers;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -16,6 +17,7 @@ public class SemanticIndexManagerTests
     private readonly Mock<IVectorStorageAccessor> _mockStorage;
     private readonly Mock<ITextChunkingEngine> _mockChunking;
     private readonly Mock<IEventBus> _mockEventBus;
+    private readonly Mock<ILogger<SemanticIndexManager>> _mockLogger;
     private readonly SemanticIndexManager _manager;
 
     public SemanticIndexManagerTests()
@@ -25,13 +27,15 @@ public class SemanticIndexManagerTests
         _mockStorage = new Mock<IVectorStorageAccessor>();
         _mockChunking = new Mock<ITextChunkingEngine>();
         _mockEventBus = new Mock<IEventBus>();
+        _mockLogger = new Mock<ILogger<SemanticIndexManager>>();
 
         _manager = new SemanticIndexManager(
             _mockExtractor.Object,
             _mockEmbedding.Object,
             _mockStorage.Object,
             _mockChunking.Object,
-            _mockEventBus.Object);
+            _mockEventBus.Object,
+            _mockLogger.Object);
     }
 
     [Fact]
