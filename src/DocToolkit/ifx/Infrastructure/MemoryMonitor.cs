@@ -80,7 +80,7 @@ public class MemoryMonitor : IDisposable
         _operationName = operationName ?? throw new ArgumentNullException(nameof(operationName));
         _enabled = enabled;
         _stopwatch = Stopwatch.StartNew();
-        
+
         if (_enabled)
         {
             // Force a full garbage collection to establish an accurate baseline.
@@ -254,7 +254,7 @@ public class MemoryMonitor : IDisposable
         string[] sizes = { "B", "KB", "MB", "GB", "TB" };
         double len = Math.Abs(bytes);
         int order = 0;
-        
+
         while (len >= 1024 && order < sizes.Length - 1)
         {
             order++;
@@ -266,21 +266,63 @@ public class MemoryMonitor : IDisposable
     }
 
     /// <summary>
-    /// Forces a garbage collection and updates baseline.
+    /// Forces a full garbage collection across all generations.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This method performs a forced garbage collection to ensure accurate memory measurements.
+    /// It follows the same pattern as the constructor:
+    /// </para>
+    /// <list type="number">
+    /// <item>Forces a full GC collection across all generations</item>
+    /// <item>Waits for pending finalizers to complete</item>
+    /// <item>Performs a second full GC collection</item>
+    /// </list>
+    /// <para>
+    /// Use this method when you need to measure memory after an operation completes,
+    /// ensuring that all eligible objects are collected before measurement.
+    /// </para>
+    /// <para>
+    /// Note: Forcing garbage collection can impact performance and should be used sparingly.
+    /// The .NET runtime's automatic GC is generally sufficient for most scenarios.
+    /// </para>
+    /// <para>
+    /// If monitoring is disabled, this method returns immediately without performing any operations.
+    /// </para>
+    /// </remarks>
     public void ForceGC()
     {
         if (!_enabled) return;
-        
+
+        // Force full collection across all generations
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
+        // Wait for finalizers to complete
         GC.WaitForPendingFinalizers();
+        // Second collection ensures all finalizable objects are collected
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true);
     }
 
+    /// <summary>
+    /// Disposes the MemoryMonitor instance and displays final statistics.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// When disposed, the MemoryMonitor:
+    /// </para>
+    /// <list type="number">
+    /// <item>Stops the elapsed time stopwatch</item>
+    /// <item>If enabled, forces a garbage collection for accurate final measurement</item>
+    /// <item>If enabled, displays final statistics with the label "Final"</item>
+    /// </list>
+    /// <para>
+    /// This method is automatically called when using the <c>using</c> statement pattern.
+    /// It ensures that final statistics are always displayed, even if an exception occurs.
+    /// </para>
+    /// </remarks>
     public void Dispose()
     {
         _stopwatch.Stop();
-        
+
         if (_enabled)
         {
             ForceGC();

@@ -10,19 +10,64 @@ namespace DocToolkit.Accessors;
 /// Encapsulates storage volatility: storage format could change (file-based → database, binary → JSON).
 /// </summary>
 /// <remarks>
-/// Component Type: Accessor (Storage Volatility)
-/// Volatility: Storage technology and format
-/// Pattern: Dumb CRUD operations - no business logic
-/// Service Boundary: Called by Managers (SemanticIndexManager, SemanticSearchManager)
+/// <para>
+/// <strong>Component Type:</strong> Accessor (Storage Volatility)
+/// </para>
+/// <para>
+/// <strong>Volatility Encapsulated:</strong> Storage technology and format. The storage mechanism
+/// could change from file-based to database, the format could change from binary to JSON, or
+/// the location could change from local filesystem to cloud storage. All these changes are
+/// encapsulated within this accessor.
+/// </para>
+/// <para>
+/// <strong>Design Pattern:</strong> Dumb CRUD operations - no business logic. The accessor only
+/// knows "where" data is stored and "how" to access it. It does not contain any business rules
+/// or processing logic. This follows the IDesign principle that Accessors are "dumb" - they
+/// simply perform Create, Read, Update, Delete operations.
+/// </para>
+/// <para>
+/// <strong>Service Boundary:</strong> Called by Managers (SemanticIndexManager, SemanticSearchManager).
+/// Accessors are called by Managers, not by Engines. Engines receive data as parameters from Managers.
+/// </para>
+/// <para>
+/// <strong>IDesign Method™ Compliance:</strong>
+/// </para>
+/// <list type="bullet">
+/// <item>Encapsulates storage volatility (file format, location, technology)</item>
+/// <item>Dumb CRUD pattern (no business logic)</item>
+/// <item>Knows "where" data is stored</item>
+/// <item>No business rules or processing logic</item>
+/// <item>Called by Managers, not Engines</item>
+/// </list>
+/// <para>
+/// <strong>Storage Format:</strong>
+/// </para>
+/// <list type="bullet">
+/// <item>Vectors: Binary format (vectors.bin) - efficient for large arrays</item>
+/// <item>Index: JSON format (index.json) - human-readable metadata</item>
+/// </list>
 /// </remarks>
 public class VectorStorageAccessor : IVectorStorageAccessor
 {
+    /// <summary>
+    /// Logger instance for logging storage operations and errors.
+    /// </summary>
     private readonly ILogger<VectorStorageAccessor>? _logger;
 
     /// <summary>
-    /// Initializes a new instance of the VectorStorageAccessor.
+    /// Initializes a new instance of the VectorStorageAccessor class.
     /// </summary>
-    /// <param name="logger">Optional logger instance</param>
+    /// <param name="logger">
+    /// Optional logger instance for logging storage operations, errors, and debug information.
+    /// If null, no logging is performed.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// IDesign C# Coding Standard: Constructor injection for dependencies.
+    /// The logger is optional to allow the accessor to be used in scenarios where logging
+    /// is not available or not needed.
+    /// </para>
+    /// </remarks>
     public VectorStorageAccessor(ILogger<VectorStorageAccessor>? logger = null)
     {
         _logger = logger;
@@ -31,12 +76,54 @@ public class VectorStorageAccessor : IVectorStorageAccessor
     /// <summary>
     /// Saves vectors to binary file format.
     /// </summary>
-    /// <param name="vectors">Array of embedding vectors to save</param>
-    /// <param name="indexPath">Directory path where vectors will be saved</param>
+    /// <param name="vectors">
+    /// Array of embedding vectors to save. Must not be null. Each vector must have the same dimension.
+    /// Empty arrays are allowed and will create an empty vectors file.
+    /// </param>
+    /// <param name="indexPath">
+    /// Directory path where vectors will be saved. The directory will be created if it does not exist.
+    /// The vectors will be saved as "vectors.bin" in this directory.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// <strong>File Format:</strong>
+    /// </para>
+    /// <list type="number">
+    /// <item>Int32: Count of vectors</item>
+    /// <item>Int32: Dimension of each vector (0 if no vectors)</item>
+    /// <item>Float[]: All vector values sequentially (vector0[0..n], vector1[0..n], ...)</item>
+    /// </list>
+    /// <para>
+    /// <strong>IDesign Pattern:</strong>
+    /// This is a "dumb" CRUD operation - it simply writes data to storage without any business logic.
+    /// The accessor does not validate vector dimensions or perform any processing - it only stores data.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="vectors"/> or <paramref name="indexPath"/> is null.
+    /// </exception>
+    /// <exception cref="DirectoryNotFoundException">
+    /// Thrown when the directory cannot be created (permissions issue).
+    /// </exception>
+    /// <exception cref="IOException">
+    /// Thrown when file I/O operations fail (disk full, file locked, etc.).
+    /// </exception>
     public void SaveVectors(float[][] vectors, string indexPath)
     {
+        // IDesign C# Coding Standard: Validate arguments
+        if (vectors == null)
+        {
+            throw new ArgumentNullException(nameof(vectors));
+        }
+
+        if (string.IsNullOrWhiteSpace(indexPath))
+        {
+            throw new ArgumentNullException(nameof(indexPath));
+        }
+
         try
         {
+            // IDesign: Accessor knows "where" - creates directory if needed
             Directory.CreateDirectory(indexPath);
 
             var vectorsPath = Path.Combine(indexPath, "vectors.bin");
