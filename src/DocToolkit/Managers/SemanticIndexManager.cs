@@ -4,6 +4,7 @@ using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IEngines;
 using DocToolkit.ifx.Interfaces.IManagers;
 using DocToolkit.ifx.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DocToolkit.Managers;
 
@@ -23,6 +24,7 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
     private readonly IVectorStorageAccessor _storage;
     private readonly ITextChunkingEngine _chunkingEngine;
     private readonly IEventBus _eventBus;
+    private readonly ILogger<SemanticIndexManager> _logger;
 
     /// <summary>
     /// Initializes a new instance of the SemanticIndexManager.
@@ -32,18 +34,21 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
     /// <param name="storage">Vector storage accessor</param>
     /// <param name="chunkingEngine">Text chunking engine</param>
     /// <param name="eventBus">Event bus for publishing events</param>
+    /// <param name="logger">Logger instance</param>
     public SemanticIndexManager(
         IDocumentExtractionEngine extractor,
         IEmbeddingEngine embedding,
         IVectorStorageAccessor storage,
         ITextChunkingEngine chunkingEngine,
-        IEventBus eventBus)
+        IEventBus eventBus,
+        ILogger<SemanticIndexManager> logger)
     {
         _extractor = extractor ?? throw new ArgumentNullException(nameof(extractor));
         _embedding = embedding ?? throw new ArgumentNullException(nameof(embedding));
         _storage = storage ?? throw new ArgumentNullException(nameof(storage));
         _chunkingEngine = chunkingEngine ?? throw new ArgumentNullException(nameof(chunkingEngine));
         _eventBus = eventBus ?? throw new ArgumentNullException(nameof(eventBus));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     /// <summary>
@@ -72,12 +77,15 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
     {
         if (!Directory.Exists(sourcePath))
         {
+            _logger.LogWarning("Source directory does not exist: {SourcePath}", sourcePath);
             return false;
         }
 
         var files = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories).ToList();
         var totalFiles = files.Count;
         var processedFiles = 0;
+
+        _logger.LogInformation("Starting index build from {SourcePath} ({FileCount} files)", sourcePath, totalFiles);
 
         var entries = new List<IndexEntry>();
         var vectors = new List<float[]>();
@@ -90,6 +98,7 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
                 var text = _extractor.ExtractText(file);
                 if (string.IsNullOrWhiteSpace(text))
                 {
+                    _logger.LogDebug("Skipping file with no extractable text: {FilePath}", file);
                     continue;
                 }
 
@@ -129,31 +138,44 @@ public class SemanticIndexManager : ISemanticIndexManager, IDisposable
                 processedFiles++;
                 progressCallback?.Invoke((double)processedFiles / totalFiles * 100);
             }
-            catch
+            catch (Exception ex)
             {
-                // Skip files that can't be processed
+                // Log error but continue processing other files
+                _logger.LogWarning(ex, "Failed to process file: {FilePath}", file);
             }
         }
 
         if (vectors.Count == 0)
         {
+            _logger.LogWarning("No vectors generated from {SourcePath}", sourcePath);
             return false;
         }
 
-        // Orchestrate: Save vectors and index (Accessor)
-        _storage.SaveVectors(vectors.ToArray(), outputPath);
-        _storage.SaveIndex(entries, outputPath);
-
-        // Publish event: Index built
-        _eventBus.Publish(new IndexBuiltEvent
+        try
         {
-            IndexPath = outputPath,
-            EntryCount = entries.Count,
-            VectorCount = vectors.Count,
-            SourcePath = sourcePath
-        });
+            // Orchestrate: Save vectors and index (Accessor)
+            _storage.SaveVectors(vectors.ToArray(), outputPath);
+            _storage.SaveIndex(entries, outputPath);
 
-        return true;
+            _logger.LogInformation("Index built successfully: {OutputPath} ({EntryCount} entries, {VectorCount} vectors)", 
+                outputPath, entries.Count, vectors.Count);
+
+            // Publish event: Index built
+            _eventBus.Publish(new IndexBuiltEvent
+            {
+                IndexPath = outputPath,
+                EntryCount = entries.Count,
+                VectorCount = vectors.Count,
+                SourcePath = sourcePath
+            });
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to save index to {OutputPath}", outputPath);
+            return false;
+        }
     }
 
     public void Dispose()

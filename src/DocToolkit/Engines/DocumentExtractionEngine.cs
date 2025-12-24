@@ -2,6 +2,7 @@ using DocToolkit.ifx.Interfaces.IEngines;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Presentation;
+using Microsoft.Extensions.Logging;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
@@ -19,6 +20,17 @@ namespace DocToolkit.Engines;
 /// </remarks>
 public class DocumentExtractionEngine : IDocumentExtractionEngine
 {
+    private readonly ILogger<DocumentExtractionEngine>? _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the DocumentExtractionEngine.
+    /// </summary>
+    /// <param name="logger">Optional logger instance</param>
+    public DocumentExtractionEngine(ILogger<DocumentExtractionEngine>? logger = null)
+    {
+        _logger = logger;
+    }
+
     /// <summary>
     /// Extracts text from a document file.
     /// </summary>
@@ -32,6 +44,7 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
     {
         if (!File.Exists(filePath))
         {
+            _logger?.LogWarning("File not found: {FilePath}", filePath);
             return string.Empty;
         }
 
@@ -54,8 +67,9 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
         {
             return File.ReadAllText(filePath);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.LogWarning(ex, "Failed to extract text from file: {FilePath}", filePath);
             return string.Empty;
         }
     }
@@ -77,8 +91,9 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
 
             return string.Join("\n", paragraphs);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", ext, filePath);
             return string.Empty;
         }
     }
@@ -115,8 +130,9 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
 
             return string.Join("\n", slides);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", ext, filePath);
             return string.Empty;
         }
     }
@@ -139,8 +155,9 @@ public class DocumentExtractionEngine : IDocumentExtractionEngine
 
             return string.Join("\n", textParts);
         }
-        catch
+        catch (Exception ex)
         {
+            _logger?.LogWarning(ex, "Failed to extract text from {FileType} file: {FilePath}", ext, filePath);
             return string.Empty;
         }
     }

@@ -5,6 +5,7 @@ using DocToolkit.ifx.Interfaces.IEngines;
 using DocToolkit.ifx.Interfaces.IManagers;
 using DocToolkit.Managers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DocToolkit.ifx.Infrastructure;
 
@@ -20,6 +21,15 @@ public static class ServiceConfiguration
     /// <returns>Service collection for chaining</returns>
     public static IServiceCollection AddDocToolkitServices(this IServiceCollection services)
     {
+        // Configure logging (if not already configured)
+        if (!services.Any(sd => sd.ServiceType == typeof(ILoggerFactory)))
+        {
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Information);
+            });
+        }
         // Infrastructure - Event Bus with persistence
         var eventDbPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -34,20 +44,24 @@ public static class ServiceConfiguration
         }
 
         services.AddSingleton<IEventBus>(sp => new EventBus(
+            logger: sp.GetRequiredService<ILogger<EventBus>>(),
             dbPath: eventDbPath,
             maxRetries: 3,
             retryInterval: TimeSpan.FromMinutes(5)));
 
         // Engines (Singleton - stateless or expensive to create)
-        services.AddSingleton<IDocumentExtractionEngine, DocumentExtractionEngine>();
-        services.AddSingleton<IEmbeddingEngine, EmbeddingEngine>();
+        services.AddSingleton<IDocumentExtractionEngine>(sp => 
+            new DocumentExtractionEngine(sp.GetService<ILogger<DocumentExtractionEngine>>()));
+        services.AddSingleton<IEmbeddingEngine>(sp => 
+            new EmbeddingEngine(null, sp.GetService<ILogger<EmbeddingEngine>>()));
         services.AddSingleton<ITextChunkingEngine, TextChunkingEngine>();
         services.AddSingleton<ISimilarityEngine, SimilarityEngine>();
         services.AddSingleton<IEntityExtractionEngine, EntityExtractionEngine>();
         services.AddSingleton<ISummarizationEngine, SummarizationEngine>();
 
         // Accessors (Singleton - stateless)
-        services.AddSingleton<IVectorStorageAccessor, VectorStorageAccessor>();
+        services.AddSingleton<IVectorStorageAccessor>(sp => 
+            new VectorStorageAccessor(sp.GetService<ILogger<VectorStorageAccessor>>()));
         services.AddSingleton<ITemplateAccessor, TemplateAccessor>();
         services.AddSingleton<IProjectAccessor, ProjectAccessor>();
 

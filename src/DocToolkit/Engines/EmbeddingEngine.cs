@@ -1,4 +1,5 @@
 using DocToolkit.ifx.Interfaces.IEngines;
+using Microsoft.Extensions.Logging;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 
@@ -19,15 +20,18 @@ public class EmbeddingEngine : IEmbeddingEngine, IDisposable
     private InferenceSession? _session;
     private readonly string _modelPath;
     private readonly object _lockObject = new();
+    private readonly ILogger<EmbeddingEngine>? _logger;
     private const int EmbeddingDimension = 384; // all-MiniLM-L6-v2 dimension
 
     /// <summary>
     /// Initializes a new instance of the EmbeddingEngine.
     /// </summary>
     /// <param name="modelPath">Optional path to the ONNX model file. If not provided, searches default locations.</param>
-    public EmbeddingEngine(string? modelPath = null)
+    /// <param name="logger">Optional logger instance</param>
+    public EmbeddingEngine(string? modelPath = null, ILogger<EmbeddingEngine>? logger = null)
     {
         _modelPath = modelPath ?? FindModelPath();
+        _logger = logger;
     }
 
     private string FindModelPath()
@@ -56,12 +60,16 @@ public class EmbeddingEngine : IEmbeddingEngine, IDisposable
                 {
                     if (!File.Exists(_modelPath))
                     {
+                        var errorMessage = $"ONNX model not found at: {_modelPath}";
+                        _logger?.LogError(errorMessage);
                         throw new FileNotFoundException(
-                            $"ONNX model not found at: {_modelPath}\n" +
+                            $"{errorMessage}\n" +
                             "Please download the all-MiniLM-L6-v2 ONNX model and place it in the models/ directory.\n" +
                             "You can convert it from PyTorch or download a pre-converted version from Hugging Face."
                         );
                     }
+                    
+                    _logger?.LogDebug("Loading ONNX model from {ModelPath}", _modelPath);
 
                     var options = new SessionOptions
                     {

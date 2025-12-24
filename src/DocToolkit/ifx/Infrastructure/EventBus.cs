@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
 using DocToolkit.ifx.Events;
+using Microsoft.Extensions.Logging;
 
 namespace DocToolkit.ifx.Infrastructure;
 
@@ -16,16 +17,19 @@ public class EventBus : IEventBus, IDisposable
     private readonly int _maxRetries;
     private readonly TimeSpan _retryInterval;
     private readonly SemaphoreSlim _processingSemaphore = new(1, 1);
+    private readonly ILogger<EventBus> _logger;
     private bool _disposed = false;
 
     /// <summary>
     /// Initializes a new instance of the EventBus.
     /// </summary>
+    /// <param name="logger">Logger instance</param>
     /// <param name="dbPath">Path to SQLite database file (optional)</param>
     /// <param name="maxRetries">Maximum number of retries for failed events (default: 3)</param>
     /// <param name="retryInterval">Interval between retry attempts (default: 5 minutes)</param>
-    public EventBus(string? dbPath = null, int maxRetries = 3, TimeSpan? retryInterval = null)
+    public EventBus(ILogger<EventBus> logger, string? dbPath = null, int maxRetries = 3, TimeSpan? retryInterval = null)
     {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _persistence = new EventPersistence(dbPath);
         _maxRetries = maxRetries;
         _retryInterval = retryInterval ?? TimeSpan.FromMinutes(5);
@@ -212,8 +216,7 @@ public class EventBus : IEventBus, IDisposable
             catch (Exception ex)
             {
                 // Log error but don't stop other handlers
-                // In production, use proper logging
-                Console.WriteLine($"Error invoking handler for event {eventData.EventType}: {ex.Message}");
+                _logger.LogError(ex, "Error invoking handler for event {EventType}", eventData.EventType);
             }
         }
     }
@@ -233,7 +236,11 @@ public class EventBus : IEventBus, IDisposable
             var retryCount = _persistence.MarkEventFailed(eventData.EventId, ex.Message);
             if (retryCount >= _maxRetries)
             {
-                Console.WriteLine($"Event {eventData.EventId} failed after {retryCount} retries: {ex.Message}");
+                _logger.LogError(ex, "Event {EventId} failed after {RetryCount} retries", eventData.EventId, retryCount);
+            }
+            else
+            {
+                _logger.LogWarning(ex, "Event {EventId} handler failed (retry {RetryCount}/{MaxRetries})", eventData.EventId, retryCount, _maxRetries);
             }
         }
     }
@@ -253,7 +260,11 @@ public class EventBus : IEventBus, IDisposable
             var retryCount = _persistence.MarkEventFailed(eventData.EventId, ex.Message);
             if (retryCount >= _maxRetries)
             {
-                Console.WriteLine($"Event {eventData.EventId} failed after {retryCount} retries: {ex.Message}");
+                _logger.LogError(ex, "Event {EventId} failed after {RetryCount} retries", eventData.EventId, retryCount);
+            }
+            else
+            {
+                _logger.LogWarning(ex, "Event {EventId} handler failed (retry {RetryCount}/{MaxRetries})", eventData.EventId, retryCount, _maxRetries);
             }
         }
     }
@@ -290,7 +301,7 @@ public class EventBus : IEventBus, IDisposable
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error processing retry for event {persistedEvent.EventId}: {ex.Message}");
+                    _logger.LogError(ex, "Error processing retry for event {EventId}", persistedEvent.EventId);
                 }
             }
         }

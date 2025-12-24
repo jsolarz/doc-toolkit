@@ -1,4 +1,5 @@
 using DocToolkit.ifx.Events;
+using Microsoft.Extensions.Logging;
 
 namespace DocToolkit.ifx.Infrastructure;
 
@@ -15,6 +16,7 @@ public static class EventSubscriptions
     /// <param name="serviceProvider">Service provider for resolving managers</param>
     public static void ConfigureSubscriptions(IEventBus eventBus, IServiceProvider serviceProvider)
     {
+        var logger = serviceProvider.GetService<ILogger<EventSubscriptions>>();
         // Example: KnowledgeGraphManager could subscribe to IndexBuiltEvent
         // to automatically rebuild graph when index changes
         // This is commented out as it's optional - uncomment if needed
@@ -31,20 +33,23 @@ public static class EventSubscriptions
         });
         */
 
-        // Example: Log all events for observability
+        // Log all events for observability (internal logging, not user-facing)
         eventBus.Subscribe<IndexBuiltEvent>(evt =>
         {
-            Console.WriteLine($"[Event] Index built: {evt.IndexPath} ({evt.EntryCount} entries, {evt.VectorCount} vectors)");
+            logger?.LogInformation("Index built: {IndexPath} ({EntryCount} entries, {VectorCount} vectors)", 
+                evt.IndexPath, evt.EntryCount, evt.VectorCount);
         });
 
         eventBus.Subscribe<GraphBuiltEvent>(evt =>
         {
-            Console.WriteLine($"[Event] Graph built: {evt.GraphPath} ({evt.FileCount} files, {evt.EntityCount} entities, {evt.TopicCount} topics)");
+            logger?.LogInformation("Graph built: {GraphPath} ({FileCount} files, {EntityCount} entities, {TopicCount} topics)", 
+                evt.GraphPath, evt.FileCount, evt.EntityCount, evt.TopicCount);
         });
 
         eventBus.Subscribe<SummaryCreatedEvent>(evt =>
         {
-            Console.WriteLine($"[Event] Summary created: {evt.SummaryPath} ({evt.FileCount} files)");
+            logger?.LogInformation("Summary created: {SummaryPath} ({FileCount} files)", 
+                evt.SummaryPath, evt.FileCount);
         });
 
         eventBus.Subscribe<DocumentProcessedEvent>(evt =>
@@ -52,7 +57,8 @@ public static class EventSubscriptions
             // Log document processing (can be verbose, so only log important ones)
             if (evt.CharacterCount > 10000)
             {
-                Console.WriteLine($"[Event] Large document processed: {evt.FilePath} ({evt.CharacterCount} chars)");
+                logger?.LogDebug("Large document processed: {FilePath} ({CharacterCount} chars)", 
+                    evt.FilePath, evt.CharacterCount);
             }
         });
     }

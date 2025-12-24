@@ -1,6 +1,7 @@
 using System.Text.Json;
 using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DocToolkit.Accessors;
 
@@ -16,6 +17,17 @@ namespace DocToolkit.Accessors;
 /// </remarks>
 public class VectorStorageAccessor : IVectorStorageAccessor
 {
+    private readonly ILogger<VectorStorageAccessor>? _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the VectorStorageAccessor.
+    /// </summary>
+    /// <param name="logger">Optional logger instance</param>
+    public VectorStorageAccessor(ILogger<VectorStorageAccessor>? logger = null)
+    {
+        _logger = logger;
+    }
+
     /// <summary>
     /// Saves vectors to binary file format.
     /// </summary>
@@ -23,33 +35,43 @@ public class VectorStorageAccessor : IVectorStorageAccessor
     /// <param name="indexPath">Directory path where vectors will be saved</param>
     public void SaveVectors(float[][] vectors, string indexPath)
     {
-        Directory.CreateDirectory(indexPath);
+        try
+        {
+            Directory.CreateDirectory(indexPath);
 
-        var vectorsPath = Path.Combine(indexPath, "vectors.bin");
+            var vectorsPath = Path.Combine(indexPath, "vectors.bin");
         
-        using var fileStream = new FileStream(vectorsPath, FileMode.Create);
-        using var writer = new BinaryWriter(fileStream);
+            using var fileStream = new FileStream(vectorsPath, FileMode.Create);
+            using var writer = new BinaryWriter(fileStream);
 
-        // Write count
-        writer.Write(vectors.Length);
-        
-        // Write dimension
-        if (vectors.Length > 0)
-        {
-            writer.Write(vectors[0].Length);
-        }
-        else
-        {
-            writer.Write(0);
-        }
-
-        // Write all vectors
-        foreach (var vector in vectors)
-        {
-            foreach (var value in vector)
+            // Write count
+            writer.Write(vectors.Length);
+            
+            // Write dimension
+            if (vectors.Length > 0)
             {
-                writer.Write(value);
+                writer.Write(vectors[0].Length);
             }
+            else
+            {
+                writer.Write(0);
+            }
+
+            // Write all vectors
+            foreach (var vector in vectors)
+            {
+                foreach (var value in vector)
+                {
+                    writer.Write(value);
+                }
+            }
+            
+            _logger?.LogDebug("Saved {VectorCount} vectors to {VectorsPath}", vectors.Length, vectorsPath);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Failed to save vectors to {IndexPath}", indexPath);
+            throw;
         }
     }
 
@@ -65,6 +87,7 @@ public class VectorStorageAccessor : IVectorStorageAccessor
         
         if (!File.Exists(vectorsPath))
         {
+            _logger?.LogError("Vectors file not found: {VectorsPath}", vectorsPath);
             throw new FileNotFoundException($"Vectors file not found: {vectorsPath}");
         }
 
@@ -118,6 +141,7 @@ public class VectorStorageAccessor : IVectorStorageAccessor
         
         if (!File.Exists(indexPathFile))
         {
+            _logger?.LogError("Index file not found: {IndexPathFile}", indexPathFile);
             throw new FileNotFoundException($"Index file not found: {indexPathFile}");
         }
 
