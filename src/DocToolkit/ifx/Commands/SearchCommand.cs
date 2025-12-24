@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using DocToolkit.ifx.Infrastructure;
 using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IManagers;
 using Spectre.Console;
@@ -37,6 +38,11 @@ public sealed class SearchCommand : Command<SearchCommand.Settings>
         [CommandOption("-k|--top-k")]
         [DefaultValue(5)]
         public int TopK { get; init; } = 5;
+
+        [Description("Monitor memory usage during search")]
+        [CommandOption("--monitor-memory")]
+        [DefaultValue(false)]
+        public bool MonitorMemory { get; init; } = false;
     }
 
     public override int Execute(CommandContext context, Settings settings)
@@ -58,10 +64,22 @@ public sealed class SearchCommand : Command<SearchCommand.Settings>
         AnsiConsole.MarkupLine($"[cyan]Searching for:[/] [bold]{settings.Query}[/]");
         AnsiConsole.WriteLine();
 
+        using var memoryMonitor = new MemoryMonitor("Search", settings.MonitorMemory);
+        
+        if (settings.MonitorMemory)
+        {
+            memoryMonitor.DisplayStats("Initial");
+        }
+
         List<Models.SearchResult> results;
         try
         {
             results = _searchManager.Search(settings.Query, settings.IndexPath, settings.TopK);
+            
+            if (settings.MonitorMemory)
+            {
+                memoryMonitor.DisplayStats("After Search");
+            }
         }
         catch (Exception ex)
         {

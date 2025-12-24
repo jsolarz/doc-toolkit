@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using DocToolkit.ifx.Infrastructure;
 using DocToolkit.ifx.Interfaces.IManagers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -39,6 +40,11 @@ public sealed class IndexCommand : Command<IndexCommand.Settings>
         [CommandOption("--chunk-overlap")]
         [DefaultValue(200)]
         public int ChunkOverlap { get; init; } = 200;
+
+        [Description("Monitor memory usage during indexing")]
+        [CommandOption("--monitor-memory")]
+        [DefaultValue(false)]
+        public bool MonitorMemory { get; init; } = false;
     }
 
     public override int Execute(CommandContext context, Settings settings)
@@ -50,6 +56,13 @@ public sealed class IndexCommand : Command<IndexCommand.Settings>
         }
 
         AnsiConsole.MarkupLine($"[cyan]Building semantic index from:[/] {settings.SourcePath}");
+
+        using var memoryMonitor = new MemoryMonitor("Indexing", settings.MonitorMemory);
+        
+        if (settings.MonitorMemory)
+        {
+            memoryMonitor.DisplayStats("Initial");
+        }
 
         var progress = AnsiConsole.Progress();
         progress.Columns(
@@ -70,7 +83,15 @@ public sealed class IndexCommand : Command<IndexCommand.Settings>
                     settings.OutputPath,
                     settings.ChunkSize,
                     settings.ChunkOverlap,
-                    progress => task.Increment(progress)
+                    progress =>
+                    {
+                        task.Increment(progress);
+                        if (settings.MonitorMemory && progress % 10 == 0)
+                        {
+                            // Update memory stats every 10% progress
+                            memoryMonitor.DisplaySummary();
+                        }
+                    }
                 );
         });
 

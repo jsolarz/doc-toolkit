@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using DocToolkit.ifx.Infrastructure;
 using DocToolkit.ifx.Interfaces.IManagers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -29,6 +30,11 @@ public sealed class GraphCommand : Command<GraphCommand.Settings>
         [CommandOption("-o|--output")]
         [DefaultValue("./knowledge-graph")]
         public string OutputPath { get; init; } = "./knowledge-graph";
+
+        [Description("Monitor memory usage during graph building")]
+        [CommandOption("--monitor-memory")]
+        [DefaultValue(false)]
+        public bool MonitorMemory { get; init; } = false;
     }
 
     public override int Execute(CommandContext context, Settings settings)
@@ -40,6 +46,13 @@ public sealed class GraphCommand : Command<GraphCommand.Settings>
         }
 
         AnsiConsole.MarkupLine($"[cyan]Building knowledge graph from:[/] {settings.SourcePath}");
+
+        using var memoryMonitor = new MemoryMonitor("Graph Building", settings.MonitorMemory);
+        
+        if (settings.MonitorMemory)
+        {
+            memoryMonitor.DisplayStats("Initial");
+        }
 
         var progress = AnsiConsole.Progress();
         progress.Columns(
@@ -57,7 +70,14 @@ public sealed class GraphCommand : Command<GraphCommand.Settings>
             return _graphManager.BuildGraph(
                 settings.SourcePath,
                 settings.OutputPath,
-                progress => task.Increment(progress)
+                progress =>
+                {
+                    task.Increment(progress);
+                    if (settings.MonitorMemory && progress % 10 == 0)
+                    {
+                        memoryMonitor.DisplaySummary();
+                    }
+                }
             );
         });
 

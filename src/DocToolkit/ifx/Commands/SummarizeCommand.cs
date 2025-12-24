@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using DocToolkit.ifx.Infrastructure;
 using DocToolkit.ifx.Interfaces.IManagers;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -34,6 +35,11 @@ public sealed class SummarizeCommand : Command<SummarizeCommand.Settings>
         [CommandOption("--max-chars")]
         [DefaultValue(5000)]
         public int MaxChars { get; init; } = 5000;
+
+        [Description("Monitor memory usage during summarization")]
+        [CommandOption("--monitor-memory")]
+        [DefaultValue(false)]
+        public bool MonitorMemory { get; init; } = false;
     }
 
     public override int Execute(CommandContext context, Settings settings)
@@ -45,6 +51,13 @@ public sealed class SummarizeCommand : Command<SummarizeCommand.Settings>
         }
 
         AnsiConsole.MarkupLine($"[cyan]Summarizing source files from:[/] {settings.SourcePath}");
+
+        using var memoryMonitor = new MemoryMonitor("Summarization", settings.MonitorMemory);
+        
+        if (settings.MonitorMemory)
+        {
+            memoryMonitor.DisplayStats("Initial");
+        }
 
         var progress = AnsiConsole.Progress();
         progress.Columns(
@@ -63,7 +76,14 @@ public sealed class SummarizeCommand : Command<SummarizeCommand.Settings>
                 settings.SourcePath,
                 settings.OutputFile,
                 settings.MaxChars,
-                progress => task.Increment(progress)
+                progress =>
+                {
+                    task.Increment(progress);
+                    if (settings.MonitorMemory && progress % 10 == 0)
+                    {
+                        memoryMonitor.DisplaySummary();
+                    }
+                }
             );
         });
 
