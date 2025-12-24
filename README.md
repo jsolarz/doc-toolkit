@@ -13,6 +13,7 @@ Use this toolkit to generate:
 - Engineering Specs  
 - API Designs  
 - Data Models  
+- Blog Entries  
 
 And to initialize new project workspaces with:
 - A consistent folder structure  
@@ -52,6 +53,7 @@ And to initialize new project workspaces with:
         spec.md
         api.md
         data.md
+        blog.md
 
     /scripts/                 # PowerShell/Python scripts (legacy)
         generate-doc.cmd
