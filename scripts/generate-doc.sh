@@ -6,7 +6,7 @@ DATE=$(date +%Y-%m-%d)
 
 if [ -z "$1" ] || [ -z "$2" ]; then
   echo "Usage: ./generate-doc <type> \"Document Name\""
-  echo "Types: prd, rfp, tender, architecture, solution, sow, sla, spec, api, data"
+  echo "Types: prd, rfp, tender, architecture, solution, sow, sla, spec, api, data, blog, weekly-log"
   exit 1
 fi
 

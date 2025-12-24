@@ -9,7 +9,7 @@ DATE=$(shell date +%Y-%m-%d)
 # Generic document generator
 doc:
     @if [ -z "$(type)" ] || [ -z "$(name)" ]; then \
-        echo "Usage: make doc type=<prd|rfp|tender|architecture|solution|sow|sla|spec|api|data> name=\"Document Name\""; \
+        echo "Usage: make doc type=<prd|rfp|tender|architecture|solution|sow|sla|spec|api|data|blog|weekly-log> name=\"Document Name\""; \
         exit 1; \
     fi; \
     mkdir -p $(DOCS_DIR); \

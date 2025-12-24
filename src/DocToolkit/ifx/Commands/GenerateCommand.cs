@@ -20,7 +20,7 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
 
     public sealed class Settings : CommandSettings
     {
-        [Description("Document type (prd, rfp, tender, sow, architecture, solution, sla, spec, api, data, blog)")]
+        [Description("Document type (prd, rfp, tender, sow, architecture, solution, sla, spec, api, data, blog, weekly-log)")]
         [CommandArgument(0, "<type>")]
         public string Type { get; init; } = string.Empty;
 
@@ -46,7 +46,7 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
         if (!_templateAccessor.TemplateExists(settings.Type))
         {
             AnsiConsole.MarkupLine($"[red]Error:[/] Template '{settings.Type}' not found");
-            
+
             var available = _templateAccessor.GetAvailableTemplates();
             var table = new Table();
             table.AddColumn("Available Templates");

@@ -14,6 +14,7 @@ Use this toolkit to generate:
 - API Designs  
 - Data Models  
 - Blog Entries  
+- Weekly Logs  
 
 And to initialize new project workspaces with:
 - A consistent folder structure  
@@ -54,6 +55,7 @@ And to initialize new project workspaces with:
         api.md
         data.md
         blog.md
+        weekly-log.md
 
     /scripts/                 # PowerShell/Python scripts (legacy)
         generate-doc.cmd

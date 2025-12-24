@@ -101,6 +101,7 @@ Generate a document from a template.
 - `api` - API Design
 - `data` - Data Model
 - `blog` - Blog Post
+- `weekly-log` - Weekly Log Template
 
 **Examples:**
 ```bash

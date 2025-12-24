@@ -8,7 +8,7 @@ REM ============================
 
 if "%~1"=="" (
     echo Usage: generate-doc.cmd ^<type^> "Document Name"
-    echo Types: prd, rfp, tender, architecture, solution, sow, sla, spec, api, data
+    echo Types: prd, rfp, tender, architecture, solution, sow, sla, spec, api, data, blog, weekly-log
     exit /b 1
 )
 

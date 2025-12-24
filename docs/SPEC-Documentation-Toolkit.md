@@ -37,7 +37,7 @@ The Documentation Toolkit is a C# command-line application that provides semanti
 
 ### Functional Requirements
 - FR1: Project initialization with consistent structure
-- FR2: Document generation from 11+ templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data, Blog)
+- FR2: Document generation from 12+ templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data, Blog, Weekly Log)
 - FR3: Semantic indexing with ONNX embeddings
 - FR4: Semantic search with cosine similarity
 - FR5: Knowledge graph generation
