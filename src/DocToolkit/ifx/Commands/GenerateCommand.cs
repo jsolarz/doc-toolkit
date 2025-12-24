@@ -20,7 +20,7 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
 
     public sealed class Settings : CommandSettings
     {
-        [Description("Document type (prd, rfp, tender, sow, architecture, solution, sla, spec, api, data)")]
+        [Description("Document type (prd, rfp, tender, sow, architecture, solution, sla, spec, api, data, blog)")]
         [CommandArgument(0, "<type>")]
         public string Type { get; init; } = string.Empty;
 

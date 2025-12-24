@@ -100,6 +100,7 @@ Generate a document from a template.
 - `spec` - Engineering Specification
 - `api` - API Design
 - `data` - Data Model
+- `blog` - Blog Post
 
 **Examples:**
 ```bash

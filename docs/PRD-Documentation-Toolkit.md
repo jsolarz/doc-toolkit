@@ -26,7 +26,7 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 
 ### In Scope
 - CLI application for document generation and semantic operations
-- 10+ document templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data)
+- 11+ document templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data, Blog)
 - Semantic indexing using ONNX embeddings
 - Knowledge graph generation from source documents
 - Document summarization

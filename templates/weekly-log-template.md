@@ -1,7 +1,8 @@
 # The Workflow
-- Sunday morning: Create one file named 2025-[WEEK_NUMBER].md.
+- Sunday morning: Create one file named 2025-w[WEEK_NUMBER].log.md (e.g., 2025-w18.log.md).
 - Daily: Scroll to the bottom and add your * and Notes.
 - Thursday afternoon: Scroll up, read your notes, and write the Part 1 summary at the very top.
+- Friday: Review and finalize the weekly summary.
 - Archive: Move the file to a folder called /2025-Logs.
 
 # 📂 SA Weekly Log: Week [WEEK_NUMBER] ([START_DATE] - [END_DATE])
@@ -21,12 +22,24 @@
 | **[Customer]** | Discovery | 🟢 On Track | $TBD | [Next action] |
 | **[Customer]** | Proposal | 🟢 On Track | $TBD | [Next action] |
 
+**Status Legend:**
+- 🟢 On Track = Progressing as expected
+- 🟡 At Risk = Needs attention, some concerns
+- 🔴 Blocked = Critical issues, requires escalation
+- ⚪ Not Started = Not yet begun
+- 🔵 On Hold = Paused, waiting on dependency
+
 ## Delivery Projects (Billable/Active)
 | Customer | Project | Status | Health Score | Notes |
 | :--- | :--- | :--- | :--- | :--- |
 | **[Customer]** | [Project Name] | 🔴 | 🔴 Red - [Issue description] | [Current status] |
 | **[Customer]** | [Project Name] | 🟢 | 🟢 Green - [Status description] | [Current status] |
 | **[Customer]** | [Project Name] | 🟡 | 🟡 Yellow - [Issue description] | [Current status] |
+
+**Health Score Guidelines:**
+- 🟢 Green = On track, milestones met, no blockers
+- 🟡 Yellow = Some concerns, needs attention, timeline at risk
+- 🔴 Red = Critical issues, blockers present, escalation needed
 
 # ---------------------------------------------------
 # 🔽 PART 2: DAILY LOG (The Raw Feed)
@@ -60,6 +73,9 @@ Occasionally I review these open action items and mark with a + the risks I have
 ### Friday
 * **[Presales/Delivery/Internal - Stage] [Customer/Project]:** [Note/*/+/!] - [Description]
 
+### Saturday
+* **[Presales/Delivery/Internal - Stage] [Customer/Project]:** [Note/*/+/!] - [Description]
+
 ## Legend
 - `*` = Accomplished / Delivered / Unblocked
 - `Note` = Gap identified / Risk spotted / Tech Debt found
@@ -74,10 +90,13 @@ Occasionally I review these open action items and mark with a + the risks I have
 # ---------------------------------------------------
 # ⏹ PART 3: THE WATCHLIST (Long-term Gaps)
 # Move items here from 'Notes' if they aren't fixed same-day.
+# Review weekly and update status. Mark resolved items with [x].
 # ---------------------------------------------------
-- [ ] **Technical Gap ([Customer/Project]):** [Description]
-- [ ] **Client Risk ([Customer/Project]):** [Description]
-- [ ] **Internal:** [Description]
+- [ ] **Technical Gap ([Customer/Project]):** [Description] - [Priority: High/Medium/Low]
+- [ ] **Client Risk ([Customer/Project]):** [Description] - [Priority: High/Medium/Low]
+- [ ] **Scope Risk ([Customer/Project]):** [Description] - [Priority: High/Medium/Low]
+- [ ] **Resource Risk ([Customer/Project]):** [Description] - [Priority: High/Medium/Low]
+- [ ] **Internal:** [Description] - [Priority: High/Medium/Low]
 
 <!--
 # ===================================================
@@ -108,6 +127,37 @@ Occasionally I review these open action items and mark with a + the risks I have
 # [Internal - Hiring]       -> Interviews.
 # [Internal - Training]     -> Certifications, Learning.
 # [Internal - Admin]        -> Timesheets, Expenses, HR.
+# [Internal - Strategy]     -> Planning, roadmaps, vision work.
+# [Internal - Process]      -> Improving workflows, tooling, standards.
+
+# STATUS INDICATORS:
+# 🟢 Green (On Track)      -> Progressing as expected, no blockers.
+# 🟡 Yellow (At Risk)      -> Some concerns, needs attention.
+# 🔴 Red (Blocked)         -> Critical issues, requires escalation.
+# ⚪ White (Not Started)   -> Not yet begun.
+# 🔵 Blue (On Hold)        -> Paused, waiting on external dependency.
+
+# HEALTH SCORE DESCRIPTIONS:
+# 🟢 Green Examples:
+#   - "On track, integration progressing"
+#   - "Milestones met, customer satisfied"
+#   - "Deployment successful, monitoring active"
+# 🟡 Yellow Examples:
+#   - "Customer unresponsive, follow-up needed"
+#   - "Scope clarification required"
+#   - "Resource constraints, timeline at risk"
+# 🔴 Red Examples:
+#   - "Testing issues, needs escalation"
+#   - "Critical blocker, delivery at risk"
+#   - "Customer concerns, relationship management needed"
+
+# PRESALES VALUE ESTIMATION:
+# Use actual contract value when known, or estimated value:
+#   - $TBD = Value not yet determined
+#   - $50K = Small project (< $100K)
+#   - $250K = Medium project ($100K - $500K)
+#   - $750K = Large project ($500K - $1M)
+#   - $2M+ = Enterprise project (> $1M)
 
 # SA VERBS (Use these for your '*' lines):
 # - Designed, Architected, Diagrammed
@@ -115,4 +165,17 @@ Occasionally I review these open action items and mark with a + the risks I have
 # - Estimated, Scoped, Drafted
 # - Presented, Demoed, Defended
 # - Validated, Audited, Reviewed
+# - Coordinated, Facilitated, Orchestrated
+# - Reviewed, Assessed, Evaluated
+# - Documented, Specified, Defined
+# - Negotiated, Aligned, Agreed
+# - Trained, Educated, Onboarded
+
+# DAILY LOG BEST PRACTICES:
+# - Be specific: "Designed authentication architecture" not "worked on auth"
+# - Include outcomes: "Received approval" not just "presented"
+# - Quantify when possible: "Reduced latency by 40%" not "improved performance"
+# - Link to deliverables: Reference documents, diagrams, or code
+# - Note blockers immediately: Don't wait to escalate critical issues
+# - Use proper markers: * for accomplishments, Note for risks, ! for blockers
 -->
