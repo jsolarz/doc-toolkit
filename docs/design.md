@@ -192,7 +192,7 @@ All components are in a single assembly: `DocToolkit.dll`
 │  │ Commands (Client Layer)      │  │
 │  └──────────────────────────────┘  │
 │  ┌──────────────────────────────┐  │
-│  │ Managers (Orchestration)    │  │
+│  │ Managers (Orchestration)     │  │
 │  └──────────────────────────────┘  │
 │  ┌──────────────────────────────┐  │
 │  │ Engines + Accessors          │  │
@@ -201,7 +201,7 @@ All components are in a single assembly: `DocToolkit.dll`
 │  │ Models (Data Layer)          │  │
 │  └──────────────────────────────┘  │
 │  ┌──────────────────────────────┐  │
-│  │ Infrastructure (DI, Events) │  │
+│  │ Infrastructure (DI, Events)  │  │
 │  └──────────────────────────────┘  │
 └────────────────────────────────────┘
 ```
@@ -211,14 +211,14 @@ All components are in a single assembly: `DocToolkit.dll`
 All services run in a single process (the CLI executable):
 
 ```
-┌─────────────────────────────────────┐
-│      doc.exe Process                 │
+┌────────────────────────────────────┐
+│      doc.exe Process               │
 │  ┌──────────────────────────────┐  │
-│  │ DocToolkit Assembly           │  │
-│  │ (All Commands, Services,      │  │
-│  │  Models)                      │  │
+│  │ DocToolkit Assembly          │  │
+│  │ (All Commands, Services,     │  │
+│  │  Models)                     │  │
 │  └──────────────────────────────┘  │
-└─────────────────────────────────────┘
+└────────────────────────────────────┘
 ```
 
 **Note**: Currently single-process. Future enhancements may require process isolation for:
@@ -231,13 +231,13 @@ All services run in a single process (the CLI executable):
 All services run under the same identity (the user running the CLI):
 
 ```
-┌─────────────────────────────────────┐
-│   Identity: Current User            │
+┌────────────────────────────────────┐
+│   Identity: Current User           │
 │  ┌──────────────────────────────┐  │
 │  │ All Services                 │  │
 │  │ (Same Identity)              │  │
 │  └──────────────────────────────┘  │
-└─────────────────────────────────────┘
+└────────────────────────────────────┘
 ```
 
 **Future Consideration**: If services are split into separate processes, identity boundaries may be needed for security isolation.
