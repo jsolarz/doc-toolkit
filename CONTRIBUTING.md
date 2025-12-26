@@ -4,9 +4,10 @@ Thank you for your interest in contributing to the Documentation Toolkit! This d
 
 ## Code of Conduct
 
-- Be respectful and inclusive
+- Don't be an asshole
 - Provide constructive feedback
 - Focus on what is best for the community
+- If you become more annoying to work with than your contributions justify, you will get booted.
 
 ## How to Contribute
 
@@ -125,4 +126,5 @@ If you have questions, please open an issue with the "question" label.
 Thanks! 
 
 Thank you for contributing!
+
 
