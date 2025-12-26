@@ -10,6 +10,21 @@ Thank you for your interest in contributing to the Documentation Toolkit! This d
 
 ## How to Contribute
 
+Did you find a bug?
+Ensure the bug was not already reported by searching on GitHub under Issues.
+
+If you're unable to find an open issue addressing the problem, open a new one. Be sure to include a title and clear description, as much relevant information as possible, and a code sample or an executable test case demonstrating the expected behavior that is not occurring.
+
+Did you write a patch that fixes a bug?
+Open a new GitHub pull request with the patch.
+
+Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
+
+Did you fix whitespace, format code, or make a purely cosmetic patch?
+Changes that are cosmetic in nature and do not add anything substantial to the stability, functionality, or testability will generally not be accepted.
+
+Do not open an issue on GitHub until you have collected positive feedback about the change. GitHub issues are primarily intended for bug reports and fixes.
+
 ### Reporting Bugs
 
 1. Check if the bug has already been reported in existing issues
@@ -107,4 +122,7 @@ Add error handling to semantic-index.ps1
 
 If you have questions, please open an issue with the "question" label.
 
+Thanks! 
+
 Thank you for contributing!
+
