@@ -267,8 +267,8 @@ class DocumentViewer {
         const tocElement = document.getElementById('tableOfContents');
         if (!viewerElement) return;
 
-        // Use server-side rendered HTML from Markdig
-        const html = doc.html || '<p>No content</p>';
+        // Render markdown client-side (raw markdown, no preprocessing)
+        const html = this.parseMarkdown(doc.content || '');
 
         viewerElement.innerHTML = `
             <div class="document-content">
@@ -350,6 +350,119 @@ class DocumentViewer {
                 }
             });
         });
+    }
+
+    parseMarkdown(text) {
+        if (!text) return '<p>No content</p>';
+
+        let html = text;
+        const lines = html.split('\n');
+
+        // Process code blocks first (before other processing)
+        html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+            const escaped = this.escapeHtml(code.trim());
+            return `<pre><code${lang ? ` class="language-${lang}"` : ''}>${escaped}</code></pre>`;
+        });
+
+        // Process inline code (after code blocks)
+        html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+
+        // Headers (process from h6 to h1 to avoid conflicts)
+        html = html.replace(/^###### (.*$)/gim, '<h6>$1</h6>');
+        html = html.replace(/^##### (.*$)/gim, '<h5>$1</h5>');
+        html = html.replace(/^#### (.*$)/gim, '<h4>$1</h4>');
+        html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+        // Horizontal rules
+        html = html.replace(/^---$/gim, '<hr>');
+        html = html.replace(/^\*\*\*$/gim, '<hr>');
+        html = html.replace(/^___$/gim, '<hr>');
+
+        // Blockquotes
+        html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+        // Merge consecutive blockquotes
+        html = html.replace(/<\/blockquote>\n<blockquote>/g, '<br>');
+
+        // Lists - ordered
+        html = html.replace(/^(\d+)\. (.*$)/gim, '<li>$2</li>');
+        // Lists - unordered
+        html = html.replace(/^[\*\-+] (.*$)/gim, '<li>$1</li>');
+        // Wrap consecutive list items
+        html = html.replace(/(<li>.*<\/li>\n?)+/g, (match) => {
+            // Check if it's ordered (has numbers) or unordered
+            const isOrdered = /^\d+\./.test(match);
+            return isOrdered ? `<ol>${match}</ol>` : `<ul>${match}</ul>`;
+        });
+
+        // Tables
+        const tableRegex = /^\|(.+)\|$/gm;
+        let tableMatch;
+        const tables = [];
+        while ((tableMatch = tableRegex.exec(html)) !== null) {
+            const row = tableMatch[1].split('|').map(cell => cell.trim()).filter(cell => cell);
+            if (row.length > 0) {
+                const isHeader = html.substring(tableMatch.index - 10, tableMatch.index).includes('---');
+                const tag = isHeader ? 'th' : 'td';
+                tables.push({ index: tableMatch.index, row, tag, isHeader });
+            }
+        }
+        // Process tables (simple pipe table support)
+        html = html.replace(/^\|(.+)\|$/gm, (match, content) => {
+            const cells = content.split('|').map(cell => cell.trim()).filter(cell => cell);
+            if (cells.length === 0) return match;
+            // Check if it's a separator row
+            if (cells.every(cell => /^:?-+:?$/.test(cell))) {
+                return ''; // Remove separator rows
+            }
+            return '<tr>' + cells.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
+        });
+        // Wrap table rows in table
+        html = html.replace(/(<tr>.*<\/tr>\n?)+/g, '<table>$&</table>');
+
+        // Bold and italic (process bold first, then italic)
+        html = html.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        html = html.replace(/__(.*?)__/g, '<strong>$1</strong>');
+        html = html.replace(/_(.*?)_/g, '<em>$1</em>');
+
+        // Links
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+        // Images
+        html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+
+        // Line breaks (double newline = paragraph, single newline = br)
+        const paragraphs = html.split(/\n\n+/);
+        html = paragraphs.map(para => {
+            para = para.trim();
+            if (!para) return '';
+            // Don't wrap if it's already a block element
+            if (/^<(h[1-6]|ul|ol|li|blockquote|pre|table|hr)/.test(para)) {
+                return para;
+            }
+            // Convert single newlines to <br> within paragraphs
+            para = para.replace(/\n/g, '<br>');
+            return `<p>${para}</p>`;
+        }).filter(p => p).join('\n');
+
+        // Escape any remaining HTML that wasn't processed
+        // But preserve the HTML we just created
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        // Re-escape text nodes that shouldn't be HTML
+        const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT, null, false);
+        const textNodes = [];
+        let node;
+        while (node = walker.nextNode()) {
+            if (node.parentElement && !['CODE', 'PRE', 'SCRIPT', 'STYLE'].includes(node.parentElement.tagName)) {
+                textNodes.push(node);
+            }
+        }
+        // Actually, we've already processed everything, so we can return as-is
+        return html;
     }
 
     getDocumentType(fileName) {

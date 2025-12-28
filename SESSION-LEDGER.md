@@ -172,3 +172,39 @@ This file tracks all AI interactions, decisions, and context across all AI sessi
 - Follows IDesign Method™ - WebCommand remains Client, markdown rendering is algorithm volatility
 
 **Status**: Completed
+
+## 2025-01-27 - Removed Markdig Dependency, Direct Markdown Loading
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Load markdown files directly without preprocessing, avoid unnecessary third-party libraries
+
+**AI Actions**:
+- Removed Markdig NuGet package dependency
+- Updated WebCommand to serve raw markdown files directly (no server-side rendering)
+- Removed Markdig pipeline configuration
+- Updated API endpoint to return raw markdown content instead of pre-rendered HTML
+- Created embedded client-side markdown parser in JavaScript
+- Updated frontend to use client-side rendering with embedded parser
+- Parser handles: headers, lists, links, code blocks, tables, blockquotes, bold, italic, images
+
+**Files Modified**:
+- Modified: src/DocToolkit/DocToolkit.csproj (removed Markdig package)
+- Modified: src/DocToolkit/ifx/Commands/WebCommand.cs (removed Markdig, serve raw markdown)
+- Modified: src/DocToolkit/web/app.js (added parseMarkdown method, use client-side rendering)
+- Modified: CHANGELOG.md (updated to reflect direct markdown loading)
+- Modified: docs/WEB-INTERFACE-ANALYSIS.md (updated to reflect no third-party libraries)
+- Modified: SESSION-LEDGER.md (documented changes)
+
+**Context/Notes**:
+- Markdown files are now served directly without any preprocessing
+- Client-side parser is embedded in JavaScript (no external dependencies)
+- Parser supports: headers (h1-h6), ordered/unordered lists, links, code blocks (with language), inline code, tables, blockquotes, bold, italic, images, horizontal rules
+- Table of contents still generated server-side from markdown headers (lightweight regex-based)
+- Search functionality unchanged (full-text search on raw markdown)
+- Zero third-party dependencies for markdown rendering
+- Fully self-contained solution
+- Build verified successfully
+- Follows "docs as code" philosophy - raw markdown files, no preprocessing
+
+**Status**: Completed

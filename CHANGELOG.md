@@ -30,12 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Improved Readability**: Optimized typography and spacing for technical content
 
 #### Phase 1 Web Interface Improvements (Latest)
-- **Markdig Integration**: Server-side CommonMark + GFM markdown rendering with full specification support
+- **Direct Markdown Loading**: Raw markdown files served directly without preprocessing or third-party libraries
+- **Client-Side Rendering**: Embedded markdown parser in JavaScript (no external dependencies)
 - **Navigation Structure**: Auto-detected hierarchical navigation from folder structure with collapsible folders
 - **Table of Contents**: Auto-generated TOC from markdown headers with anchor links and smooth scrolling
 - **Search Functionality**: Full-text search with highlighting and relevance scoring
-- **Server-Side Rendering**: Proper markdown rendering using Markdig instead of client-side parsing
-- **Enhanced API**: New endpoints for navigation structure, rendered HTML, TOC, and search
+- **Enhanced API**: New endpoints for navigation structure, raw markdown content, TOC, and search
+- **Zero Dependencies**: Removed Markdig dependency - fully self-contained with embedded parser
 
 ### Added
 

@@ -4,7 +4,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using DocToolkit.ifx.Interfaces.IAccessors;
-using Markdig;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -105,19 +104,6 @@ public sealed class WebCommand : Command<WebCommand.Settings>
 
     private static void ConfigureRoutes(WebApplication app, string docsPath)
     {
-        // Configure Markdig pipeline with CommonMark + GFM extensions
-        var pipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .UsePipeTables()
-            .UseGridTables()
-            .UseTaskLists()
-            .UseAutoLinks()
-            .UseEmphasisExtras()
-            .UseListExtras()
-            .UseGenericAttributes()
-            .UseYamlFrontMatter()
-            .Build();
-
         // API: List documents with navigation structure
         app.MapGet("/api/documents", () =>
         {
@@ -130,7 +116,7 @@ public sealed class WebCommand : Command<WebCommand.Settings>
             });
         });
 
-        // API: Get document content with rendered HTML and TOC
+        // API: Get document content (raw markdown, no preprocessing)
         app.MapGet("/api/documents/{*path}", (string path) =>
         {
             var fullPath = Path.Combine(docsPath, path);
@@ -143,10 +129,7 @@ public sealed class WebCommand : Command<WebCommand.Settings>
             var markdown = File.ReadAllText(fullPath);
             var fileName = Path.GetFileName(fullPath);
 
-            // Render markdown to HTML using Markdig
-            var html = Markdown.ToHtml(markdown, pipeline);
-
-            // Generate table of contents from headers
+            // Generate table of contents from headers (lightweight, no markdown parsing)
             var toc = GenerateTableOfContents(markdown);
 
             return Results.Json(new
@@ -154,7 +137,6 @@ public sealed class WebCommand : Command<WebCommand.Settings>
                 name = fileName,
                 path = path,
                 content = markdown,
-                html = html,
                 toc = toc,
                 lastModified = File.GetLastWriteTime(fullPath)
             });

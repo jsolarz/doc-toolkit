@@ -27,8 +27,6 @@
     <PackageReference Include="UglyToad.PdfPig.Tokens" Version="1.7.0-custom-5" />
     <PackageReference Include="UglyToad.PdfPig.Tokenization" Version="1.7.0-custom-5" />
     <PackageReference Include="UglyToad.PdfPig.Fonts" Version="1.7.0-custom-5" />
-    <!-- Markdown rendering with CommonMark + GFM support -->
-    <PackageReference Include="Markdig" Version="0.37.0" />
   </ItemGroup>
 
   <ItemGroup>
