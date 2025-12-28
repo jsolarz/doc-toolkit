@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# Defense Documentation Rules
+
+- Emphasize security, reliability, redundancy, and mission-critical performance.
+- Use precise terminology aligned with defense standards.
+- Avoid assumptions; document all constraints.
+- Include threat models and mitigation strategies.
+- Ensure compliance with defense frameworks and export controls.

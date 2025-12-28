@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+# SaaS / Cloud Architecture Rules
+
+- Emphasize scalability, multi-tenancy, reliability, and cost efficiency.
+- Document SLAs, SLOs, and error budgets.
+- Include deployment, monitoring, and observability considerations.
+- Highlight cloud-native patterns and managed services.

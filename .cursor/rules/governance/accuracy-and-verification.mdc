@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+# Accuracy and Verification Rules
+
+- Verify all technical claims before including them.
+- Do not invent product capabilities, APIs, or features.
+- If information is missing or unclear, ask for clarification.
+- When referencing standards or protocols, ensure accuracy.
+- Cross-check consistency across sections (scope, requirements, architecture).
+- Flag contradictions or gaps in the source material.

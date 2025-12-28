@@ -1,0 +1,276 @@
+---
+alwaysApply: true
+---
+# Architecture Diagram Guidelines
+
+Rules for selecting and creating appropriate architecture diagrams based on document type, audience, and use case.
+
+---
+
+## Diagram Type Selection
+
+Select diagram types based on document purpose, audience, and level of detail required:
+
+### Application Diagrams
+
+**When to Use:**
+- Single application focus
+- Stakeholder and investor presentations
+- Simple visual communication
+- High-level application overview
+
+**Characteristics:**
+- Focus on individual application components
+- Show component interactions and structure
+- Simple, clear visualizations
+- Implementation-agnostic (no cloud provider specifics)
+
+**Use Cases:**
+- Use case flows
+- User interaction workflows
+- Application component relationships
+- Business process flows
+
+**Example Contexts:**
+- Use case documentation
+- Business requirement documents
+- Stakeholder presentations
+- High-level design documents
+
+---
+
+### System Diagrams
+
+**When to Use:**
+- Entire system overview
+- Hardware and software components
+- System-level interactions
+- Infrastructure and application combined view
+
+**Characteristics:**
+- Include both system hardware and software
+- Show how different system components interact
+- May include deployment considerations
+- Can span multiple applications or services
+
+**Use Cases:**
+- System architecture documentation
+- Infrastructure planning
+- System integration design
+- End-to-end system flows
+
+**Example Contexts:**
+- System architecture documents
+- Technical solution proposals
+- Integration design documents
+- Infrastructure planning
+
+---
+
+### Software Diagrams
+
+**When to Use:**
+- Development team communication
+- Software architecture documentation
+- Component design and relationships
+- Technical implementation details
+
+**Characteristics:**
+- High-level software overview
+- Component and module relationships
+- Software patterns and structures
+- More complex than application diagrams
+
+**Use Cases:**
+- Software architecture design
+- Component interaction patterns
+- Module dependencies
+- Development team documentation
+
+**Example Contexts:**
+- ADRs (Architecture Decision Records)
+- Software design documents
+- Development guides
+- Technical specifications
+
+---
+
+### Network Diagrams
+
+**When to Use:**
+- Network architecture documentation
+- Network component visualization
+- Network topology design
+- Security and network isolation
+
+**Characteristics:**
+- Focus on network components
+- Show network topology
+- Network security boundaries
+- Connectivity and routing
+
+**Use Cases:**
+- Network architecture design
+- Security architecture
+- Network isolation requirements
+- Connectivity planning
+
+**Example Contexts:**
+- Network architecture documents
+- Security design documents
+- Infrastructure architecture
+- Deployment architecture
+
+---
+
+### Cloud Diagrams
+
+**When to Use:**
+- Cloud environment visualization
+- Cloud infrastructure documentation
+- Cloud service relationships
+- Cloud-specific architecture
+
+**Characteristics:**
+- Cloud provider-specific components
+- Cloud services and resources
+- Cloud-native patterns
+- Infrastructure-as-code alignment
+
+**Use Cases:**
+- Cloud infrastructure design
+- Cloud migration planning
+- Cloud architecture documentation
+- Infrastructure proposals
+
+**Example Contexts:**
+- Cloud architecture documents
+- Infrastructure proposals
+- Cloud migration plans
+- Technical solution documents (infrastructure sections)
+
+---
+
+## Diagram Selection by Document Type
+
+### Technical Solution Proposals / RFP Responses
+
+**Use Case Sections:**
+- Application diagrams (implementation-agnostic)
+- Focus on user workflows and interactions
+- No cloud provider specifics
+
+**Architecture Sections:**
+- System diagrams for high-level architecture
+- Cloud diagrams for infrastructure details (when appropriate)
+- Network diagrams for security and connectivity
+
+**Implementation Sections:**
+- Software diagrams for component design
+- System diagrams for deployment architecture
+
+---
+
+### Architecture Decision Records (ADRs)
+
+- Software diagrams for component relationships
+- System diagrams for architectural patterns
+- Application diagrams for use case context
+
+---
+
+### Requirements Documents (PRDs)
+
+- Application diagrams for user workflows
+- System diagrams for system-level requirements
+- Avoid implementation-specific details
+
+---
+
+### Infrastructure Documentation
+
+- Cloud diagrams for cloud resources
+- Network diagrams for network architecture
+- System diagrams for overall infrastructure
+
+---
+
+### Use Case Documentation
+
+- Application diagrams only
+- Implementation-agnostic
+- Focus on user interactions and workflows
+- No cloud provider or technology specifics
+
+---
+
+## Diagram Creation Principles
+
+### High-Level Design Documents
+
+**For Use Cases and Workflows:**
+- Use generic, implementation-agnostic components
+- Focus on logical flow, not technology choices
+- Use simple shapes (servers, users, generic components)
+- Avoid cloud provider icons or specific technologies
+
+**For Infrastructure:**
+- Use cloud provider-specific icons when documenting actual infrastructure
+- Show specific services and resources
+- Include deployment and operational details
+
+---
+
+### Implementation-Agnostic Diagrams
+
+When creating use case or workflow diagrams:
+- Use generic server/client icons
+- Avoid AWS/Azure/GCP-specific icons
+- Focus on logical components and interactions
+- Use UML-style notation when appropriate
+
+---
+
+### Implementation-Specific Diagrams
+
+When documenting actual infrastructure:
+- Use cloud provider-specific icons
+- Show actual services and resources
+- Include deployment-specific details
+- Align with infrastructure-as-code
+
+---
+
+## Diagram Format Guidelines
+
+### Mermaid Diagrams
+
+- Use for markdown documents
+- Sequence diagrams for workflows
+- Flowcharts for decision flows
+- Graphs for architecture relationships
+- Keep diagrams readable and not overly complex
+
+### Image Diagrams
+
+- Generate PNG images for documents that don't support mermaid
+- Use diagrams package for cloud infrastructure
+- Use generic components for use case flows
+- Ensure high resolution for presentations
+
+---
+
+## Consistency Rules
+
+- Maintain consistent diagram style within a document
+- Use same component types for similar concepts
+- Keep naming conventions consistent
+- Align diagram detail level with document detail level
+
+---
+
+## Related Rules
+
+- See `documentation/documentation-structure.mdc` for document structure
+- See `architecture/cloud-solution-architecture.mdc` for cloud architecture patterns
+- See `documentation/adrs-and-architecture.mdc` for ADR diagram requirements

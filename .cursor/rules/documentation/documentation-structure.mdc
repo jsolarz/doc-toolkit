@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+---
+# Documentation Structure Rules
+
+- Always structure documents using clear, hierarchical headings (H1–H4).
+- Begin every document with an executive summary tailored to the audience.
+- Maintain consistent formatting across all documents (headings, lists, tables).
+- Use standardized sections for technical documents:
+  - Overview
+  - Objectives
+  - Scope
+  - Assumptions
+  - Architecture / Design
+  - Risks & Mitigations
+  - Dependencies
+  - Deliverables
+  - Acceptance Criteria
+  - Appendices
+- Use tables for comparisons, compliance matrices, and requirement mappings.
+- Ensure every section has complete, meaningful content; avoid placeholders.
+
+---
+
+## Structural Formatting Rules
+
+**Section Separation:**
+- Never use horizontal lines (`---`) to separate sections.
+- Use heading hierarchy and whitespace for visual separation.
+- Maintain consistent spacing between sections.
+
+**Visual Elements:**
+- Do not use emojis in any documentation.
+- Use icons or symbols only when they add clear informational value.
+- Avoid decorative elements that don't serve a functional purpose.
+
+**Punctuation:**
+- Use em dashes (—) only where grammatically appropriate (parenthetical asides, ranges, emphasis).
+- Prefer commas, periods, or colons for most separations.
+- Avoid overuse of dashes, ellipses, or other punctuation for emphasis.
+
+**Professional Standards:**
+- No exclamation marks in professional documentation.
+- No casual abbreviations (TL;DR, FYI, BTW) in formal documents.
+- Avoid unnecessary emphasis through formatting. Let content speak for itself.

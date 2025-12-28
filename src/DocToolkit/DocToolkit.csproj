@@ -27,6 +27,30 @@
     <PackageReference Include="UglyToad.PdfPig.Tokens" Version="1.7.0-custom-5" />
     <PackageReference Include="UglyToad.PdfPig.Tokenization" Version="1.7.0-custom-5" />
     <PackageReference Include="UglyToad.PdfPig.Fonts" Version="1.7.0-custom-5" />
+    <!-- Markdown rendering with CommonMark + GFM support -->
+    <PackageReference Include="Markdig" Version="0.37.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Web hosting for document viewer -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Embed templates as resources for self-contained deployment -->
+    <EmbeddedResource Include="..\..\templates\*.md">
+      <LogicalName>templates.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <!-- Embed web interface files as resources -->
+    <EmbeddedResource Include="web\*.html">
+      <LogicalName>web.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="web\*.css">
+      <LogicalName>web.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="web\*.js">
+      <LogicalName>web.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

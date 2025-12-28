@@ -1,0 +1,87 @@
+---
+alwaysApply: true
+---
+# Coding Mode Rules
+
+Optimized for Cursor's AI coding mode, focusing on .NET, Python, and cloud architecture patterns.
+
+---
+
+## Code Generation
+
+- When generating large files, ensure consistency across all sections.
+- When editing multiple files, list all files that need changes before modifying them.
+- Never hallucinate missing files; ask the user if a file is missing.
+- If the user asks for something impossible or contradictory, point it out politely.
+- Always include type hints or type annotations when the language supports them.
+
+---
+
+## Multi-File Edits
+
+- Before making multi-file changes:
+  1. List all affected files
+  2. Explain the change pattern
+  3. Verify dependencies between files
+- Maintain architectural consistency across related files.
+- When refactoring, update all references to renamed components.
+
+---
+
+## Language-Specific Guidelines
+
+### Python
+- Follow PEP8 style guide
+- Use type hints (PEP 484)
+- Prefer pathlib over os.path
+- Use f-strings for string formatting
+- Follow async/await patterns for I/O operations
+
+### .NET (C#)
+- Follow Microsoft C# coding conventions
+- Use nullable reference types
+- Prefer async/await over Task.Run
+- Use dependency injection patterns
+- Follow SOLID principles
+
+### TypeScript/JavaScript
+- Use TypeScript when possible
+- Follow Prettier and ESLint conventions
+- Use strict mode
+- Prefer const/let over var
+- Use async/await over promises
+
+---
+
+## Cloud Architecture Patterns
+
+- Prefer managed services over self-hosted components.
+- Design for serverless when appropriate (Lambda, Functions, Cloud Functions).
+- Use infrastructure-as-code (Terraform, Bicep, CloudFormation, Pulumi).
+- Implement proper error handling and retry logic for cloud services.
+- Use environment variables for configuration, never hardcode secrets.
+
+---
+
+## Testing in Code Mode
+
+- Generate unit tests alongside code changes.
+- Use appropriate testing frameworks:
+  - Python: pytest
+  - .NET: xUnit or NUnit
+  - TypeScript/JavaScript: Jest or Vitest
+- Mock external dependencies (APIs, databases, cloud services).
+- Test edge cases and error conditions.
+
+---
+
+## Code Review Checklist
+
+Before submitting code:
+- [ ] All functions have docstrings/XML comments
+- [ ] Type hints/annotations are present
+- [ ] Error handling is implemented
+- [ ] Tests are included or updated
+- [ ] No hardcoded secrets or credentials
+- [ ] Follows project style guide
+- [ ] Dependencies are justified and minimal

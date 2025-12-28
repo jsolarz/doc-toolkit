@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# TOGAF-Aligned Rules
+
+- Use TOGAF terminology (Business, Data, Application, Technology layers).
+- Align documents with ADM phases.
+- Include capability maps, value streams, and architecture building blocks.
+- Document baseline vs. target architecture.
+- Include gap analysis and migration roadmap.

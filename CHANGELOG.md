@@ -11,9 +11,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+#### Self-Contained Deployment (Latest)
+- **Embedded Templates**: All document templates are now embedded as resources in the compiled assembly
+- **Self-Contained Application**: No external template folder references required - app works independently
+- **Subfolder Organization**: `--subfolder` option for organizing generated documents into subfolders
+- **Minimal Dependencies**: Optimized build output with embedded resources for portable deployment
+
+#### Web Interface (Latest)
+- **Self-Hosted Web Server**: `doc web` command to start a web server for viewing documents
+- **Document Viewer**: Modern, responsive web interface with markdown rendering
+- **Team Sharing**: Access documents from any device on your network
+- **Embedded Web Assets**: All HTML, CSS, and JavaScript embedded as resources
+- **RESTful API**: `/api/documents` endpoints for listing and retrieving documents
+- **Configurable**: Custom port, host, and docs directory options
+- **Modern Font Stacks**: System UI fonts for native OS rendering (PlanetScale-inspired)
+- **Catppuccin Frappe Theme**: Beautiful light/dark theme with full color palette
+- **Theme Toggle**: Persistent theme preference with smooth transitions
+- **Improved Readability**: Optimized typography and spacing for technical content
+
+#### Phase 1 Web Interface Improvements (Latest)
+- **Markdig Integration**: Server-side CommonMark + GFM markdown rendering with full specification support
+- **Navigation Structure**: Auto-detected hierarchical navigation from folder structure with collapsible folders
+- **Table of Contents**: Auto-generated TOC from markdown headers with anchor links and smooth scrolling
+- **Search Functionality**: Full-text search with highlighting and relevance scoring
+- **Server-Side Rendering**: Proper markdown rendering using Markdig instead of client-side parsing
+- **Enhanced API**: New endpoints for navigation structure, rendered HTML, TOC, and search
+
+### Added
+
 #### Core Functionality
 - **CLI Application**: Beautiful C# command-line application built with Spectre.Console
-- **Document Generation**: Generate documents from 10+ templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data)
+- **Document Generation**: Generate documents from 11+ templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data, Requirements Gathering)
 - **Project Initialization**: `doc init` command to create new project workspaces with consistent structure
 - **Semantic Indexing**: Build searchable indexes from document collections using ONNX embeddings
 - **Semantic Search**: Natural language search with cosine similarity and top-K results

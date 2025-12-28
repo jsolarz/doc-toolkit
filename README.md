@@ -43,7 +43,7 @@ And to initialize new project workspaces with:
                 Program.cs      # Application entry point
             DocToolkit.csproj
 
-    /templates/               # Document templates
+    /templates/               # Document templates (embedded as resources in build)
         prd.md
         rfp.md
         tender.md
@@ -82,7 +82,7 @@ And to initialize new project workspaces with:
 
 ### CLI Application (Recommended)
 
-The toolkit now includes a beautiful C# CLI application built with [Spectre.Console](https://spectreconsole.net/) for a modern, cross-platform experience.
+The toolkit now includes a beautiful C# CLI application built with [Spectre.Console](https://spectreconsole.net/) for a modern, cross-platform experience, plus a self-hosted web interface for viewing and sharing documents.
 
 #### Installation
 
@@ -109,6 +109,7 @@ doc init MyProject
 ```bash
 doc generate prd "User Management"
 doc gen sow "Cloud Migration"  # Short alias
+doc gen prd "API Design" --subfolder "architecture"  # Organize in subfolder
 ```
 
 **Build semantic index:**
@@ -140,6 +141,36 @@ doc sum --output ./summary.md
 doc validate
 ```
 
+**Start web server to view and share documents:**
+```bash
+doc web
+doc web --port 8080
+doc web --host 0.0.0.0 --port 5000  # Accessible from network
+doc web --docs-dir ./my-docs  # Custom docs directory
+```
+
+#### Web Interface
+
+The web interface provides a beautiful, self-contained document viewer that allows you to:
+
+- **Browse Documents**: View all generated documents in a sidebar list
+- **View Content**: Click any document to view its full content with markdown rendering
+- **Share with Team**: Access the web interface from any device on your network
+- **Self-Contained**: All web assets are embedded in the application - no external dependencies
+- **Real-time Updates**: Refresh the document list to see newly generated documents
+
+**Features:**
+- Modern, responsive design
+- Markdown rendering with syntax highlighting
+- Document metadata (type, size, last modified)
+- Organized by document type
+- Mobile-friendly interface
+
+**Access:**
+- Default: `http://localhost:5000`
+- Network access: Use `--host 0.0.0.0` to allow access from other devices
+- Custom port: Use `--port` to specify a different port
+
 ### Script-Based Usage (Legacy)
 
 The original PowerShell and Python scripts are still available for advanced use cases.
@@ -164,12 +195,14 @@ doc init MyProject
 ```
 
 #### 2. **Document Generation**
-Generate any document type using templates:
+Generate any document type using templates. Templates are embedded in the application for self-contained deployment.
 
 **CLI:**
 ```bash
 doc generate prd "User Management"
 doc gen sow "Cloud Migration"
+doc gen prd "API Design" --subfolder "architecture"  # Organize in docs/architecture/
+doc gen sow "Project X" --output "./my-docs" --subfolder "sows"  # Custom output with subfolder
 ```
 
 **Scripts:**

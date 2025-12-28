@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+# Code Quality & Style
+
+- Follow the language’s standard style guide:
+    - Python: PEP8 + type hints
+    - JavaScript/TypeScript: Prettier + ESLint conventions
+    - Go: gofmt + idiomatic Go patterns
+    - Rust: rustfmt + clippy-friendly code
+
+- Always include type hints or type annotations when the language supports them.
+- Prefer pure functions and stateless design unless state is required.
+- Avoid unnecessary dependencies.
+- Avoid magic numbers and strings; extract constants when appropriate.
+- Write descriptive variable and function names.

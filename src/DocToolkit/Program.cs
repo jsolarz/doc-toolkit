@@ -54,6 +54,12 @@ app.Configure(config =>
     config.AddCommand<ValidateCommand>("validate")
         .WithDescription("Validate setup and dependencies")
         .WithExample(["validate"]);
+
+    config.AddCommand<WebCommand>("web")
+        .WithDescription("Start web server to view and share documents")
+        .WithExample(["web"])
+        .WithExample(["web", "--port", "8080"])
+        .WithExample(["web", "--host", "0.0.0.0", "--port", "5000"]);
 });
 
 // Show banner

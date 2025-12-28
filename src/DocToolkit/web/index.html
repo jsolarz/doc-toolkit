@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Viewer - Documentation Toolkit</title>
+    <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>📚 Documentation Viewer</h1>
+                <p class="subtitle">View and share your generated documents</p>
+            </div>
+            <button id="themeToggle" class="theme-toggle" title="Toggle theme">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
+        </header>
+
+        <main>
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Documents</h2>
+                    <button id="refreshBtn" class="btn-icon" title="Refresh">🔄</button>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search documents...">
+                    <button id="searchBtn" class="btn-icon" title="Search">🔍</button>
+                </div>
+                <div id="documentList" class="document-list">
+                    <div class="loading">Loading documents...</div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="content-wrapper">
+                    <div id="documentViewer" class="document-viewer">
+                        <div class="welcome">
+                            <h2>Welcome</h2>
+                            <p>Select a document from the sidebar to view it.</p>
+                        </div>
+                    </div>
+                    <div id="tableOfContents" class="table-of-contents">
+                        <!-- Table of contents will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+# ITIL-Aligned Rules
+
+- Use ITIL terminology (services, processes, SLAs, incidents, changes).
+- Document service definitions, service levels, and operational workflows.
+- Highlight change management, incident response, and service continuity.

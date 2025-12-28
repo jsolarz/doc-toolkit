@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+
+# Security
+
+- Never log sensitive data.
+- Sanitize all user inputs.
+- Use parameterized queries for database access.
+- Follow secure defaults for cryptography, authentication, and authorization.

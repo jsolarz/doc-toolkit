@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# Safety & Robustness
+
+- Validate inputs and handle edge cases.
+- Avoid silent failures; use explicit errors.
+- Prefer immutable data structures when possible.
+- Ensure concurrency-safe patterns in multithreaded code.
+- Avoid global state unless explicitly required.

@@ -1,0 +1,74 @@
+---
+alwaysApply: true
+---
+# Strict Architectural Governance Rules
+
+These rules enforce disciplined, enterprise-grade architectural governance across all design and documentation tasks.
+
+---
+
+## Architecture Principles
+- All architectural decisions must align with established enterprise principles (security, scalability, reliability, maintainability, cost efficiency).
+- Every decision must be justified with explicit rationale and trade-offs.
+- No architectural change may be introduced without:
+  - Context
+  - Problem definition
+  - Alternatives
+  - Impact analysis
+  - Risk assessment
+
+---
+
+## Consistency & Compliance
+- Maintain strict consistency across diagrams, terminology, and component naming.
+- All architecture must comply with:
+  - Organizational standards
+  - Regulatory requirements
+  - Security policies
+  - Cloud governance frameworks
+
+---
+
+## Change Control
+- Any architectural modification must include:
+  - Affected components
+  - Upstream/downstream impacts
+  - Data flow implications
+  - Operational impacts
+  - Migration considerations
+- Major changes require an ADR.
+
+---
+
+## Documentation Requirements
+- All architecture must be documented using:
+  - Logical view
+  - Physical view
+  - Deployment view
+  - Data flow diagrams
+  - Integration points
+  - Failure modes and recovery paths
+- No undocumented assumptions.
+
+---
+
+## Risk & Threat Modeling
+- Identify risks early and classify them (technical, operational, security, compliance).
+- Provide mitigation strategies for each.
+- Include threat modeling for externally exposed components.
+
+---
+
+## Review & Validation
+- Validate architecture against:
+  - NFRs (performance, availability, security, scalability)
+  - SLAs/SLOs
+  - Cost constraints
+- Perform consistency checks across all documents.
+- Flag contradictions immediately.
+
+---
+
+## Governance Enforcement
+- If a request violates architectural principles, highlight the issue and propose compliant alternatives.
+- Never implement shortcuts that compromise long-term maintainability or security.

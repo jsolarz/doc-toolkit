@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+# SAFe-Aligned Rules
+
+- Use SAFe terminology (Epics, Capabilities, Features, Enablers).
+- Align requirements with PI planning structure.
+- Include architectural runway considerations.
+- Document dependencies and cross-team impacts.

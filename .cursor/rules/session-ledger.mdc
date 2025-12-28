@@ -1,0 +1,166 @@
+---
+alwaysApply: true
+---
+# Session Ledger Management Rules
+
+## CRITICAL: Mandatory Session Ledger Updates
+
+**ALL AI MODELS MUST UPDATE `SESSION-LEDGER.md` AFTER EVERY USER REQUEST.**
+
+This rule applies to:
+- All AI assistants (Claude, GPT, etc.)
+- All types of requests (code changes, documentation, analysis, etc.)
+- All sessions (new and existing)
+
+## Purpose
+
+The session ledger (`SESSION-LEDGER.md`) serves as:
+- **Persistent Memory**: Context that persists across sessions and AI model instances
+- **Conversation History**: Complete record of all user requests and AI responses
+- **Decision Log**: Tracks decisions, rationale, and alternatives considered
+- **Change Tracking**: Records all file modifications and their purposes
+- **Context Repository**: Stores important discoveries, insights, and context for future reference
+
+## Update Requirements
+
+### When to Update
+
+Update `SESSION-LEDGER.md` **AFTER** completing any user request, including:
+- Code modifications
+- Documentation creation or updates
+- File creation or deletion
+- Analysis or research tasks
+- Configuration changes
+- Rule updates
+- Any other action taken in response to a user request
+
+### What to Include
+
+Each entry must include:
+
+1. **Timestamp**: Date and time of the interaction (ISO 8601 format preferred: YYYY-MM-DD HH:MM:SS)
+2. **User Request**: Exact or paraphrased user request that triggered the action
+3. **AI Actions**: Detailed description of actions taken
+4. **Files Modified**: Complete list of files created, modified, or deleted
+5. **Context/Notes**: 
+   - Important decisions made
+   - Rationale for choices
+   - Discoveries or insights
+   - Blockers or issues encountered
+   - Dependencies or related work
+   - Any other context relevant for future sessions
+6. **Status**: Current status (Completed, In Progress, Blocked, Deferred, etc.)
+
+### Entry Format
+
+```markdown
+### YYYY-MM-DD - Brief Description
+
+**Timestamp**: YYYY-MM-DD HH:MM:SS
+
+**User Request**: [What the user asked for]
+
+**AI Actions**:
+- [Action 1]
+- [Action 2]
+- [Action 3]
+
+**Files Modified**:
+- Created: [file1.md, file2.md]
+- Modified: [file3.md, file4.md]
+- Deleted: [file5.md]
+
+**Context/Notes**:
+- [Important context, decision, or discovery]
+- [Rationale or explanation]
+- [Related work or dependencies]
+
+**Status**: [Completed/In Progress/Blocked/Deferred]
+```
+
+## Best Practices
+
+### Context Preservation
+
+- Include enough detail for future AI models to understand the full context
+- Document why decisions were made, not just what was done
+- Capture any assumptions or constraints that influenced the work
+- Note any related files or dependencies
+
+### Clarity and Scannability
+
+- Use clear, concise language
+- Structure entries for easy scanning
+- Group related actions together
+- Use bullet points for lists
+
+### Completeness
+
+- Don't skip entries even for small changes
+- Include all files modified, even if minor
+- Document both successes and failures
+- Note when work is deferred or blocked
+
+### Consistency
+
+- Use consistent formatting across all entries
+- Maintain chronological order (newest first)
+- Use standard status values
+- Follow the established entry structure
+
+## Integration with Other Documentation
+
+The session ledger complements but does not replace:
+- `CHANGELOG.md`: For tracking planned and completed changes (code-focused)
+- `README.md`: For project overview and structure
+- Meeting notes: For stakeholder decisions and discussions
+- ADRs: For architectural decisions
+
+The session ledger provides the **conversational context** that ties all these together.
+
+## Enforcement
+
+This rule is marked as `alwaysApply: true` and must be followed by all AI models. Failure to update the session ledger after a user request is a violation of the project's context management strategy.
+
+## Example Entry
+
+```markdown
+### 2025-12-27 - Added Authentication Module
+
+**Timestamp**: 2025-12-27 14:32:15
+
+**User Request**: Add JWT authentication to the API with role-based access control
+
+**AI Actions**:
+- Created authentication service with JWT token generation
+- Implemented role-based authorization middleware
+- Added user roles enum (Admin, User, Guest)
+- Created authentication controller endpoints
+- Added unit tests for authentication logic
+- Updated API documentation
+
+**Files Modified**:
+- Created: src/Services/AuthenticationService.cs
+- Created: src/Middleware/AuthorizationMiddleware.cs
+- Created: src/Models/UserRole.cs
+- Created: src/Controllers/AuthController.cs
+- Created: tests/AuthenticationServiceTests.cs
+- Modified: src/Program.cs (added middleware)
+- Modified: docs/api.md (added auth endpoints)
+
+**Context/Notes**:
+- Used JWT with 24-hour expiration for tokens
+- Implemented refresh token pattern for security
+- Roles are stored in JWT claims for performance
+- Middleware validates tokens on all protected routes
+- Authentication service uses dependency injection
+- Related to user management module (see 2025-12-26 entry)
+
+**Status**: Completed
+```
+
+## Related Rules
+
+- See `general.mdc` for universal behavior rules
+- See `coding/general-behavior.mdc` for code modification rules
+- See `00-core-instructions.mdc` for core documentation rules

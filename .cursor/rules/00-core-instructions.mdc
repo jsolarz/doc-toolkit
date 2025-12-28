@@ -213,6 +213,40 @@ When applicable:
 
 ---
 
+## Context Engineering for Document Generation
+
+These principles ensure documents are efficient, structured, and optimized for both human readers and AI processing.
+
+### Context Efficiency
+
+- **Maximize signal-to-noise**: Include only essential, high-value information
+- **Eliminate redundancy**: Do not repeat information across sections unless necessary for clarity
+- **Use structured formats**: Prefer tables, lists, and structured data over long paragraphs
+- **Be concise**: Every word should serve a purpose. Remove unnecessary content.
+- **Reference rather than repeat**: Link to other sections or documents instead of duplicating content
+
+### Structured Outputs
+
+- **Use tables for comparisons**: When comparing multiple items, use tables rather than lists
+- **Leverage structured formats**: Use JSON schemas, YAML, or structured markdown when appropriate
+- **Ensure parseability**: Structure data so it can be easily processed by tools or other systems
+- **Define data structures clearly**: When including structured data, provide clear schemas or examples
+
+### Dynamic Context Elements
+
+- **Include temporal context**: When documents reference dates or time-sensitive information, make dates explicit
+- **Use placeholders for dynamic content**: When appropriate, use clear placeholders (e.g., `{{ current_date }}`) that can be filled dynamically
+- **Document assumptions**: Make implicit context explicit (e.g., "as of [date]" or "based on [version]")
+
+### Document Optimization
+
+- **Prioritize essential sections**: Ensure critical information appears early in the document
+- **Use progressive disclosure**: Start with high-level summaries, then provide details
+- **Optimize for scanning**: Use clear headings, bullet points, and visual hierarchy
+- **Measure effectiveness**: Consider how the document will be used and optimize accordingly
+
+---
+
 ## Prohibited Content
 
 - No marketing fluff unless explicitly requested.
@@ -227,6 +261,8 @@ When generating a document:
 - Fill all sections unless the user explicitly removes them.
 - Use professional formatting.
 - Ensure the document is ready for stakeholder review.
+- Apply context engineering principles: be concise, structured, and eliminate redundancy.
+- Use structured formats (tables, lists) to improve readability and parseability.
 
 ## File Management Rules
 
@@ -236,7 +272,8 @@ CRITICAL: Follow these rules for all file operations:
 2. Do not delete and recreate whole files. Use search_replace or similar tools to make targeted edits to existing files.
 3. Use one CHANGELOG.md file in the root directory. Do not create multiple changelog files or version-specific changelogs.
 4. Use one PATCH-*.md file per set of required changes. This file will be deleted after changes are applied. Do not create multiple patch files for the same change set.
-5. Always update documentation and global files after changes:
+5. **MANDATORY**: Always update `SESSION-LEDGER.md` after every user request. This file tracks all conversations, decisions, and context across AI sessions. See `session-ledger.mdc` for detailed requirements.
+6. Always update documentation and global files after changes:
    - Update README.md if project structure or usage changes
    - Update docs/design.md if architecture changes
    - Update CHANGELOG.md with all changes
@@ -267,6 +304,7 @@ CRITICAL: Follow these rules for documentation placement:
 
 3. **Root Level Documentation**: Only essential project files
    - README.md (project overview)
+   - SESSION-LEDGER.md (mandatory: tracks all AI interactions and context)
    - CHANGELOG.md (project changelog)
    - ONBOARDING.md (project onboarding)
    - LICENSE (if applicable)

@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+# ADR and Architecture Rules
+
+- Follow the standard ADR structure:
+  - Context
+  - Problem Statement
+  - Options Considered
+  - Decision
+  - Rationale
+  - Consequences
+- Always list at least 2–3 alternatives with pros/cons.
+- Use diagrams (described textually) when helpful.
+- Document assumptions, constraints, and trade-offs explicitly.
+- Ensure decisions align with enterprise architecture principles.
+- Avoid making irreversible decisions without justification.

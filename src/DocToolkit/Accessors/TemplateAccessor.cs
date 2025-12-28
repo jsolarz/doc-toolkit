@@ -1,3 +1,4 @@
+using System.Reflection;
 using DocToolkit.ifx.Interfaces.IAccessors;
 
 namespace DocToolkit.Accessors;
@@ -5,6 +6,7 @@ namespace DocToolkit.Accessors;
 /// <summary>
 /// Accessor for document template operations.
 /// Encapsulates storage volatility: template location could change (local → cloud, file → database).
+/// Now uses embedded resources for self-contained deployment.
 /// </summary>
 /// <remarks>
 /// Component Type: Accessor (Storage Volatility)
@@ -14,40 +16,43 @@ namespace DocToolkit.Accessors;
 /// </remarks>
 public class TemplateAccessor : ITemplateAccessor
 {
-    private readonly string _templatesDir;
+    private readonly Assembly _assembly;
+    private readonly Lazy<List<string>> _availableResourceNames;
 
     /// <summary>
     /// Initializes a new instance of the TemplateAccessor.
     /// </summary>
     public TemplateAccessor()
     {
-        // Try to find templates directory relative to executable or current directory
-        // Look from src/DocToolkit up to root, then check root templates folder
-        var currentDir = Directory.GetCurrentDirectory();
-        var possiblePaths = new[]
+        _assembly = Assembly.GetExecutingAssembly();
+        _availableResourceNames = new Lazy<List<string>>(() =>
+            _assembly.GetManifestResourceNames().ToList());
+    }
+
+    /// <summary>
+    /// Finds the resource name for a template type.
+    /// Searches for both "templates.{type}.md" and "{namespace}.templates.{type}.md" patterns.
+    /// </summary>
+    private string? FindResourceName(string type)
+    {
+        var resourceNames = _availableResourceNames.Value;
+        var possibleNames = new[]
         {
-            Path.Combine(currentDir, "templates"),
-            Path.Combine(currentDir, "..", "templates"),
-            Path.Combine(currentDir, "..", "..", "templates"),
-            Path.Combine(currentDir, "..", "..", "..", "templates"), // From src/DocToolkit/bin to root
-            Path.Combine(AppContext.BaseDirectory, "templates"),
-            Path.Combine(AppContext.BaseDirectory, "..", "templates"),
-            Path.Combine(AppContext.BaseDirectory, "..", "..", "templates"),
-            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "templates") // From src/DocToolkit/bin to root
+            $"templates.{type}.md",
+            $"{_assembly.GetName().Name}.templates.{type}.md"
         };
 
-        _templatesDir = possiblePaths.FirstOrDefault(Directory.Exists) ?? "templates";
+        return possibleNames.FirstOrDefault(name => resourceNames.Contains(name));
     }
 
     /// <summary>
     /// Checks if a template exists for the specified type.
     /// </summary>
     /// <param name="type">Template type (e.g., "prd", "sow", "rfp")</param>
-    /// <returns>True if template file exists</returns>
+    /// <returns>True if template resource exists</returns>
     public bool TemplateExists(string type)
     {
-        var templatePath = Path.Combine(_templatesDir, $"{type}.md");
-        return File.Exists(templatePath);
+        return FindResourceName(type) != null;
     }
 
     /// <summary>
@@ -56,14 +61,28 @@ public class TemplateAccessor : ITemplateAccessor
     /// <returns>List of template type names</returns>
     public List<string> GetAvailableTemplates()
     {
-        if (!Directory.Exists(_templatesDir))
-            return new List<string>();
+        var resourceNames = _availableResourceNames.Value;
+        var templates = new List<string>();
 
-        return Directory.GetFiles(_templatesDir, "*.md")
-            .Select(f => Path.GetFileNameWithoutExtension(f))
-            .Where(t => t != "master-template")
-            .OrderBy(t => t)
-            .ToList();
+        foreach (var resourceName in resourceNames)
+        {
+            // Match patterns: "templates.{name}.md" or "{namespace}.templates.{name}.md"
+            var match = System.Text.RegularExpressions.Regex.Match(
+                resourceName,
+                @"(?:^|\.)templates\.([^\.]+)\.md$"
+            );
+
+            if (match.Success)
+            {
+                var templateName = match.Groups[1].Value;
+                if (templateName != "master-template")
+                {
+                    templates.Add(templateName);
+                }
+            }
+        }
+
+        return templates.OrderBy(t => t).ToList();
     }
 
     /// <summary>
@@ -76,11 +95,11 @@ public class TemplateAccessor : ITemplateAccessor
     /// <exception cref="FileNotFoundException">Thrown when template not found</exception>
     public string GenerateDocument(string type, string name, string outputDir)
     {
-        var templatePath = Path.Combine(_templatesDir, $"{type}.md");
-        
-        if (!File.Exists(templatePath))
+        var resourceName = FindResourceName(type);
+
+        if (resourceName == null)
         {
-            throw new FileNotFoundException($"Template not found: {templatePath}");
+            throw new FileNotFoundException($"Template not found: {type}");
         }
 
         Directory.CreateDirectory(outputDir);
@@ -89,7 +108,18 @@ public class TemplateAccessor : ITemplateAccessor
         var sanitizedName = name.Replace(" ", "_");
         var outputPath = Path.Combine(outputDir, $"{date}-{type}-{sanitizedName}.md");
 
-        File.Copy(templatePath, outputPath, overwrite: true);
+        // Read template from embedded resource
+        using var stream = _assembly.GetManifestResourceStream(resourceName);
+        if (stream == null)
+        {
+            throw new FileNotFoundException($"Could not load template resource: {resourceName}");
+        }
+
+        using var reader = new StreamReader(stream);
+        var templateContent = reader.ReadToEnd();
+
+        // Write to output file
+        File.WriteAllText(outputPath, templateContent);
 
         return outputPath;
     }

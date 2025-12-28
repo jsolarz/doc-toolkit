@@ -1,0 +1,174 @@
+# Session Ledger
+
+This file tracks all AI interactions, decisions, and context across all AI sessions.
+
+## 2025-01-27 - Self-Contained Application with Embedded Templates
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Make the app self-contained with embedded templates. The app should not need to reference source code or current folder, but have all data for generating "docs as code" style documentation. Templates should be embedded as resources or in internal database. Need minimal dependencies. Also need option to move generated docs to new subfolder in docs folder.
+
+**AI Actions**:
+- Updated `DocToolkit.csproj` to embed all templates as resources using `EmbeddedResource` with `LogicalName`
+- Modified `TemplateAccessor` to read from embedded resources instead of file system using `Assembly.GetManifestResourceStream()`
+- Added `--subfolder` option to `GenerateCommand` for organizing generated documents
+- Updated documentation (README.md, docs/design.md) to reflect self-contained architecture
+- Updated CHANGELOG.md with new features
+- Verified build succeeds with embedded resources
+
+**Files Modified**:
+- Created: SESSION-LEDGER.md
+- Modified: src/DocToolkit/DocToolkit.csproj (added EmbeddedResource items)
+- Modified: src/DocToolkit/Accessors/TemplateAccessor.cs (changed from file system to embedded resources)
+- Modified: src/DocToolkit/ifx/Commands/GenerateCommand.cs (added --subfolder option)
+- Modified: README.md (updated documentation for self-contained deployment)
+- Modified: docs/design.md (added self-contained deployment section)
+- Modified: CHANGELOG.md (added new features section)
+
+**Context/Notes**:
+- Templates are now embedded as resources with pattern `templates.{type}.md`
+- TemplateAccessor uses flexible resource name discovery to handle both `templates.{type}.md` and `{namespace}.templates.{type}.md` patterns
+- The `--subfolder` option allows organizing documents (e.g., `doc gen prd "API" --subfolder "architecture"` creates `docs/architecture/2025-01-27-prd-API.md`)
+- Application is now fully self-contained - no external template folder references needed
+- Build verified successfully - all templates embedded correctly
+- Follows "docs as code" philosophy from https://www.writethedocs.org/guide/docs-as-code/
+
+**Status**: Completed
+
+## 2025-01-27 - Updated Tests for TemplateAccessor
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Update tests
+
+**AI Actions**:
+- Created comprehensive test suite for TemplateAccessor (15 tests)
+- Tests cover embedded resource functionality, template existence checks, document generation, subfolder support, and edge cases
+- Updated test README to include TemplateAccessor tests
+- Verified all TemplateAccessor tests pass (15/15)
+
+**Files Modified**:
+- Created: src/tests/DocToolkit.Tests/Accessors/TemplateAccessorTests.cs
+- Modified: src/tests/README.md (updated test coverage statistics)
+
+**Context/Notes**:
+- All 15 TemplateAccessor tests pass successfully
+- Tests verify embedded resource loading, template discovery, document generation, subfolder creation, and error handling
+- Test coverage includes: TemplateExists, GetAvailableTemplates, GenerateDocument with various scenarios
+- Tests use temporary directories that are cleaned up after execution
+- Follows IDesign Method™ testing principles for Accessors (storage abstraction tests)
+
+**Status**: Completed
+
+## 2025-01-27 - Added Web Interface for Document Viewing
+
+**Timestamp**: 2025-01-27
+
+**User Request**: The app should have a web interface to see the generated documents and to share them with the team. Add a self-contained, self-hosted static website to show the documents.
+
+**AI Actions**:
+- Added ASP.NET Core FrameworkReference for web hosting
+- Created WebCommand to start self-hosted web server
+- Created embedded static files (HTML, CSS, JS) for document viewer
+- Implemented RESTful API endpoints for listing and serving documents
+- Added modern, responsive web interface with markdown rendering
+- Registered web command in Program.cs
+- Updated documentation with web interface instructions
+
+**Files Modified**:
+- Modified: src/DocToolkit/DocToolkit.csproj (added FrameworkReference, embedded web resources)
+- Created: src/DocToolkit/ifx/Commands/WebCommand.cs
+- Created: src/DocToolkit/web/index.html
+- Created: src/DocToolkit/web/app.css
+- Created: src/DocToolkit/web/app.js
+- Modified: src/DocToolkit/Program.cs (registered WebCommand)
+- Modified: README.md (added web interface documentation)
+- Modified: docs/design.md (added web interface architecture section)
+- Modified: CHANGELOG.md (added web interface features)
+
+**Context/Notes**:
+- Web server uses ASP.NET Core minimal API
+- All web assets (HTML, CSS, JS) are embedded as resources for self-contained deployment
+- Web interface provides document browsing, viewing, and sharing capabilities
+- Supports custom port, host (for network access), and docs directory
+- Modern, responsive design with markdown rendering
+- RESTful API: GET /api/documents (list), GET /api/documents/{path} (get content)
+- Follows IDesign Method™ - WebCommand is a Client (UI volatility)
+- Build verified successfully
+
+**Status**: Completed
+
+## 2025-01-27 - Enhanced Web Interface with Modern Fonts and Catppuccin Theme
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Analyze PlanetScale rebrand article, Markdoc article, CommonMark specification, and update website to use modern-font-stacks (system-ui), add dark/light theme based on Catppuccin Frappe.
+
+**AI Actions**:
+- Analyzed PlanetScale rebrand success (103% signup increase with simple markdown-based site)
+- Analyzed Markdoc approach (CommonMark-based with extensions)
+- Researched CommonMark specification standards
+- Updated CSS with modern font stacks (system-ui first, following modern-font-stacks)
+- Implemented Catppuccin Frappe color palette for light and dark themes
+- Added theme toggle functionality with localStorage persistence
+- Updated all UI elements to use Catppuccin color variables
+- Improved code block typography with ui-monospace font stack
+- Enhanced readability and spacing (PlanetScale-inspired simplicity)
+
+**Files Modified**:
+- Modified: src/DocToolkit/web/app.css (modern fonts, Catppuccin theme, theme variables)
+- Modified: src/DocToolkit/web/index.html (added theme toggle button)
+- Modified: src/DocToolkit/web/app.js (theme toggle functionality)
+- Modified: docs/WEB-INTERFACE-ANALYSIS.md (added recent improvements section)
+- Modified: CHANGELOG.md (added font and theme improvements)
+
+**Context/Notes**:
+- PlanetScale insights: Technical audience prefers straightforward, no-fluff content. Simple markdown-based sites perform better than fancy animations.
+- Modern font stacks: Using system-ui for native OS fonts, zero external dependencies, better performance
+- Catppuccin Frappe: Full color palette implementation with proper contrast ratios
+- Theme persistence: Uses localStorage to remember user preference
+- Design philosophy: Aligned with PlanetScale's successful approach - simplicity, readability, technical focus
+- All colors use CSS variables for easy theme switching
+- Smooth transitions between themes
+- Build verified successfully
+
+**Status**: Completed
+
+## 2025-01-27 - Phase 1 Web Interface Improvements
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Proceed with Phase 1 improvements
+
+**AI Actions**:
+- Added Markdig NuGet package for CommonMark/GFM markdown rendering
+- Implemented server-side markdown rendering using Markdig pipeline
+- Created navigation structure detection from folder hierarchy
+- Added auto-generated table of contents from markdown headers
+- Implemented full-text search functionality with highlighting
+- Updated frontend to use server-side rendered HTML
+- Added hierarchical navigation tree with collapsible folders
+- Added table of contents sidebar with anchor links
+- Added search input and results display
+- Updated CSS for new navigation, TOC, and search features
+
+**Files Modified**:
+- Modified: src/DocToolkit/DocToolkit.csproj (added Markdig package)
+- Modified: src/DocToolkit/ifx/Commands/WebCommand.cs (added Markdig rendering, navigation, TOC, search)
+- Modified: src/DocToolkit/web/index.html (added search input, TOC container)
+- Modified: src/DocToolkit/web/app.js (rewrote to use server-side rendering, navigation, TOC, search)
+- Modified: src/DocToolkit/web/app.css (added navigation, TOC, search styles)
+- Modified: CHANGELOG.md (added Phase 1 improvements)
+- Modified: docs/WEB-INTERFACE-ANALYSIS.md (updated with Phase 1 completion)
+
+**Context/Notes**:
+- Markdig pipeline configured with: AdvancedExtensions, PipeTables, GridTables, TaskLists, AutoLinks, EmphasisExtras, ListExtras, GenericAttributes, YamlFrontMatter
+- Navigation structure auto-detects folder hierarchy and creates collapsible tree
+- Table of contents extracted from markdown headers with proper anchor IDs
+- Search uses simple full-text matching with relevance scoring (can be enhanced with semantic index later)
+- Server-side rendering ensures proper CommonMark compliance and better performance
+- All features maintain self-contained architecture (no external dependencies)
+- Build verified successfully
+- Follows IDesign Method™ - WebCommand remains Client, markdown rendering is algorithm volatility
+
+**Status**: Completed

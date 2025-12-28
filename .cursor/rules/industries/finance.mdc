@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+# Finance Documentation Rules
+
+- Emphasize security, auditability, and regulatory compliance.
+- Highlight risk controls, segregation of duties, and data lineage.
+- Avoid ambiguity in financial logic or workflows.
+- Ensure traceability of requirements to controls.

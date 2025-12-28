@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+# Documentation
+
+- For every new function, include:
+    - A clear docstring
+    - Parameter descriptions
+    - Return value description
+    - Error/exception behavior
+
+- When modifying complex logic, add comments explaining the intent.
+
+## Code Comment Standards
+
+**CRITICAL: The following elements are PROHIBITED in code comments unless explicitly approved by the user:**
+- **Em dashes (—)**: Never use em dashes. Use commas, periods, or colons instead. Only use if the user explicitly requests or approves.
+- **Horizontal lines (`---`)**: Never use horizontal lines for separation. Use whitespace or comments instead. Only use if the user explicitly requests or approves.
+- **Emojis**: Never use emojis in code comments. Only use if the user explicitly requests or approves.
+
+**Additional prohibitions:**
+- Exclamation marks
+- Casual language (TL;DR, FYI, etc.)
+- Excessive formatting (bold, italics) when plain text suffices
+
+**Prefer:**
+- Clear, concise comments that explain why, not what
+- Professional, understated language
+- Direct statements without filler phrases

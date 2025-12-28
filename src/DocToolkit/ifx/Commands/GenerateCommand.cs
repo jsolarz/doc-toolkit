@@ -32,6 +32,10 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
         [CommandOption("-o|--output")]
         [DefaultValue("./docs")]
         public string Output { get; init; } = "./docs";
+
+        [Description("Subfolder within output directory to organize generated documents")]
+        [CommandOption("-s|--subfolder")]
+        public string? Subfolder { get; init; }
     }
 
     public override int Execute(CommandContext context, Settings settings)
@@ -58,7 +62,14 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
             return 1;
         }
 
-        var outputPath = _templateAccessor.GenerateDocument(settings.Type, settings.Name, settings.Output);
+        // Determine final output directory (with optional subfolder)
+        var finalOutputDir = settings.Output;
+        if (!string.IsNullOrWhiteSpace(settings.Subfolder))
+        {
+            finalOutputDir = Path.Combine(settings.Output, settings.Subfolder);
+        }
+
+        var outputPath = _templateAccessor.GenerateDocument(settings.Type, settings.Name, finalOutputDir);
 
         var panel = new Panel(
             new Rows(

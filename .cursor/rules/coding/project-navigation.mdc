@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+# Project Navigation
+
+- When asked to modify code, search the entire project for related files before making changes.
+- Respect existing project architecture and folder structure.
+- Follow existing conventions (e.g., services, controllers, utils).

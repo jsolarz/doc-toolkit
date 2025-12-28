@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+# PRD and Requirements Rules
+
+- Capture functional and non-functional requirements separately.
+- Requirements must be:
+  - Testable
+  - Unambiguous
+  - Atomic
+  - Traceable
+- Use “The system shall…” format for formal requirements.
+- Include user stories where appropriate:
+  - As a [role], I want [capability], so that [value].
+- Provide acceptance criteria using Gherkin or bullet lists.
+- Avoid mixing design decisions into requirement documents.

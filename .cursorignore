@@ -1,0 +1,187 @@
+# ------------------------------
+# Dependencies & build outputs
+# ------------------------------
+**/node_modules/
+**/vendor/
+**/dist/
+**/build/
+**/target/             # Rust
+**/bin/
+**/out/
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.tox/
+**/env/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.Python
+**/pip-log.txt
+**/pip-delete-this-directory.txt
+**/*.egg-info/
+**/obj/
+**/*.jar
+**/*.war
+**/*.ear
+
+# ------------------------------
+# Core junk / editor clutter
+# ------------------------------
+.git/
+.git/**/*
+**/.DS_Store
+**/.idea/
+**/.vscode/
+**/.history/
+**/*.swp
+**/*.*.swo
+*~
+**/Thumbs.db
+
+# ------------------------------
+# Logs
+# ------------------------------
+**/logs/
+**/*.log
+**/*.log.*
+
+# ------------------------------
+# Temporary files
+# ------------------------------
+**/tmp/
+**/temp/
+**/*.tmp
+**/*.temp
+**/*.bak
+**/*.backup
+**/*.old
+
+# ------------------------------
+# OS files
+# ------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+
+# ------------------------------
+# Test coverage
+# ------------------------------
+coverage/
+.nyc_output/
+*.coverage
+.coverage.*
+htmlcov/
+
+# ------------------------------
+# Documentation builds
+# ------------------------------
+site/
+_site/
+docs/_build/
+docs/.doctrees/
+
+# ------------------------------
+# Large binary files
+# ------------------------------
+**/*.zip
+**/*.tar
+**/*.tar.gz
+**/*.rar
+**/*.7z
+**/*.dmg
+**/*.iso
+**/*.msi
+**/*.deb
+**/*.rpm
+**/*.gz
+
+# ------------------------------
+# Media files (unless project-specific)
+# ------------------------------
+**/*.mp4
+**/*.avi
+**/*.mov
+**/*.wmv
+**/*.flv
+**/*.webm
+**/*.mp3
+**/*.wav
+**/*.flac
+**/*.aac
+
+# ------------------------------
+# Database files
+# ------------------------------
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/*.db-shm
+**/*.db-wal
+
+# ------------------------------
+# Environment and secrets
+# ------------------------------
+**/.env
+**/.env.local
+**/.env.*.local
+**/*.pem
+**/*.key
+**/*.cert
+**/*.crt
+**/secrets/
+**/.secrets/
+
+# ------------------------------
+# Package manager files
+# ------------------------------
+package-lock.json
+yarn.lock
+poetry.lock
+Pipfile.lock
+composer.lock
+
+# ------------------------------
+# Compiled files
+# ------------------------------
+**/*.com
+**/*.dll
+**/*.o
+**/*.so
+**/*.dylib
+
+# ------------------------------
+# Generated files
+# ------------------------------
+*.generated.*
+generated/
+auto-generated/
+
+# ------------------------------
+# Cache directories
+# ------------------------------
+cache/
+.parcel-cache/
+.next/
+.nuxt/
+.turbo/
+
+# Lock files (optional - uncomment if you want to exclude)
+# package-lock.json
+# yarn.lock
+
+# Project-specific exclusions
+# Add project-specific patterns here
+
+# ------------------------------
+# Docker / containers
+# ------------------------------
+**/.docker/
+**/docker-cache/
+**/docker-build/

@@ -15,7 +15,8 @@ tests/DocToolkit.Tests/
 │   ├── SemanticIndexManagerTests.cs
 │   └── SemanticSearchManagerTests.cs
 ├── Accessors/           # Unit tests for Accessor classes
-│   └── VectorStorageAccessorTests.cs
+│   ├── VectorStorageAccessorTests.cs
+│   └── TemplateAccessorTests.cs
 ├── Infrastructure/      # Tests for infrastructure components
 │   └── EventBusTests.cs
 ├── Integration/         # Integration tests
@@ -89,6 +90,7 @@ The benchmark runner will display:
 
 ### Accessors (Storage Volatility)
 - ✅ VectorStorageAccessor - 6 tests
+- ✅ TemplateAccessor - 15 tests
 
 ### Infrastructure
 - ✅ EventBus - 5 tests
@@ -104,7 +106,7 @@ The benchmark runner will display:
 
 ## Test Statistics
 
-- **Total Tests**: 50+
+- **Total Tests**: 65+
 - **Test Framework**: xUnit
 - **Assertion Library**: xUnit Assert (standard .NET testing)
 - **Mocking Framework**: Moq

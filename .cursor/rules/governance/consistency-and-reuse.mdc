@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# Consistency and Reuse Rules
+
+- Maintain consistent terminology across all documents.
+- Reuse approved templates and phrasing where possible.
+- Align with organizational style guides and architecture principles.
+- Ensure diagrams, tables, and descriptions use consistent naming.
+- When updating a document, ensure related sections are updated as well.

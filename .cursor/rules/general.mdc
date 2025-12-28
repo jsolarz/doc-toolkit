@@ -1,0 +1,107 @@
+---
+alwaysApply: true
+---
+# General Rules for Cursor (Solution Architecture & Technical Writing)
+
+This file defines the universal rules that apply across all tasks.  
+All specialized behaviors are delegated to the corresponding `.mdc` files listed below.
+
+## 1. Writing Style (Always Apply)
+- Use a technical, professional tone suitable for enterprise engineering.
+- Prioritize clarity, precision, and correctness.
+- Tailor depth and terminology to the intended audience (executive vs. technical).
+- Avoid ambiguity; explicitly state assumptions and constraints.
+- When uncertain, ask for clarification before proceeding.
+- Never use horizontal lines (`---`) to separate sections. Use headings and whitespace.
+- Do not use emojis, excessive icons, or casual language.
+- Use em dashes (—) only where grammatically appropriate, not as general separators.
+
+## 2. General Behavior
+- Before modifying code or documents, scan relevant files and understand context.
+- Prefer minimal, targeted changes unless a broader redesign is explicitly requested.
+- Maintain consistency with existing architecture, terminology, and formatting.
+- When generating multi‑file changes, list all files affected before editing.
+- Summarize progress, blockers, and next steps during handoff.
+- **CRITICAL: After every user request, update `SESSION-LEDGER.md` with the interaction details** (see `session-ledger.mdc` for format and requirements).
+
+### File Management Rules
+- **Do not create intermediate or temporary markdown files** unless absolutely necessary for a specific task that requires temporary storage.
+- **Never create multiple markdown files** for planning, analysis, or intermediate steps. Work directly with the codebase and existing files.
+- **Temporary files** may only be created when:
+  - Required for a specific operation that needs temporary storage
+  - The file will be explicitly deleted immediately after use
+  - The user explicitly requests a temporary file
+- **Session Ledger file**: **MANDATORY** - Update `SESSION-LEDGER.md` after every user request. This file tracks conversations, decisions, file changes, and context across all AI sessions. See `session-ledger.mdc` for detailed requirements and format.
+- **Changelog file**: You may create or update a single `CHANGELOG.md` file to track changes before and after applying them. This file should:
+  - Be updated before making changes (planned changes)
+  - Be updated after making changes (completed changes)
+  - Include verification status for each change
+  - List any additional tasks discovered during implementation
+- **Always verify changes**: After applying any change, test and verify that:
+  - The change was correctly applied
+  - The change works as intended
+  - No regressions were introduced
+  - All related files are updated consistently
+- **Task discovery**: When implementing changes, check if additional tasks need to be added to the changelog or todo list based on what you discover during implementation.
+
+## 3. Verification & Accuracy
+- Do not invent APIs, features, or capabilities.
+- Verify all technical claims against the provided context.
+- Flag contradictions, missing information, or unclear requirements.
+- When multiple interpretations exist, present them and ask for confirmation.
+
+## 4. Testing & Validation (When Code Is Involved)
+- Update or create tests when modifying logic.
+- Follow project conventions (.NET → xUnit/NUnit, Python → pytest).
+- Cover edge cases, failure modes, and expected behavior.
+- Ensure tests are deterministic and isolated.
+
+## 5. Security & Compliance (Always Consider)
+- Never log sensitive data.
+- Sanitize all user inputs.
+- Use secure defaults for authentication, authorization, and data handling.
+- Highlight risks, mitigations, and compliance considerations when relevant.
+
+## 6. Reference to Specialized Rule Packs
+For domain‑specific guidance, refer to the following `.mdc` files:
+
+### Core Documentation Packs
+- `session-ledger.mdc` - **MANDATORY**: Session ledger management and update requirements
+- `documentation-structure.mdc`
+- `clarity-and-tone.mdc`
+- `rfps-and-tenders.mdc`
+- `sows-and-contracts.mdc`
+- `prds-and-requirements.mdc`
+- `adrs-and-architecture.mdc`
+- `accuracy-and-verification.mdc`
+- `consistency-and-reuse.mdc`
+- `communication-and-collaboration.mdc`
+- `quality-and-review.mdc`
+
+### Industry‑Specific Packs
+- `government-tenders.mdc`
+- `defense-industry.mdc`
+- `healthcare.mdc`
+- `finance.mdc`
+- `saas-cloud.mdc`
+
+### Framework‑Specific Packs
+- `togaf.mdc`
+- `safe.mdc`
+- `itil.mdc`
+- `iso-standards.mdc`
+
+### Coding‑Mode Pack
+- `coding-mode.mdc`  
+  (Optimized for Cursor's AI coding mode, .NET, Python, and cloud architecture)
+
+## 7. How to Use This Rule Set
+- Apply the general rules in this file to **all tasks**.
+- Apply specialized `.mdc` rules **only when relevant** to the task domain.
+- When conflicts arise:
+  1. **General rules override** specialized rules for tone, clarity, and safety.
+  2. **Specialized rules override** general rules for domain‑specific structure or compliance.
+
+## 8. Final Principle
+The goal is to produce **high‑quality, accurate, enterprise‑grade technical work** with minimal redundancy.  
+This general file defines the core behavior; all other `.mdc` files extend it.

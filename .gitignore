@@ -1,3 +1,26 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
 # Python
 __pycache__/
 *.py[cod]
@@ -16,47 +39,337 @@ parts/
 sdist/
 var/
 wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-venv/
-env/
-ENV/
+MANIFEST
+.pytest_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
 .venv
+venv/
+ENV/
+env/
+.conda/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
 
 # .NET
-**/bin/
-**/obj/
+bin/
+obj/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+*.dbmdl
+*.jfm
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
 *.cache
 *.dll
 *.exe
 *.pdb
+*.cache
+TestResults/
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+.nuget/
+packages/
+*.nupkg
+*.snupkg
+
+# Java
+*.class
 *.log
-.vs/
-.vscode/
-.idea/
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+.gradletasknamecache
+.classpath
+.project
+.settings/
+bin/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.externalToolBuilders/
+.cproject
+.autotools
+.factorypath
+.buildpath
+.target
+.sts4-cache
+.mvn/
+mvnw
+mvnw.cmd
+.mvn/wrapper/maven-wrapper.jar
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+vendor/
+
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+
+# Ruby
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+.bundle/
+vendor/bundle
+lib/bundler/man/
+.ruby-version
+.ruby-gemset
+.rvmrc
+
+# PHP
+/vendor/
+.phpunit.result.cache
+composer.phar
+composer.lock
+
+# Logs
+*.log
+logs/
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Environment and Secrets
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+secrets/
+.secrets/
+*.secret
+config/secrets.yml
+credentials.json
+service-account.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.sql
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.save
 *.swp
 *.swo
 *~
-.DS_Store
 
-# OS
-Thumbs.db
-desktop.ini
+# Test coverage
+coverage/
+.nyc_output/
+*.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+.tox/
+.cache
+nosetests.xml
+test-results/
+junit.xml
 
-# Generated files (in toolkit root only)
-semantic-index/
-knowledge-graph/
-context.md
+# Documentation builds
+site/
+_site/
+docs/_build/
+docs/.doctrees/
+.readthedocs.yml
+.readthedocs/
 
-# Temporary files
-*.tmp
-*.bak
+# Build and dist
+dist/
+build/
+out/
+target/
+*.egg-info/
+*.whl
+*.tar.gz
 
-# Project-specific (keep these for projects created by toolkit)
-# /docs/*
-# /source/*
-# /semantic-index/*
-# /knowledge-graph/*
+# Package manager lock files (uncomment if you want to ignore)
+# package-lock.json
+# yarn.lock
+# Pipfile.lock
+# poetry.lock
+# composer.lock
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Large binary files
+*.pdf
+*.psd
+*.ai
+*.sketch
+
+# Media files (uncomment if you want to ignore)
+# *.mp4
+# *.avi
+# *.mov
+# *.wmv
+# *.flv
+# *.webm
+# *.mp3
+# *.wav
+# *.flac
+# *.aac
+# *.jpg
+# *.jpeg
+# *.png
+# *.gif
+# *.svg
+# *.ico
+
+# Cache directories
+.cache/
+cache/
+.parcel-cache/
+.next/
+.nuxt/
+.turbo/
+.vercel/
+.output/
+.nuxt/
+.vuepress/dist/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# AWS
+.aws-sam/
+samconfig.toml
+
+# Azure
+.azure/
+
+# Google Cloud
+.gcloud/
+
+# Kubernetes
+*.kubeconfig
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Project-specific exclusions
+# Add project-specific patterns here

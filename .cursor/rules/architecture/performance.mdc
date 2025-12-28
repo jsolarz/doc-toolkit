@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+# Performance
+
+- Prefer O(n) or better solutions when possible.
+- Avoid premature optimization unless performance is a known bottleneck.
+- Use efficient data structures appropriate for the task.

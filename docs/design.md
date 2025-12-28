@@ -326,6 +326,7 @@ All components use constructor injection with interfaces:
 - `GraphCommand`: Knowledge graph generation
 - `SummarizeCommand`: Document summarization
 - `ValidateCommand`: Setup validation
+- `WebCommand`: Self-hosted web server for document viewing and sharing
 
 **Service Boundaries**: Commands call Services only (closed architecture)
 
@@ -358,7 +359,7 @@ All components use constructor injection with interfaces:
 
 **Accessors**:
 - `VectorStorageAccessor`: Abstracts vector storage (file format could change to database)
-- `TemplateAccessor`: Abstracts template storage (location could change to cloud)
+- `TemplateAccessor`: Abstracts template storage (now uses embedded resources for self-contained deployment; could change to cloud/database)
 - `ProjectAccessor`: Abstracts file system operations (could move to cloud storage)
 
 **Service Boundaries**: Accessors are "dumb" - they perform CRUD operations only. No business logic.
@@ -476,12 +477,55 @@ All components use constructor injection with interfaces:
 - No sensitive data stored in embeddings (only text chunks)
 - Temporary files cleaned up after execution
 
+## Self-Contained Deployment
+
+The application is designed to be self-contained with minimal dependencies:
+
+- **Embedded Templates**: All document templates are embedded as resources in the compiled assembly, eliminating the need for external template files
+- **Minimal Dependencies**: Only essential NuGet packages are included
+- **Portable**: The compiled executable can be distributed without requiring template folders or source code references
+- **Subfolder Organization**: Generated documents can be organized into subfolders using the `--subfolder` option
+
+### Template Access
+
+Templates are accessed via embedded resources using `Assembly.GetManifestResourceStream()`. The `TemplateAccessor` automatically discovers and loads templates from the assembly, making the application fully self-contained.
+
+## Web Interface
+
+**Current State**: Self-hosted web server implemented
+
+The toolkit includes a self-contained web interface for viewing and sharing documents:
+
+- **Web Server**: ASP.NET Core minimal API with embedded static files
+- **Document Viewer**: Modern, responsive web interface with markdown rendering
+- **API Endpoints**: RESTful API for listing and retrieving documents
+- **Self-Contained**: All web assets (HTML, CSS, JS) embedded as resources
+- **Network Access**: Configurable host and port for team sharing
+
+**Architecture**:
+```
+WebCommand (Client)
+    ↓
+ASP.NET Core WebApplication
+    ↓
+API Endpoints (/api/documents)
+    ↓
+File System (docs directory)
+```
+
+**Features**:
+- Browse all generated documents
+- View document content with markdown rendering
+- Document metadata (type, size, last modified)
+- Responsive design for mobile and desktop
+- Real-time document list refresh
+
 ## Future Enhancements
 
 - Support for additional file formats
 - Configurable embedding models
 - Incremental indexing (update index without full rebuild)
-- Web UI for document generation
+- Enhanced web UI features (search, filters, document editing)
 - API for programmatic access
 - Multi-language support
 

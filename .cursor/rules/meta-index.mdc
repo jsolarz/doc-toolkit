@@ -1,0 +1,231 @@
+---
+alwaysApply: true
+---
+# Meta Index of Rule Packs
+
+This file summarizes the purpose of each `.mdc` rule file in the repository.
+Use this as a navigation guide when working across multiple domains.
+
+---
+
+## Core Documentation Packs
+
+### documentation-structure.mdc
+Defines standard document structure: headings, sections, formatting, and layout conventions for all technical documents.
+
+### clarity-and-tone.mdc
+Ensures a professional, concise, technical tone with clear definitions, active voice, and audience‑appropriate depth.
+
+### prds-and-requirements.mdc
+Covers requirement writing: functional vs. non‑functional, testability, atomicity, traceability, and acceptance criteria.
+
+### sows-and-contracts.mdc
+Defines rules for scope, deliverables, milestones, acceptance criteria, assumptions, dependencies, and exclusions.
+
+### rfps-and-tenders.mdc
+Guides RFP/RFI/tender responses: compliance, traceability, requirement restatement, and value proposition framing.
+
+### adrs-and-architecture.mdc
+Defines ADR structure, alternatives, trade-offs, rationale, and alignment with enterprise architecture principles.
+
+### quality-and-review.mdc
+Covers self-review, completeness, accuracy, consistency, and stakeholder readiness.
+
+---
+
+## Governance Packs
+
+### accuracy-and-verification.mdc
+Ensures factual correctness, verification of claims, and avoidance of invented capabilities.
+
+### consistency-and-reuse.mdc
+Maintains terminology consistency, template reuse, and alignment with organizational standards.
+
+### communication-and-collaboration.mdc
+Defines how to communicate uncertainty, present options, summarize progress, and manage handoffs.
+
+---
+
+## Industry-Specific Packs
+
+### government-tenders.mdc
+Rules for compliance-heavy government submissions: formal tone, strict structure, regulatory alignment.
+
+### defense-industry.mdc
+Emphasizes mission-critical reliability, security, redundancy, and threat modeling.
+
+### healthcare.mdc
+Focuses on patient safety, data integrity, interoperability, and healthcare regulatory compliance.
+
+### finance.mdc
+Covers auditability, risk controls, data lineage, and financial regulatory alignment.
+
+### saas-cloud.mdc
+Defines SaaS/cloud-specific patterns: multi-tenancy, SLAs, observability, and cloud-native design.
+
+---
+
+## Framework Packs
+
+### togaf.mdc
+Aligns documents with TOGAF ADM phases, capability maps, value streams, and architecture building blocks.
+
+### safe.mdc
+Uses SAFe terminology and structures: epics, capabilities, features, enablers, and PI planning alignment.
+
+### itil.mdc
+Covers service definitions, SLAs, incidents, changes, and operational workflows.
+
+### iso-standards.mdc
+Ensures ISO 27001/9001 alignment: controls, auditability, risk management, and continuous improvement.
+
+---
+
+## Coding & Engineering Packs
+
+### coding-mode.mdc
+Optimizes Cursor for coding tasks: .NET, Python, cloud patterns, testing, multi-file edits, and architectural consistency.
+
+### coding/general-behavior.mdc
+Code-specific behavior rules: reasoning before changes, preserving style, minimal edits, and API verification.
+
+### coding/documentation.mdc
+Code documentation standards: docstrings, parameter descriptions, return values, and error behavior.
+
+### coding/project-navigation.mdc
+Guidelines for exploring codebases: searching related files, respecting architecture, and following conventions.
+
+### architecture/code-quality-style.mdc
+Language-specific style guides: PEP8, Prettier, gofmt, rustfmt, and type annotation requirements.
+
+### architecture/performance.mdc
+Performance optimization principles: algorithmic complexity, premature optimization avoidance, and data structure selection.
+
+### architecture/safety-robustness.mdc
+Code safety: input validation, error handling, immutability, and concurrency safety.
+
+### architecture/security.mdc
+Security best practices: sensitive data handling, input sanitization, parameterized queries, and secure defaults.
+
+### architecture/testing.mdc
+Testing standards: test generation, isolation, naming, edge cases, and mocking guidelines.
+
+### architecture/version-control.mdc
+Git workflow: commit message format, change grouping, and refactoring separation.
+
+---
+
+## General Pack
+
+### general.mdc
+Defines universal rules: tone, behavior, verification, security, testing, and references to all specialized rule packs.
+
+---
+
+## Architecture Packs
+
+### architecture/ai-behavior.mdc
+AI-specific behavior: large file generation, multi-file edits, avoiding hallucinations, handling contradictions.
+
+### architecture/cloud-solution-architecture.mdc
+Cloud-native architecture patterns: managed services, scalability, security, observability, cost optimization, IaC.
+
+### architecture/diagram-guidelines.mdc
+Diagram type selection and creation guidelines: application, system, software, network, and cloud diagrams based on document type, audience, and use case. Rules for implementation-agnostic vs implementation-specific diagrams.
+
+### architecture/code-quality-style.mdc
+Code style and quality: language-specific style guides (PEP8, Prettier, gofmt, rustfmt), type hints, naming conventions.
+
+### architecture/performance.mdc
+Performance optimization: algorithmic complexity, avoiding premature optimization, efficient data structures.
+
+### architecture/safety-robustness.mdc
+Code safety: input validation, error handling, immutability, concurrency safety, avoiding global state.
+
+### architecture/security.mdc
+Security best practices: sensitive data handling, input sanitization, parameterized queries, secure defaults.
+
+### architecture/testing.mdc
+Testing standards: test generation, isolation, naming, edge cases, mocking guidelines.
+
+### architecture/version-control.mdc
+Git workflow: commit message format, change grouping, refactoring separation.
+
+---
+
+## Documentation Packs
+
+### documentation/adrs-and-architecture.mdc
+ADR structure: context, problem, options, decision, rationale, consequences. Enterprise architecture alignment.
+
+### documentation/clarity-and-tone.mdc
+Writing style: professional tone, active voice, audience-appropriate depth, avoiding jargon.
+
+### documentation/documentation-structure.mdc
+Document structure: hierarchical headings, executive summaries, standardized sections, tables, completeness.
+
+### documentation/prds-and-requirements.mdc
+Requirements documentation: functional vs. non-functional, testability, atomicity, traceability, user stories.
+
+### documentation/quality-and-review.mdc
+Review standards: self-review checklist, completeness, accuracy, consistency, stakeholder readiness.
+
+### documentation/rfps-and-tenders.mdc
+RFP/tender responses: requirement restatement, compliance, traceability, value propositions, avoiding commitments.
+
+### documentation/sows-and-contracts.mdc
+SOW/contract documentation: scope definition, deliverables, milestones, acceptance criteria, assumptions, dependencies.
+
+---
+
+## Governance Packs
+
+### governance/accuracy-and-verification.mdc
+Fact-checking: verify technical claims, avoid inventing capabilities, flag contradictions, ensure accuracy.
+
+### governance/communication-and-collaboration.mdc
+Collaboration: present multiple interpretations, summarize complex topics, provide trade-offs, manage handoffs.
+
+### governance/communication-style.mdc
+Communication guidelines: conciseness, code communication formats, collaboration patterns.
+
+### governance/consistency-and-reuse.mdc
+Consistency: terminology, template reuse, organizational alignment, diagram naming, cross-document updates.
+
+### governance/strict-architecture-governance.mdc
+Enterprise governance: architecture principles, change control, documentation requirements, risk modeling, validation.
+
+---
+
+## Framework Packs
+
+### frameworks/iso-standards.mdc
+ISO 27001/9001 alignment: controls, auditability, risk management, continuous improvement.
+
+### frameworks/itil.mdc
+ITIL service management: service definitions, SLAs, incidents, changes, operational workflows.
+
+### frameworks/safe.mdc
+SAFe agile framework: epics, capabilities, features, enablers, PI planning alignment.
+
+### frameworks/togaf.mdc
+TOGAF enterprise architecture: ADM phases, capability maps, value streams, architecture building blocks.
+
+---
+
+## Industry Packs
+
+### industries/defense-industry.mdc
+Defense systems: mission-critical reliability, security, redundancy, threat modeling.
+
+### industries/finance.mdc
+Financial services: auditability, risk controls, data lineage, financial regulatory alignment.
+
+### industries/government-tenders.mdc
+Government procurement: compliance formatting, requirement mapping, formal language, regulatory alignment.
+
+### industries/healthcare.mdc
+Healthcare systems: patient safety, data integrity, interoperability, HIPAA compliance.
+
+### industries/saas-cloud.mdc
+SaaS/cloud patterns: multi-tenancy, SLAs, observability, cloud-native design.

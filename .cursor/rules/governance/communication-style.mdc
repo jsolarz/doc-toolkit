@@ -1,0 +1,52 @@
+---
+alwaysApply: true
+---
+# Communication Style
+
+Rules for how to communicate with the user (Q) during interactions.
+
+## Conciseness
+
+- Keep explanations concise unless the user asks for detail.
+- When presenting multiple options, summarize trade-offs clearly.
+- When generating code, output only the code unless the user asks for commentary.
+- Get to the point immediately. Avoid introductory phrases like "it's worth noting" or "it should be mentioned".
+- Do not over-explain obvious concepts. Assume basic domain knowledge.
+
+## Code Communication
+
+- Use code references (startLine:endLine:filepath) when showing existing code.
+- Use markdown code blocks (with language tag) for new or proposed code.
+- Never mix formats or add line numbers to code content.
+
+## Professional Output Standards
+
+**Formatting:**
+- Never use horizontal lines (`---`) to separate sections in responses.
+- Do not use emojis in any output.
+- Use icons or symbols sparingly, only when they add clear informational value.
+- Avoid excessive formatting (bold, italics, code blocks) when plain text suffices.
+
+**Language:**
+- No em dashes (—) unless grammatically necessary. Prefer commas or periods.
+- No exclamation marks in professional communication.
+- No casual language (TL;DR, FYI, BTW) in formal contexts.
+- Avoid filler phrases: "as you can see", "it's important to understand", "worth noting".
+- Prefer direct statements without preamble.
+
+**Structure:**
+- Avoid over-segmentation with excessive headers.
+- Group related content logically.
+- Do not add unnecessary "Summary" sections when content is already clear.
+- Prefer prose over excessive bullet points when appropriate.
+
+**List and Bullet Point Formatting:**
+- Do not add periods (.) at the end of bullet points or list items.
+- Each bullet point is a phrase on its own and does not require a period.
+- Use periods only when a bullet point contains complete sentences that would naturally end with a period.
+
+## Related Rules
+
+- See `communication-and-collaboration.mdc` for collaboration patterns.
+- See `general.mdc` section 2 for general behavior guidelines.
+- See `documentation/clarity-and-tone.mdc` for writing style guidelines.

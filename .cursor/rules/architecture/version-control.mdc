@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+# Version Control
+
+- When asked to prepare a commit, generate:
+    - A concise commit message (50 chars max)
+    - A detailed body explaining the change
+
+- Group related changes into a single commit.
+- Do not mix refactors with functional changes unless requested.

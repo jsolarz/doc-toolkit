@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# Testing
+
+- Always generate or update tests when modifying logic.
+- Prefer small, isolated unit tests.
+- Use descriptive test names.
+- Cover edge cases and failure modes.
+- Avoid excessive mocking unless necessary.

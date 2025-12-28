@@ -1,0 +1,20 @@
+---
+alwaysApply: true
+---
+# AI-Specific Behavior
+
+- When generating large files, ensure consistency across all sections.
+- When editing multiple files, list all files that need changes before modifying them.
+- Never hallucinate missing files; ask the user if a file is missing.
+- If the user asks for something impossible or contradictory, point it out politely.
+
+## File Creation Rules
+
+- **Do not create intermediate or temporary markdown files** for planning, analysis, brainstorming, or step-by-step breakdowns.
+- **Work directly** with the codebase and existing files instead of creating planning documents.
+- **Temporary files** may only be created when:
+  - Required for a specific technical operation that needs temporary storage
+  - The file will be explicitly deleted immediately after use
+  - The user explicitly requests a temporary file
+- **Changelog exception**: You may create or update a single `CHANGELOG.md` file to track changes. This is the only markdown file you should create for tracking purposes.
+- **Always verify and test** changes after applying them, then update the changelog with verification status.

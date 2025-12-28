@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+---
+# Cloud Solution Architecture Rules
+
+These rules optimize Cursor for designing and documenting cloud-native architectures across Azure, AWS, and GCP.
+
+---
+
+## Cloud-Native Principles
+- Prefer managed services over self-hosted components.
+- Design for elasticity, resilience, and observability.
+- Use event-driven, decoupled architectures where appropriate.
+- Apply the 12-factor principles for application design.
+
+---
+
+## Scalability & Reliability
+- Ensure horizontal scalability for stateless components.
+- Use autoscaling, load balancing, and distributed queues.
+- Document failure modes and recovery strategies.
+- Apply multi-AZ or multi-region patterns when required.
+
+---
+
+## Security & Compliance
+- Enforce least privilege across all cloud resources.
+- Use managed identity, KMS/Key Vault, and secure secrets handling.
+- Ensure encryption in transit and at rest.
+- Document compliance considerations (ISO, SOC2, HIPAA, PCI-DSS).
+
+---
+
+## Observability
+- Include:
+  - Centralized logging
+  - Metrics
+  - Distributed tracing
+  - Health checks
+  - Alerts and SLOs
+- Define dashboards and KPIs for operational monitoring.
+
+---
+
+## Cost Optimization
+- Use serverless or consumption-based services when appropriate.
+- Right-size compute resources.
+- Document cost drivers and provide cost estimates.
+- Highlight opportunities for reserved instances or savings plans.
+
+---
+
+## Data & Integration
+- Document data flows, storage choices, and lifecycle policies.
+- Use cloud-native messaging (Event Grid, SNS/SQS, Pub/Sub).
+- Ensure idempotency and retry strategies for integrations.
+- Apply appropriate consistency models (eventual vs. strong).
+
+---
+
+## Deployment & DevOps
+- Use IaC (Terraform, Bicep, CloudFormation, Pulumi).
+- Document CI/CD pipelines, environments, and promotion flows.
+- Ensure blue/green or canary deployments for critical services.
+- Include rollback strategies.
+
+---
+
+## Architecture Documentation
+- Provide:
+  - High-level architecture diagrams
+  - Component breakdowns
+  - Deployment topology
+  - Data flow diagrams
+  - Integration maps
+  - NFR mappings
+- Use cloud provider icons and naming conventions (textually described).
+- For use case and workflow diagrams, use implementation-agnostic components (see `architecture/diagram-guidelines.mdc`).
+- For infrastructure diagrams, use cloud provider-specific icons and services.

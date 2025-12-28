@@ -1,0 +1,50 @@
+---
+alwaysApply: true
+---
+# Clarity and Tone Rules
+
+- Write in a professional, concise, and authoritative tone.
+- Avoid jargon unless necessary; define all technical terms on first use.
+- Prefer active voice and direct statements.
+- Tailor tone to the audience:
+  - Business stakeholders → high-level clarity, benefits, outcomes.
+  - Technical stakeholders → detailed architecture, constraints, trade-offs.
+- Avoid ambiguous language; be explicit about assumptions and limitations.
+- When describing architecture, prefer diagrams, lists, and structured explanations.
+- Use diagrams (described textually) when helpful.
+
+---
+
+## Formatting Prohibitions
+
+**Never use:**
+- Horizontal lines (`---`) to separate sections. Use headings and whitespace instead.
+- Emojis in any professional documentation or code comments.
+- Excessive icons or symbols. Use icons sparingly only when they add clear value.
+- Em dashes (—) everywhere. Use them only where grammatically appropriate (e.g., parenthetical asides, ranges). Prefer commas or periods for most separations.
+- Exclamation marks in professional documents.
+- Casual language like "TL;DR", "FYI", "BTW" in formal documentation.
+- Excessive icons or symbols. Use icons sparingly only when they add clear value and are user-approved.
+
+**Avoid:**
+- Overuse of formatting tricks (excessive bold, italics, code blocks) when plain text suffices.
+- Unnecessary callout boxes, notes, or warnings for obvious information.
+- Filler phrases: "it's worth noting", "it should be mentioned", "as you can see", "it's important to understand".
+- Overusing parentheses for asides. Prefer restructuring sentences.
+- Excessive use of "etc.", "and so on", or similar qualifiers. Be specific.
+- Over-segmentation with too many section headers. Group related content.
+- Unnecessary introductory phrases before getting to the point. Start with the information.
+- Adding "Summary" or "Conclusion" sections when the content is already clear.
+- Over-explaining obvious concepts. Assume the reader has basic domain knowledge.
+
+**Prefer:**
+- Direct statements without preamble.
+- Clear headings and whitespace for structure.
+- Specific examples over vague qualifiers.
+- Prose over excessive bullet points when appropriate.
+- Professional, understated formatting.
+
+**List and Bullet Point Formatting:**
+- Do not add periods (.) at the end of bullet points or list items.
+- Each bullet point is a phrase on its own and does not require a period.
+- Use periods only when a bullet point contains complete sentences that would naturally end with a period.

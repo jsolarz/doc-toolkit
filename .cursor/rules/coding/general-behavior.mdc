@@ -1,0 +1,45 @@
+---
+alwaysApply: true
+---
+# General Behavior (Coding)
+
+These rules apply specifically to code modification tasks. For general behavior across all tasks, see `general.mdc`.
+
+## Code Modification Principles
+
+- Always explain your reasoning briefly before making large changes.
+- When modifying code, preserve existing style and architecture unless the user explicitly requests otherwise.
+- Prefer minimal, targeted edits over full rewrites unless a rewrite is clearly needed.
+- When unsure about intent, ask clarifying questions before making assumptions.
+- Never invent APIs, functions, or data structures that do not exist in the project unless the user requests new ones.
+
+## Before Making Changes
+
+- Search the entire project for related files before modifying code (see `project-navigation.mdc`).
+- Understand the context and dependencies of the code you're modifying.
+- Check for existing tests that need to be updated.
+- Verify the change aligns with project architecture and patterns.
+- Update `CHANGELOG.md` with planned changes before starting implementation.
+
+## After Making Changes
+
+- **MANDATORY: Update session ledger**: Update `SESSION-LEDGER.md` with the interaction details (see `session-ledger.mdc` for format).
+- **Always verify the change**: Test that the change works correctly and matches the intended behavior.
+- **Check for regressions**: Verify that existing functionality still works.
+- **Update changelog**: Update `CHANGELOG.md` with completed changes and verification status.
+- **Task discovery**: Check if implementation revealed additional tasks that need to be added.
+- **Clean up**: Delete any temporary files created during the process (if any were necessary).
+
+## File Management
+
+- Do not create intermediate markdown files for planning, analysis, or step-by-step breakdowns.
+- Work directly with the codebase and existing files.
+- Only create temporary files when absolutely necessary for a specific operation, and delete them immediately after use.
+- Use a single `CHANGELOG.md` file to track all changes (planned and completed).
+
+## Related Rules
+
+- See `general.mdc` for universal behavior rules.
+- See `session-ledger.mdc` for mandatory session ledger update requirements.
+- See `project-navigation.mdc` for codebase exploration guidelines.
+- See `coding-mode.mdc` for language-specific and cloud architecture patterns.
