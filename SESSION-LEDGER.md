@@ -2,6 +2,31 @@
 
 This file tracks all AI interactions, decisions, and context across all AI sessions.
 
+## 2025-01-27 - Cleanup: Removed Unnecessary Documentation Files
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Remove all unnecessary files from docs folder
+
+**AI Actions**:
+- Removed development artifacts: MARKDOWN-RENDERING-ANALYSIS.md, WEB-INTERFACE-ANALYSIS.md, WEB-INTERFACE-TESTING.md
+- Removed test file: test-document.md
+- Kept core documentation: PRD, ARCHITECTURE, DATA, SPEC, SOLUTION, design.md, DOCS-AS-CODE-ALIGNMENT.md, PUBLISHING-GUIDE.md, ARCHITECTURE-PUBLISHING-SYSTEM.md
+- Kept IDesign PDF reference materials
+
+**Files Modified**:
+- Deleted: docs/MARKDOWN-RENDERING-ANALYSIS.md
+- Deleted: docs/WEB-INTERFACE-ANALYSIS.md
+- Deleted: docs/WEB-INTERFACE-TESTING.md
+- Deleted: docs/test-document.md
+
+**Context/Notes**:
+- Removed temporary development/analysis documents that were not referenced in README
+- Kept all core architecture, design, and user-facing documentation
+- Maintained IDesign PDF standards as reference materials
+
+**Status**: Completed
+
 ## 2025-01-27 - Self-Contained Application with Embedded Templates
 
 **Timestamp**: 2025-01-27
@@ -206,5 +231,38 @@ This file tracks all AI interactions, decisions, and context across all AI sessi
 - Fully self-contained solution
 - Build verified successfully
 - Follows "docs as code" philosophy - raw markdown files, no preprocessing
+
+**Status**: Completed
+
+## 2025-01-27 - Project Scaffolding and Publishing System
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Transform into project scaffolding tool (like Yeoman/dotnet new) that initializes documentation projects with complete structure, generates documents, compiles to PDF/CHM, and packages web interface for deployment. Source repo private, published output public-ready. Align with Write the Docs guide.
+
+**AI Actions**:
+- Enhanced InitCommand: creates full project structure (docs/, source/, publish/, deploy/, .doc-toolkit/)
+- Created PublishCommand: compiles docs to web/PDF/CHM/single formats, packages for deployment
+- Enhanced ProjectAccessor: config files, onboarding guide, GitHub Actions workflows (link-check, preview, deploy)
+- Fixed web server 404 errors for direct markdown access, added home button
+- Removed all Vale references per user request
+- Updated README and PRD to clarify purpose: project scaffolding tool for docs-as-code
+
+**Files Modified**:
+- Modified: src/DocToolkit/Accessors/ProjectAccessor.cs
+- Modified: src/DocToolkit/ifx/Commands/InitCommand.cs
+- Created: src/DocToolkit/ifx/Commands/PublishCommand.cs
+- Modified: src/DocToolkit/ifx/Commands/WebCommand.cs (fixed 404, added routes)
+- Modified: src/DocToolkit/web/app.js (added goHome, improved paths)
+- Modified: src/DocToolkit/web/index.html (added home button)
+- Modified: README.md (clarified purpose, added publish command)
+- Modified: docs/PRD-Documentation-Toolkit.md (updated purpose statement)
+
+**Context/Notes**:
+- Purpose: Project scaffolding tool (like dotnet new/yeoman) for documentation projects
+- Follows Write the Docs docs-as-code principles: https://www.writethedocs.org/guide/
+- Creates complete project structure, generates docs, publishes to multiple formats
+- Source repository private, published output public-ready for deployment
+- All 9 commands documented in README
 
 **Status**: Completed

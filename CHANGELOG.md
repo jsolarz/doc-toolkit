@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2024
 
+### Changed
+
+#### Documentation Updates - Docs-as-Code Alignment
+- **PRD Updates**: Removed semantic intelligence functional requirements (FR3-FR6), renumbered remaining requirements, added new docs-as-code requirements (FR5-FR10) for opinionated organization, static site generation, cross-references, index generation, template guidance, and CI/CD automation
+- **Architecture Updates**: Updated component taxonomy to reflect build system components (BuildManager, BuildEngine, LinkResolver, NavigationGenerator, IndexGenerator, MetadataParser, TemplateSuggester), removed ONNX model from system context diagram, updated data flow diagrams with new use cases
+- **Design Updates**: Updated high-level architecture to show Build & Publishing Layer instead of Semantic Processing Layer, updated component descriptions and workflows, replaced semantic intelligence data models with build system models (DocumentMetadata, NavigationStructure, BuildOptions)
+- **User Stories**: Removed semantic intelligence user stories, added new stories for opinionated organization, template guidance, CI/CD automation, cross-references, and documentation index
+- **Command Names**: Updated to reflect new command set (`init`, `generate`, `build`, `suggest`, `validate`, `web`, `publish`)
+- **Workflows**: Updated user flows to reflect docs-as-code workflow (Initialize → Generate → Build → Deploy)
+- **Performance Metrics**: Replaced semantic intelligence metrics with build performance metrics
+- **Risks & Mitigations**: Updated to reflect build system risks (broken links, build issues, YAML validation) instead of semantic intelligence risks
+
+#### Semantic Intelligence Features Removed
+- **Code Removal**: Commented out semantic intelligence commands (index, search, graph, summarize) from Program.cs
+- **Service Registration**: Commented out semantic intelligence service registrations (Managers, Engines, Accessors) in ServiceConfiguration.cs
+- **Dependencies**: Removed Microsoft.ML.OnnxRuntime NuGet package from DocToolkit.csproj
+- **Event Subscriptions**: Commented out semantic intelligence event subscriptions in EventSubscriptions.cs
+- **Documentation**: Moved semantic indexing, search, knowledge graph, and summarization features to "Future Enhancements" section in README
+- **Requirements**: Removed ONNX model requirement from current requirements
+- **Focus**: Toolkit now focuses on core documentation generation, project initialization, web interface, and publishing capabilities
+- **Note**: All semantic intelligence code is preserved in comments and can be easily restored when implementing future enhancements
+
 ### Added
 
 #### Self-Contained Deployment (Latest)

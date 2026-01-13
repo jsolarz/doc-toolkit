@@ -1,7 +1,20 @@
 # Documentation Toolkit
 
-This toolkit provides a complete, reusable documentation and knowledge‑engineering framework for all projects.  
-It centralizes rules, templates, scripts, semantic indexing, and knowledge graph generation so you never duplicate work.
+This toolkit provides a complete, reusable documentation framework for all projects.  
+It centralizes rules, templates, scripts, and automation so you never duplicate work.
+
+# Core Purpose
+
+A project scaffolding and publishing tool for creating documentation projects following [docs-as-code](https://www.writethedocs.org/guide/docs-as-code/) principles from [Write the Docs](https://www.writethedocs.org/guide/).
+
+Like `dotnet new` or Yeoman, but for documentation projects. 
+
+1. **Initialize**: `doc init MyProject` - Creates complete project structure with folders, configs, Git repo
+2. **Generate**: `doc generate prd "Name"` - Creates documents from templates
+3. **Publish**: `doc publish web` - Compiles and packages documentation for deployment (web, PDF, CHM)
+4. **Deploy**: Published output ready for Azure, AWS, Docker, GitHub Pages
+
+Source repository stays private. Published output is public-ready.
 
 Use this toolkit to generate:
 - PRDs  
@@ -19,9 +32,7 @@ Use this toolkit to generate:
 And to initialize new project workspaces with:
 - A consistent folder structure  
 - Git repository  
-- Semantic index  
-- Knowledge graph  
-- Context extraction  
+- Cursor IDE configuration  
 
 ---
 
@@ -100,54 +111,62 @@ dotnet run -- <command>
 
 #### Commands
 
-**Initialize a new project:**
+**1. Initialize a new project:**
 ```bash
 doc init MyProject
 ```
 
-**Generate a document:**
+**2. Generate a document:**
 ```bash
 doc generate prd "User Management"
 doc gen sow "Cloud Migration"  # Short alias
 doc gen prd "API Design" --subfolder "architecture"  # Organize in subfolder
 ```
 
-**Build semantic index:**
-```bash
-doc index
-doc index --source ./my-source --chunk-size 1000
-```
-
-**Search the semantic index:**
-```bash
-doc search "customer requirements"
-doc search "data migration" --top-k 10
-```
-
-**Build knowledge graph:**
-```bash
-doc graph
-doc graph --source ./source --output ./kg
-```
-
-**Summarize source files:**
-```bash
-doc summarize
-doc sum --output ./summary.md
-```
-
-**Validate setup:**
+**3. Validate setup:**
 ```bash
 doc validate
 ```
 
-**Start web server to view and share documents:**
+**4. Start web server to view and share documents:**
 ```bash
 doc web
 doc web --port 8080
 doc web --host 0.0.0.0 --port 5000  # Accessible from network
 doc web --docs-dir ./my-docs  # Custom docs directory
 ```
+
+**5. Publish documentation for deployment:**
+```bash
+doc publish                    # Publish web interface
+doc publish --format web       # Web interface (default)
+doc publish --format all       # All formats (web, pdf, chm, single)
+doc publish --target azure     # With Azure deployment config
+doc publish --target docker    # With Docker configuration
+```
+
+#### Publishing System
+
+The toolkit includes a comprehensive publishing system that:
+
+- **Compiles documentation** into multiple formats (web, PDF, CHM, single-file)
+- **Packages web interface** for static deployment (no server required)
+- **Generates deployment configs** for Azure, AWS, Docker, GitHub Pages
+- **Separates source from output** - keep repository private, publish output publicly
+
+#### Docs-as-Code Philosophy
+
+The toolkit follows [docs-as-code](https://www.doctave.com/docs-as-code) principles:
+
+- **Version Control**: Git repository initialized automatically
+- **Markdown-Based**: All templates in Markdown format
+- **Automated Quality**: GitHub Actions workflows for quality checks
+- **CI/CD Ready**: Automated linting and deployment workflows
+- **Style Guides**: Microsoft Style Guide support (optional)
+- **Collaboration**: PR-based workflow with automated checks
+- **Workflow**: Edit → Review (PR) → Automated Checks → Publish
+
+See [docs/DOCS-AS-CODE-ALIGNMENT.md](docs/DOCS-AS-CODE-ALIGNMENT.md) for complete alignment with industry best practices.
 
 #### Web Interface
 
@@ -211,58 +230,6 @@ generate-doc.cmd sow "Cloud Migration"
 .\generate-doc.ps1 -Type prd -Name "User Management"
 ```
 
-#### 3. **Semantic Indexing**
-Builds a vector store from `/source/`:
-
-**CLI:**
-```bash
-doc index
-```
-
-**Scripts:**
-```powershell
-.\semantic-index.ps1
-```
-
-Outputs:
-- `semantic-index/vectors.npy`
-- `semantic-index/index.json`
-
-#### 4. **Semantic Search**
-Query your project knowledge:
-
-**CLI:**
-```bash
-doc search "customer requirements"
-```
-
-**Scripts:**
-```powershell
-.\semantic-search.ps1 -Query "customer requirements"
-```
-
-#### 5. **Knowledge Graph**
-Builds a graph of:
-- Entities  
-- Topics  
-- Relationships  
-- File connections  
-
-**CLI:**
-```bash
-doc graph
-```
-
-**Scripts:**
-```powershell
-.\build-knowledge-graph.ps1
-```
-
-Outputs:
-- `knowledge-graph/graph.json`
-- `knowledge-graph/graph.md`
-- `knowledge-graph/graph.gv`
-
 ---
 
 ## 🧠 Why This Toolkit Exists
@@ -270,7 +237,6 @@ Outputs:
 - Centralizes all documentation rules  
 - Ensures consistency across all projects  
 - Eliminates duplication  
-- Adds semantic intelligence to every project  
 - Makes onboarding new team members trivial  
 - Provides a scalable, professional documentation workflow  
 
@@ -280,7 +246,6 @@ Outputs:
 
 ### CLI Application Requirements
 - **.NET 9.0 SDK** or later
-- **ONNX Model** (all-MiniLM-L6-v2.onnx, ~90MB) - See [README-MODEL.md](src/DocToolkit/README-MODEL.md)
 - **Poppler** (optional, for advanced PDF features)
 - **Tesseract** (optional, for OCR)
 
@@ -313,7 +278,6 @@ brew install poppler tesseract
 ### NuGet Packages
 
 The CLI application uses the following NuGet packages (automatically restored):
-- `Microsoft.ML.OnnxRuntime` - For semantic embeddings
 - `Microsoft.Data.Sqlite` - For event persistence
 - `Microsoft.Extensions.DependencyInjection` - For dependency injection
 - `DocumentFormat.OpenXml` - For DOCX/PPTX text extraction
@@ -321,15 +285,6 @@ The CLI application uses the following NuGet packages (automatically restored):
 - `Spectre.Console` - For beautiful CLI interface
 
 **Note**: Python is no longer required! The CLI is fully C# native with dependency injection and event bus.
-
-### ONNX Model Setup
-
-The semantic indexing feature requires an ONNX model file. See [README-MODEL.md](src/DocToolkit/README-MODEL.md) for setup instructions.
-
-**Quick Setup**:
-1. Download or convert `all-MiniLM-L6-v2.onnx` model
-2. Create `models/` directory
-3. Place model file in `models/all-MiniLM-L6-v2.onnx`
 
 ### Validate Setup
 
@@ -352,15 +307,6 @@ For automatic fixes (scripts only):
 
 ## 🔧 Troubleshooting
 
-### ONNX Model Not Found
-**Error**: `ONNX model not found at: models/all-MiniLM-L6-v2.onnx`
-
-**Solution**:
-1. Download the ONNX model (see [README-MODEL.md](src/DocToolkit/README-MODEL.md))
-2. Create `models/` directory in project root or executable directory
-3. Place `all-MiniLM-L6-v2.onnx` in the `models/` directory
-4. Run `doc validate` to verify
-
 ### Missing NuGet Packages
 **Error**: `Missing required libraries`
 
@@ -377,13 +323,6 @@ dotnet restore
 1. Install Poppler: `choco install poppler` (Windows) or `apt-get install poppler-utils` (Linux)
 2. Ensure `pdftotext` is in your PATH
 3. Verify with: `pdftotext -v`
-
-### Semantic Index Not Found
-**Error**: `Semantic index not found`
-
-**Solution**:
-1. Run `.\semantic-index.ps1` first to build the index
-2. Ensure you have source files in the `./source/` directory
 
 ### Script Execution Policy (PowerShell)
 **Error**: Script execution is disabled
@@ -445,7 +384,39 @@ You can add:
 - New rulesets (add to `/.cursor/rules/`)  
 - New snippets  
 - New automation scripts (add to `/scripts/`)  
-- New semantic models (update `EmbeddingEngine`)  
-- New graph extractors (update `EntityExtractionEngine`)  
 
 Just keep everything inside `/doc-toolkit/`.
+
+---
+
+## 🚀 Future Enhancements
+
+The following features are planned for future releases:
+
+### Semantic Intelligence Features
+
+- **Semantic Indexing**: Build vector embeddings from source files for intelligent search
+  - `doc index` - Build semantic index from source files
+  - Support for multiple embedding models (ONNX-based)
+  - Configurable chunking strategies
+
+- **Semantic Search**: Query project knowledge using natural language
+  - `doc search "query"` - Search across indexed content
+  - Top-K result ranking
+  - Similarity-based retrieval
+
+- **Knowledge Graph Generation**: Extract and visualize relationships
+  - `doc graph` - Build knowledge graph from source files
+  - Entity and topic extraction
+  - Relationship mapping
+  - Graph visualization (JSON, Graphviz, Markdown)
+
+- **Document Summarization**: Generate context summaries
+  - `doc summarize` - Create summaries of source files
+  - Extractive and abstractive summarization
+  - Context-aware summaries
+
+These features will require:
+- ONNX model support (all-MiniLM-L6-v2.onnx or similar)
+- Microsoft.ML.OnnxRuntime NuGet package
+- Additional processing capabilities for embeddings and graph generation

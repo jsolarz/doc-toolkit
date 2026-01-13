@@ -62,21 +62,50 @@ All documents must include the following sections unless explicitly removed:
 
 ## PRD (Product Requirements Document) Rules
 
-### Required Sections
-- Product Overview
-- User Personas
-- User Stories
-- Functional Requirements
-- Non‑Functional Requirements (NFRs)
-- UX/UI Considerations
-- Data Requirements
-- Analytics & KPIs
-- Release Criteria
+### Core Structure (Linear-style)
 
-### Rules
-- User stories must follow: *As a [user], I want [feature], so that [value].*
-- Each requirement must include acceptance criteria.
-- NFRs must include performance, security, reliability, scalability, and compliance.
+PRDs should follow a 3-section structure that progresses from stable to dynamic:
+
+1. **Context** (Stable - for all audiences)
+   - Marketing statement: What's the marketing statement for this feature?
+   - Why now: Why are we building it now?
+   - Why we win: Why do we deserve to win with this feature?
+   - This section should not change. If it changes, question what we're doing.
+
+2. **Usage Scenarios** (Refined - for product, sales, marketing)
+   - Present real-life usage narratives
+   - Anchor to actual users at actual moments in time
+   - Example format: "When [Person] was [doing X] in [Month Year], they [used feature Y] to [achieve Z]..."
+   - Should be pretty stable, but refinement happens as we test early builds
+
+3. **Milestones** (Living - for engineering team)
+   - Checkpoints, releases, incremental features
+   - Build order and prioritization
+   - De-risking strategy (what to de-risk up front, what to leave to the end)
+   - This section changes a lot in scope and number as we build, design, and discover
+
+### Audience Segmentation
+- **Context**: General audience (everyone needs to know this)
+- **Usage Scenarios**: Product, sales, and marketing teams
+- **Milestones**: Engineering team working on the feature
+
+### Marketing Positioning (Context Section)
+Even without a dedicated marketing team, the Context section should answer:
+- What problem does this solve and for whom?
+- What makes our solution uniquely positioned to win?
+- What's the compelling reason to build this now vs later?
+- How does this differentiate us from alternatives?
+
+### Narrative-Driven Usage Scenarios
+Usage scenarios should:
+- Tell a story, not just list features
+- Reference real people and real moments (even if anonymized)
+- Show the feature in action within a workflow
+- Help product/sales/marketing visualize who we're building for
+- Be specific enough to guide design decisions
+
+### Backward Compatibility
+For existing PRDs using the traditional 17-section structure, they can remain as-is. New PRDs should use the Linear-style 3-section structure described above.
 
 ---
 

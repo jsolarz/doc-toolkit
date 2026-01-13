@@ -1,0 +1,81 @@
+---
+description: Rules for Product Requirements Documents (Linear-style)
+globs: prds/**/*.md, docs/features/*.md
+alwaysApply: false
+---
+# PRD Execution Rules
+
+## Core Structure (Linear-style)
+
+PRDs should follow a 3-section structure that progresses from stable to dynamic:
+
+### 1. Context (Stable - for all audiences)
+
+This section should not change. If it changes, question what we're doing in the first place. This is the fundamental motivation for building the feature.
+
+**Required Elements:**
+- **Marketing Statement**: What's the marketing statement for this feature?
+- **Why Now**: Why are we building it now?
+- **Why We Win**: Why do we deserve to win with this feature?
+
+**Marketing Positioning Framework:**
+Even without a dedicated marketing team, the Context section should answer:
+- What problem does this solve and for whom?
+- What makes our solution uniquely positioned to win?
+- What's the compelling reason to build this now vs later?
+- How does this differentiate us from alternatives?
+
+### 2. Usage Scenarios (Refined - for product, sales, marketing)
+
+Present real-life usage narratives that we expect to occur as a result of launching this feature. Anchor this to actual users at an actual moment in time that actually happened.
+
+**Format:**
+- Tell a story, not just list features
+- Reference real people and real moments (even if anonymized)
+- Show the feature in action within a workflow
+- Example: "When [Person] was [doing X] in [Month Year], they [used feature Y] to [achieve Z]..."
+
+**Guidelines:**
+- Should be pretty stable, but refinement happens as we test early builds
+- Helps product, sales, and marketing visualize who we're building for
+- Be specific enough to guide design decisions
+
+### 3. Milestones (Living - for engineering team)
+
+This section changes a lot in scope and number as we build, design, and discover along the way. This is the "living" part of the PRD.
+
+**Required Elements:**
+- Checkpoints, releases, incremental features
+- Build order and prioritization
+- De-risking strategy (what to de-risk up front, what to leave to the end)
+
+**De-risking Guidance:**
+- What needs validation up front?
+- What can be deferred?
+- What's the minimum viable first release?
+- How do we validate assumptions early?
+
+## Audience Segmentation
+
+- **Context**: General audience (everyone needs to know this)
+- **Usage Scenarios**: Product, sales, and marketing teams
+- **Milestones**: Engineering team working on the feature
+
+## Narrative-Driven Usage Scenarios
+
+Usage scenarios should:
+- Tell a story, not just list features
+- Reference real people and real moments (even if anonymized)
+- Show the feature in action within a workflow
+- Help product/sales/marketing visualize who we're building for
+- Be specific enough to guide design decisions
+
+**Template:**
+- When [Person] was [doing X] in [Month Year]
+- They [encountered problem Y]
+- They used [feature Z] to [achieve outcome]
+- This resulted in [value/benefit]
+
+## Backward Compatibility
+
+For existing PRDs using the traditional 17-section structure, they can remain as-is. New PRDs should use the Linear-style 3-section structure described above.

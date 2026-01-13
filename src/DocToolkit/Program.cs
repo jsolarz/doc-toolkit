@@ -34,22 +34,23 @@ app.Configure(config =>
         .WithExample(["generate", "prd", "User Management"])
         .WithExample(["gen", "sow", "Cloud Migration"]);
 
-    config.AddCommand<IndexCommand>("index")
-        .WithDescription("Build semantic index from source files")
-        .WithExample(["index"]);
-
-    config.AddCommand<SearchCommand>("search")
-        .WithDescription("Search the semantic index")
-        .WithExample(["search", "customer requirements"]);
-
-    config.AddCommand<GraphCommand>("graph")
-        .WithDescription("Build knowledge graph from source files")
-        .WithExample(["graph"]);
-
-    config.AddCommand<SummarizeCommand>("summarize")
-        .WithAlias("sum")
-        .WithDescription("Summarize source files into context document")
-        .WithExample(["summarize"]);
+    // Semantic Intelligence Features - Removed for now, see Future Enhancements in README
+    // config.AddCommand<IndexCommand>("index")
+    //     .WithDescription("Build semantic index from source files")
+    //     .WithExample(["index"]);
+    //
+    // config.AddCommand<SearchCommand>("search")
+    //     .WithDescription("Search the semantic index")
+    //     .WithExample(["search", "customer requirements"]);
+    //
+    // config.AddCommand<GraphCommand>("graph")
+    //     .WithDescription("Build knowledge graph from source files")
+    //     .WithExample(["graph"]);
+    //
+    // config.AddCommand<SummarizeCommand>("summarize")
+    //     .WithAlias("sum")
+    //     .WithDescription("Summarize source files into context document")
+    //     .WithExample(["summarize"]);
 
     config.AddCommand<ValidateCommand>("validate")
         .WithDescription("Validate setup and dependencies")
@@ -60,6 +61,13 @@ app.Configure(config =>
         .WithExample(["web"])
         .WithExample(["web", "--port", "8080"])
         .WithExample(["web", "--host", "0.0.0.0", "--port", "5000"]);
+
+    config.AddCommand<PublishCommand>("publish")
+        .WithDescription("Publish documentation in various formats for deployment")
+        .WithExample(["publish"])
+        .WithExample(["publish", "--format", "web"])
+        .WithExample(["publish", "--format", "all", "--target", "azure"])
+        .WithExample(["publish", "--format", "pdf"]);
 });
 
 // Show banner

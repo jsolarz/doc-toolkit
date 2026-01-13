@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-The Documentation Toolkit is built on a service-oriented architecture following the IDesign Method™ principles. It uses volatility-based decomposition to organize components, ensuring maintainability and extensibility. The architecture consists of four primary layers: Clients (CLI commands), Managers (orchestration), Engines (business logic), and Accessors (storage abstraction). All components communicate through well-defined service boundaries with dependency injection and an event-driven architecture for decoupled cross-component communication.
+The Documentation Toolkit is built on a service-oriented architecture following the IDesign Method™ principles. It uses volatility-based decomposition to organize components, ensuring maintainability and extensibility. The architecture consists of four primary layers: Clients (CLI commands), Managers (orchestration), Engines (business logic), and Accessors (storage abstraction). All components communicate through well-defined service boundaries with dependency injection and an event-driven architecture for decoupled cross-component communication. The toolkit provides a complete docs-as-code workflow with opinionated organization, static site generation, and automated deployment.
 
 ---
 
@@ -49,10 +49,11 @@ The Documentation Toolkit follows the IDesign Method™ architecture pattern, wh
 │  └──────────────┘  └──────────────┘  └──────────────┘  │
 │                                                           │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │         Semantic Processing Layer                 │  │
-│  │  - Text Extraction (PDF, DOCX, PPTX, Images)    │  │
-│  │  - Vector Embeddings (ONNX Runtime)             │  │
-│  │  - Knowledge Graph Generation                   │  │
+│  │         Build & Publishing Layer                 │  │
+│  │  - Markdown Compilation (Markdig)                 │  │
+│  │  - Link Resolution & Validation                   │  │
+│  │  - Navigation Generation                          │  │
+│  │  - Static Site Generation                        │  │
 │  └──────────────────────────────────────────────────┘  │
 │                                                           │
 │  ┌──────────────────────────────────────────────────┐  │
@@ -72,33 +73,34 @@ The Documentation Toolkit operates as a standalone CLI application with the foll
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    User (CLI)                            │
+│                    User (CLI)                           │
 └──────────────────────┬──────────────────────────────────┘
                        │
                        ↓
-┌─────────────────────────────────────────────────────────┐
-│              Documentation Toolkit                      │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │   Commands   │  │   Managers   │  │   Engines    │ │
-│  └──────────────┘  └──────────────┘  └──────────────┘ │
-│  ┌──────────────┐  ┌──────────────┐                   │
-│  │  Accessors   │  │  Event Bus   │                   │
-│  └──────────────┘  └──────────────┘                   │
-└─────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────┐
+│              Documentation Toolkit                     │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │   Commands   │  │   Managers   │  │   Engines    │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+│  ┌──────────────┐  ┌──────────────┐                    │
+│  │  Accessors   │  │  Event Bus   │                    │
+│  └──────────────┘  └──────────────┘                    │
+└────────────────────────────────────────────────────────┘
          │                    │                    │
          ↓                    ↓                    ↓
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│ File System  │    │  SQLite DB   │    │  ONNX Model  │
-│ (Templates,  │    │  (Events)    │    │  (Embeddings)│
-│  Indexes,    │    │              │    │              │
-│  Documents)  │    │              │    │              │
-└──────────────┘    └──────────────┘    └──────────────┘
+┌──────────────┐    ┌──────────────┐
+│ File System  │    │  SQLite DB   │
+│ (Templates,  │    │  (Events)    │
+│  Markdown,   │    │              │
+│  Compiled    │    │              │
+│  HTML)       │    │              │
+└──────────────┘    └──────────────┘
 ```
 
 **External Dependencies**:
-- File System: Templates, source documents, generated indexes
+- File System: Templates, source markdown files, compiled static site
 - SQLite Database: Event persistence (`%LocalAppData%\DocToolkit\events.db`)
-- ONNX Model: Semantic embedding model (`all-MiniLM-L6-v2.onnx`)
+- Git: Version control (for CI/CD workflows)
 
 ---
 
@@ -106,12 +108,12 @@ The Documentation Toolkit operates as a standalone CLI application with the foll
 
 ### Component Taxonomy (IDesign Method™)
 
-| Component Type | Components | Volatility Encapsulated |
-|---------------|------------|------------------------|
-| **Client** | `InitCommand`, `GenerateCommand`, `IndexCommand`, `SearchCommand`, `GraphCommand`, `SummarizeCommand`, `ValidateCommand` | User interface volatility (CLI could become Web/API) |
-| **Manager** | `SemanticIndexManager`, `SemanticSearchManager`, `KnowledgeGraphManager`, `SummarizeManager` | Workflow volatility (orchestration logic) |
-| **Engine** | `EmbeddingEngine`, `DocumentExtractionEngine`, `TextChunkingEngine`, `SimilarityEngine`, `EntityExtractionEngine`, `SummarizationEngine` | Algorithm volatility (embedding models, extraction logic) |
-| **Accessor** | `VectorStorageAccessor`, `TemplateAccessor`, `ProjectAccessor` | Storage volatility (file system, storage technology) |
+| Component Type | Components                                                                                                                                | Volatility Encapsulated                                                   |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Client**     | `InitCommand`, `GenerateCommand`, `BuildCommand`, `SuggestCommand`, `ValidateCommand`, `WebCommand`, `PublishCommand`                     | User interface volatility (CLI could become Web/API)                      |
+| **Manager**    | `BuildManager`, `StructureManager`                                                                                                        | Workflow volatility (orchestration logic)                                 |
+| **Engine**     | `BuildEngine`, `LinkResolver`, `NavigationGenerator`, `IndexGenerator`, `MetadataParser`, `TemplateSuggester`, `DocumentExtractionEngine` | Algorithm volatility (markdown rendering, link resolution, build process) |
+| **Accessor**   | `BuildAccessor`, `TemplateAccessor`, `ProjectAccessor`                                                                                    | Storage volatility (file system, storage technology)                      |
 
 ### Static Architecture View
 
@@ -120,44 +122,41 @@ The Documentation Toolkit operates as a standalone CLI application with the foll
 │                    Client Layer                          │
 │  (UI Volatility - Initiation)                           │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ │
-│  │ InitCmd  │ │ GenCmd   │ │ IndexCmd │ │SearchCmd │ │
+│  │ InitCmd  │ │ GenCmd   │ │ BuildCmd │ │SuggestCmd│ │
 │  └──────────┘ └──────────┘ └──────────┘ └──────────┘ │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐              │
-│  │GraphCmd │ │Summarize │ │ValidateCmd│              │
+│  │WebCmd   │ │PublishCmd│ │ValidateCmd│              │
 │  └──────────┘ └──────────┘ └──────────┘              │
 └─────────────────────────────────────────────────────────┘
                         ↓ (Service Boundary)
 ┌─────────────────────────────────────────────────────────┐
 │                    Manager Layer                         │
 │  (Workflow Volatility - Orchestration)                  │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
-│  │SemanticIndex │ │SemanticSearch │ │KnowledgeGraph │  │
-│  └──────────────┘ └──────────────┘ └──────────────┘  │
-│  ┌──────────────┐                                      │
-│  │SummarizeMgr │                                      │
-│  └──────────────┘                                      │
+│  ┌──────────────┐ ┌──────────────┐                   │
+│  │BuildManager │ │StructureMgr  │                   │
+│  └──────────────┘ └──────────────┘                   │
 └─────────────────────────────────────────────────────────┘
                         ↓ (Service Boundary)
 ┌─────────────────────────────────────────────────────────┐
 │         Engine Layer          │      Accessor Layer     │
 │  (Algorithm Volatility)       │  (Storage Volatility)   │
 │  ┌──────────────┐             │  ┌──────────────┐      │
-│  │EmbeddingEng  │             │  │VectorStorage │      │
+│  │BuildEngine   │             │  │BuildAccessor │      │
 │  └──────────────┘             │  └──────────────┘      │
 │  ┌──────────────┐             │  ┌──────────────┐      │
-│  │DocumentExtract│             │  │TemplateAccessor│     │
+│  │LinkResolver  │             │  │TemplateAccessor│     │
 │  └──────────────┘             │  └──────────────┘      │
 │  ┌──────────────┐             │  ┌──────────────┐      │
-│  │TextChunking │             │  │ProjectAccessor│     │
+│  │NavGenerator  │             │  │ProjectAccessor│     │
 │  └──────────────┘             │  └──────────────┘      │
 │  ┌──────────────┐                                      │
-│  │SimilarityEng │                                      │
+│  │IndexGenerator│                                      │
 │  └──────────────┘                                      │
 │  ┌──────────────┐                                      │
-│  │EntityExtract │                                      │
+│  │MetadataParser│                                      │
 │  └──────────────┘                                      │
 │  ┌──────────────┐                                      │
-│  │Summarization │                                      │
+│  │TemplateSuggest│                                     │
 │  └──────────────┘                                      │
 └─────────────────────────────────────────────────────────┘
                         ↓ (Data Boundary)
@@ -165,7 +164,7 @@ The Documentation Toolkit operates as a standalone CLI application with the foll
 │                    Model Layer                           │
 │  (Data Layer)                                           │
 │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
-│  │ IndexEntry   │ │ SearchResult  │ │  GraphData    │  │
+│  │BuildOptions  │ │DocumentMeta  │ │NavStructure  │  │
 │  └──────────────┘ └──────────────┘ └──────────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -182,50 +181,51 @@ The Documentation Toolkit operates as a standalone CLI application with the foll
 
 ## 6. Data Flow Diagrams
 
-### Use Case: Build Semantic Index
+### Use Case: Build Static Site
 
 ```
-IndexCommand (Client)
+BuildCommand (Client)
   ↓ (Service Boundary)
-SemanticIndexManager (Manager)
+BuildManager (Manager)
   ↓
-  ├─→ DocumentExtractionEngine.ExtractText(filePath) → string
-  ├─→ TextChunkingEngine.ChunkText(text, chunkSize, chunkOverlap) → List<string>
-  ├─→ EmbeddingEngine.GenerateEmbedding(chunk) → float[]
-  └─→ VectorStorageAccessor.SaveVectors(vectors, entries, indexPath)
+  ├─→ MetadataParser.ParseAll(docsDir) → List<DocumentMetadata>
+  ├─→ BuildEngine.CompileAll(markdownFiles) → List<CompiledDocument>
+  ├─→ LinkResolver.ResolveAll(compiledDocs) → List<ResolvedDocument>
+  ├─→ LinkResolver.ValidateAll(compiledDocs) → LinkValidationResult
+  ├─→ NavigationGenerator.Generate(folderStructure) → NavigationStructure
+  ├─→ IndexGenerator.Generate(allDocuments) → IndexDocument
+  └─→ BuildAccessor.WriteAll(outputDir, compiledDocs, nav, index)
        ↓
-       File System (vectors.bin, index.json)
+       File System (publish/web/*.html, navigation.json, index.html)
 ```
 
-### Use Case: Semantic Search
+### Use Case: Initialize Project with Opinionated Structure
 
 ```
-SearchCommand (Client)
+InitCommand (Client)
   ↓ (Service Boundary)
-SemanticSearchManager (Manager)
+StructureManager (Manager)
   ↓
-  ├─→ VectorStorageAccessor.LoadVectors(indexPath) → float[][]
-  ├─→ VectorStorageAccessor.LoadIndex(indexPath) → List<IndexEntry>
-  ├─→ EmbeddingEngine.GenerateEmbedding(query) → float[]
-  ├─→ SimilarityEngine.FindTopSimilar(queryVector, vectors, topK) → List<(index, score)>
-  └─→ Format results → List<SearchResult>
+  ├─→ Prompt user for project type (customer/developer/mixed)
+  ├─→ StructureManager.CreateStructure(projectType) → FolderStructure
+  └─→ ProjectAccessor.CreateDirectories(folderStructure)
        ↓
-       Display to user
+       File System (docs/customer/, docs/developer/, docs/shared/)
 ```
 
-### Use Case: Knowledge Graph Generation
+### Use Case: Suggest Templates
 
 ```
-GraphCommand (Client)
-  ↓ (Service Boundary)
-KnowledgeGraphManager (Manager)
+SuggestCommand (Client)
+  ↓ (Service Boundary - direct Engine call)
+TemplateSuggester (Engine)
   ↓
-  ├─→ DocumentExtractionEngine.ExtractText(filePath) → string (for each file)
-  ├─→ EntityExtractionEngine.ExtractEntities(text) → List<string>
-  ├─→ EntityExtractionEngine.ExtractTopics(text, topN) → List<string>
-  └─→ Build graph structure → GraphData
+  ├─→ Scan existing documents in docs/
+  ├─→ Identify missing document types
+  ├─→ Match templates to project type
+  └─→ Generate suggestions with context
        ↓
-       File System (graph.json, graph.md, graph.gv)
+       Display suggestions to user
 ```
 
 ---
@@ -247,10 +247,9 @@ Subscribers (Handlers)
 ```
 
 **Event Types**:
-- `IndexBuiltEvent`: Published when semantic index is built
-- `GraphBuiltEvent`: Published when knowledge graph is built
-- `SummaryCreatedEvent`: Published when summary is created
-- `DocumentProcessedEvent`: Published for each document processed during indexing
+- `BuildCompletedEvent`: Published when static site build completes
+- `DocumentProcessedEvent`: Published for each document processed during build
+- `LinkValidationCompletedEvent`: Published when link validation completes
 
 **Benefits**:
 - Zero coupling between managers
@@ -328,24 +327,25 @@ If process isolation is needed:
 
 ### Expected Load
 
-- **Document Indexing**: 100-1000 documents per project
-- **Search Queries**: 10-100 queries per session
-- **Knowledge Graph**: 50-500 files per project
+- **Document Build**: 50-500 markdown files per project
+- **Link Validation**: 100-1000 links per project
+- **Navigation Generation**: 1 navigation structure per build
 
 ### Performance Targets
 
 - Document generation: < 2 seconds
-- Semantic indexing: < 30 seconds for 100 documents
-- Semantic search: < 200ms average query time
-- Knowledge graph generation: < 15 seconds for 100 documents
-- Memory usage: < 200MB during indexing operations
+- Static site build: < 10 seconds for 100 markdown files
+- Link validation: < 5 seconds for 100 documents
+- Index generation: < 2 seconds
+- Memory usage: < 200MB during build operations
 
 ### Scaling Strategies
 
-- **Memory Optimization**: Pre-allocated collections, batch processing
-- **Chunking Strategy**: Configurable chunk sizes (default: 800 words, 200 overlap)
-- **Embedding Model**: Lightweight (all-MiniLM-L6-v2) for speed
-- **Batch Processing**: Files processed sequentially to manage memory
+- **Memory Optimization**: Pre-allocated collections, parallel processing where safe
+- **Incremental Builds**: Only rebuild changed files (future enhancement)
+- **Parallel Processing**: Process multiple markdown files concurrently
+- **Link Validation**: Incremental validation (only check changed files)
+- **Caching**: Cache parsed metadata and navigation structure
 
 ---
 
@@ -382,43 +382,51 @@ If process isolation is needed:
 ### Assumptions
 
 - Users have .NET 9.0 SDK installed
-- Users have ONNX model file available
-- Source documents are in supported formats
-- Users have sufficient disk space for indexes
+- Source documents are in Markdown format
+- Users have Git installed (for CI/CD workflows)
+- Users have sufficient disk space for compiled sites
 - Local file system access available
+- Users have GitHub repository (for CI/CD automation)
 
 ### Constraints
 
 - Local file system only (no cloud storage)
 - Single-user operation (no multi-user support)
-- Limited to supported file formats (PDF, DOCX, PPTX, TXT, MD, CSV, JSON)
-- ONNX model size (~90MB) required
+- Markdown source format required (templates generate markdown)
+- Static site generation only (no server-side processing)
+- CI/CD requires GitHub (other platforms future enhancement)
 - Memory constraints for large document collections
 
 ---
 
 ## 13. Risks & Mitigations
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| ONNX model not found | High | Medium | Clear error message with download instructions |
-| Large document collections cause memory issues | Medium | Low | Memory monitoring, pre-allocation, batch processing |
-| Corrupted files cause crashes | Medium | Low | Graceful error handling, skip corrupted files |
-| Performance degradation with large indexes | Medium | Low | Benchmark tests, optimization, configurable chunk sizes |
-| Event bus database corruption | Low | Very Low | SQLite transaction support, error recovery |
+| Risk                                          | Impact | Probability | Mitigation                                            |
+| --------------------------------------------- | ------ | ----------- | ----------------------------------------------------- |
+| Broken links in documentation                 | Medium | Medium      | Link validation during build, clear error reporting   |
+| Large document collections cause build issues | Medium | Low         | Incremental builds, parallel processing, optimization |
+| Corrupted markdown files cause crashes        | Medium | Low         | Graceful error handling, skip corrupted files         |
+| Invalid YAML front matter                     | Low    | Medium      | Clear error messages, validation, sensible defaults   |
+| CI/CD workflow failures                       | Medium | Low         | Comprehensive error handling, clear failure messages  |
+| Performance degradation with large sites      | Medium | Low         | Benchmark tests, optimization, incremental builds     |
+| Event bus database corruption                 | Low    | Very Low    | SQLite transaction support, error recovery            |
 
 ---
 
 ## 14. Decision Log
 
-| Date | Decision | Rationale | Alternatives Considered |
-|------|----------|-----------|------------------------|
-| 2024 | IDesign Method™ architecture | Volatility-based decomposition, maintainability | Traditional layered architecture |
-| 2024 | ONNX Runtime for embeddings | C# native, no Python dependency | Python with sentence-transformers |
-| 2024 | SQLite for event persistence | Lightweight, embedded, no external dependencies | File-based, in-memory only |
-| 2024 | Binary vector storage | Performance, compact format | JSON, CSV, NumPy format |
-| 2024 | Dependency injection | Testability, loose coupling | Direct instantiation |
-| 2024 | Event bus architecture | Decoupled communication | Direct method calls |
+| Date | Decision                       | Rationale                                       | Alternatives Considered           |
+| ---- | ------------------------------ | ----------------------------------------------- | --------------------------------- |
+| 2024 | IDesign Method™ architecture   | Volatility-based decomposition, maintainability | Traditional layered architecture  |
+| 2024 | ONNX Runtime for embeddings    | C# native, no Python dependency                 | Python with sentence-transformers |
+| 2024 | SQLite for event persistence   | Lightweight, embedded, no external dependencies | File-based, in-memory only        |
+| 2024 | Binary vector storage          | Performance, compact format                     | JSON, CSV, NumPy format           |
+| 2024 | Dependency injection           | Testability, loose coupling                     | Direct instantiation              |
+| 2024 | Event bus architecture         | Decoupled communication                         | Direct method calls               |
+| 2024 | Markdig for markdown rendering | C# native, GitHub Flavored Markdown support     | CommonMark.NET, custom parser     |
+| 2024 | Opinionated organization       | Clear separation of customer/developer docs     | Flat structure, user-defined      |
+| 2024 | Static site generation         | Deployable HTML without server                  | Server-side rendering, CMS        |
+| 2024 | GitHub Actions for CI/CD       | Industry standard, free for open source         | Azure DevOps, GitLab CI, Jenkins  |
 
 ---
 

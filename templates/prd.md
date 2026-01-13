@@ -1,64 +1,56 @@
 # Product Requirements Document (PRD)
+## [Feature Name]
 
-## 1. Executive Summary
-Provide a concise overview of the product, its purpose, and expected impact.
+---
 
-## 2. Purpose & Scope
-### Purpose
-Explain why this product exists.
-### In Scope
-List what is included.
-### Out of Scope
-List what is excluded.
+## Context
 
-## 3. Problem Statement / Business Need
-Describe the problem, who experiences it, and why it matters.
+**Marketing Statement**: [What's the marketing statement for this feature?]
 
-## 4. Objectives & Success Criteria
-- Business objectives
-- Product objectives
-- KPIs and measurable success criteria
+**Why Now**: [Why are we building it now?]
 
-## 5. Stakeholders
-| Role | Name | Responsibility |
-|------|------|----------------|
+**Why We Win**: [Why do we deserve to win with this feature?]
 
-## 6. User Personas
-Describe each persona, their goals, frustrations, and context.
+> **Note**: This section should not change. If it changes, question what we're doing in the first place. This is the fundamental motivation for building the feature.
 
-## 7. User Stories
-Use the format: *As a [persona], I want [feature], so that [value].*
+**Marketing Positioning Questions to Answer:**
+- What problem does this solve and for whom?
+- What makes our solution uniquely positioned to win?
+- What's the compelling reason to build this now vs later?
+- How does this differentiate us from alternatives?
 
-## 8. Functional Requirements
-List detailed, testable requirements with acceptance criteria.
+---
 
-## 9. Non‑Functional Requirements (NFRs)
-- Performance
-- Security
-- Reliability
-- Scalability
-- Compliance
+## Usage Scenarios
 
-## 10. UX/UI Considerations
-Wireframes, flows, or design notes.
+[Present real-life usage narratives that we expect to occur as a result of launching this feature. Anchor this to actual users at an actual moment in time that actually happened.]
 
-## 11. Data Requirements
-Data inputs, outputs, storage, retention, and privacy.
+**Example Format**: 
+"When [Person] was [doing X] in [Month Year], they [used feature Y] to [achieve Z]..."
 
-## 12. Analytics & KPIs
-Tracking, metrics, dashboards.
+**Narrative Template:**
+- When [Person] was [doing X] in [Month Year]
+- They [encountered problem Y]
+- They used [feature Z] to [achieve outcome]
+- This resulted in [value/benefit]
 
-## 13. Assumptions & Constraints
-Document all assumptions and limitations.
+> **Note**: Usage scenarios should be pretty stable, but refinement will happen as we start testing early builds. This section helps product, sales, and marketing visualize who we're building for.
 
-## 14. Risks & Mitigations
-Identify risks and mitigation strategies.
+---
 
-## 15. Timeline / Milestones
-High‑level roadmap.
+## Milestones
 
-## 16. Decision Log
-Track key decisions and rationale.
+[What are the checkpoints, releases, incremental features, that the team should build, and in what order? What do we need to de-risk up front, what do we leave to the end?]
 
-## 17. Appendices / References
-Supporting materials.
+### De-risking Strategy
+- [What needs to be validated early?]
+- [What can wait until later?]
+- [What's the minimum viable first release?]
+- [How do we validate assumptions early?]
+
+### Build Order
+1. [First milestone - what to build first]
+2. [Second milestone - what comes next]
+3. [Third milestone - what follows]
+
+> **Note**: Milestones change a lot in scope and number as we build, design, and discover along the way. This is the "living" part of the PRD.

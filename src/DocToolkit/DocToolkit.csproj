@@ -20,7 +20,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.1" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.0" />
+    <!-- Microsoft.ML.OnnxRuntime removed - Semantic Intelligence features moved to Future Enhancements -->
+    <!-- <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.0" /> -->
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.0" />
     <PackageReference Include="UglyToad.PdfPig" Version="0.1.9-alpha001-patch1" />
     <!-- Explicitly reference PdfPig dependencies to resolve NU1603 warnings -->
@@ -47,6 +48,9 @@
       <LogicalName>web.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="web\*.js">
+      <LogicalName>web.%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="web\*.wasm">
       <LogicalName>web.%(Filename)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup>

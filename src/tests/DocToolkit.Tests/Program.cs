@@ -172,10 +172,8 @@ class Program
         {
             var type = benchmarkName.ToLowerInvariant() switch
             {
-                "textchunking" or "chunking" => typeof(DocToolkit.Tests.Benchmarks.TextChunkingBenchmarks),
-                "similarity" => typeof(DocToolkit.Tests.Benchmarks.SimilarityBenchmarks),
-                "entity" or "entityextraction" => typeof(DocToolkit.Tests.Benchmarks.EntityExtractionBenchmarks),
-                "summarization" or "summarize" => typeof(DocToolkit.Tests.Benchmarks.SummarizationBenchmarks),
+                "documentextraction" or "extraction" => typeof(DocToolkit.Tests.Benchmarks.DocumentExtractionBenchmarks),
+                "projectaccessor" or "project" => typeof(DocToolkit.Tests.Benchmarks.ProjectAccessorBenchmarks),
                 _ => null
             };
 
@@ -209,18 +207,14 @@ class Program
         AnsiConsole.MarkupLine("  [cyan]dotnet run -- bench <name>[/]   Run specific benchmark");
         AnsiConsole.WriteLine();
         AnsiConsole.MarkupLine("[bold]Available Benchmarks:[/]");
-        AnsiConsole.MarkupLine("  [cyan]textchunking[/]  - Text chunking performance");
-        AnsiConsole.MarkupLine("  [cyan]similarity[/]   - Similarity calculation performance");
-        AnsiConsole.MarkupLine("  [cyan]entity[/]       - Entity extraction performance");
-        AnsiConsole.MarkupLine("  [cyan]summarization[/] - Summarization performance");
+        AnsiConsole.MarkupLine("  [cyan]documentextraction[/] or [cyan]extraction[/] - Document extraction performance");
+        AnsiConsole.MarkupLine("  [cyan]projectaccessor[/] or [cyan]project[/] - Project accessor performance");
     }
 
     private static void ShowBenchmarkHelp()
     {
         AnsiConsole.MarkupLine("[bold]Available benchmarks:[/]");
-        AnsiConsole.MarkupLine("  [cyan]textchunking[/]  - Text chunking performance");
-        AnsiConsole.MarkupLine("  [cyan]similarity[/]   - Similarity calculation performance");
-        AnsiConsole.MarkupLine("  [cyan]entity[/]       - Entity extraction performance");
-        AnsiConsole.MarkupLine("  [cyan]summarization[/] - Summarization performance");
+        AnsiConsole.MarkupLine("  [cyan]documentextraction[/] or [cyan]extraction[/] - Document extraction performance");
+        AnsiConsole.MarkupLine("  [cyan]projectaccessor[/] or [cyan]project[/] - Project accessor performance");
     }
 }

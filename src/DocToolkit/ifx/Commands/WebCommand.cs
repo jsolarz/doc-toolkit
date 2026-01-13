@@ -66,7 +66,7 @@ public sealed class WebCommand : Command<WebCommand.Settings>
                 new Text($"[green]✓[/] Starting web server..."),
                 new Text(""),
                 new Text($"[dim]URL:[/] [bold cyan]{url}[/]"),
-                new Text($"[dim]Docs:[/] {docsPath}"),
+                new Text($"[dim]Docs:[/] [cyan]{docsPath}[/]"),
                 new Text(""),
                 new Text("[yellow]Press Ctrl+C to stop[/]")
             ))
@@ -76,6 +76,7 @@ public sealed class WebCommand : Command<WebCommand.Settings>
             BorderStyle = new Style(Color.Green)
         });
         AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule("[bold cyan]Server Status[/]").RuleStyle(Color.Cyan1));
 
         try
         {
@@ -97,7 +98,7 @@ public sealed class WebCommand : Command<WebCommand.Settings>
         }
         catch (Exception ex)
         {
-            AnsiConsole.MarkupLine($"[red]Error starting web server:[/] {ex.Message}");
+            AnsiConsole.WriteException(ex, ExceptionFormats.ShortenPaths | ExceptionFormats.ShowLinks);
             return 1;
         }
     }
@@ -119,27 +120,58 @@ public sealed class WebCommand : Command<WebCommand.Settings>
         // API: Get document content (raw markdown, no preprocessing)
         app.MapGet("/api/documents/{*path}", (string path) =>
         {
-            var fullPath = Path.Combine(docsPath, path);
-
-            if (!File.Exists(fullPath) || !fullPath.StartsWith(Path.GetFullPath(docsPath)))
+            if (string.IsNullOrWhiteSpace(path))
             {
-                return Results.NotFound();
+                return Results.BadRequest("Path is required");
             }
 
-            var markdown = File.ReadAllText(fullPath);
-            var fileName = Path.GetFileName(fullPath);
-
-            // Generate table of contents from headers (lightweight, no markdown parsing)
-            var toc = GenerateTableOfContents(markdown);
-
-            return Results.Json(new
+            // Decode URL encoding and normalize path separators
+            var decodedPath = Uri.UnescapeDataString(path);
+            var normalizedPath = decodedPath.Replace('\\', '/').TrimStart('/');
+            
+            // Prevent directory traversal
+            if (normalizedPath.Contains("..") || Path.IsPathRooted(normalizedPath))
             {
-                name = fileName,
-                path = path,
-                content = markdown,
-                toc = toc,
-                lastModified = File.GetLastWriteTime(fullPath)
-            });
+                return Results.BadRequest("Invalid path");
+            }
+
+            // Ensure it's a markdown file
+            if (!normalizedPath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                normalizedPath += ".md";
+            }
+
+            var fullPath = Path.GetFullPath(Path.Combine(docsPath, normalizedPath));
+            var docsFullPath = Path.GetFullPath(docsPath);
+
+            // Security check: ensure the resolved path is within docs directory
+            if (!fullPath.StartsWith(docsFullPath, StringComparison.OrdinalIgnoreCase) || !File.Exists(fullPath))
+            {
+                return Results.NotFound($"Document not found: {normalizedPath}");
+            }
+
+            try
+            {
+                var markdown = File.ReadAllText(fullPath);
+                var fileName = Path.GetFileName(fullPath);
+                var fileInfo = new FileInfo(fullPath);
+
+                // Generate table of contents from headers (lightweight, no markdown parsing)
+                var toc = GenerateTableOfContents(markdown);
+
+                return Results.Json(new
+                {
+                    name = fileName,
+                    path = normalizedPath,
+                    content = markdown,
+                    toc = toc,
+                    lastModified = fileInfo.LastWriteTime
+                });
+            }
+            catch (Exception ex)
+            {
+                return Results.Problem($"Error reading document: {ex.Message}");
+            }
         });
 
         // API: Search documents (full-text search)
@@ -157,23 +189,85 @@ public sealed class WebCommand : Command<WebCommand.Settings>
         // Serve static files (embedded resources)
         app.MapGet("/", async (HttpContext context) =>
         {
-            var html = GetEmbeddedResource("web.index.html");
-            context.Response.ContentType = "text/html; charset=utf-8";
-            await context.Response.WriteAsync(html);
+            try
+            {
+                var html = GetEmbeddedResource("index.html");
+                context.Response.ContentType = "text/html; charset=utf-8";
+                await context.Response.WriteAsync(html);
+            }
+            catch (FileNotFoundException ex)
+            {
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync($"Error loading web interface: {ex.Message}");
+            }
         });
 
         app.MapGet("/app.js", async (HttpContext context) =>
         {
-            var js = GetEmbeddedResource("web.app.js");
-            context.Response.ContentType = "application/javascript; charset=utf-8";
-            await context.Response.WriteAsync(js);
+            try
+            {
+                var js = GetEmbeddedResource("app.js");
+                context.Response.ContentType = "application/javascript; charset=utf-8";
+                await context.Response.WriteAsync(js);
+            }
+            catch (FileNotFoundException ex)
+            {
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync($"Error loading JavaScript: {ex.Message}");
+            }
         });
 
         app.MapGet("/app.css", async (HttpContext context) =>
         {
-            var css = GetEmbeddedResource("web.app.css");
-            context.Response.ContentType = "text/css; charset=utf-8";
-            await context.Response.WriteAsync(css);
+            try
+            {
+                var css = GetEmbeddedResource("app.css");
+                context.Response.ContentType = "text/css; charset=utf-8";
+                await context.Response.WriteAsync(css);
+            }
+            catch (FileNotFoundException ex)
+            {
+                context.Response.StatusCode = 500;
+                await context.Response.WriteAsync($"Error loading CSS: {ex.Message}");
+            }
+        });
+
+        // Handle direct markdown file access (e.g., /CODE-DOCUMENTATION-STANDARDS.md or /subfolder/file.md)
+        // This must come after static file routes but handles .md files
+        app.MapGet("/{*filePath}", (string filePath) =>
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                return Results.NotFound();
+            }
+
+            // Only handle .md files
+            if (!filePath.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+            {
+                return Results.NotFound();
+            }
+
+            // Normalize path
+            var normalizedPath = filePath.Replace('\\', '/').TrimStart('/');
+            
+            // Prevent directory traversal
+            if (normalizedPath.Contains("..") || Path.IsPathRooted(normalizedPath))
+            {
+                return Results.BadRequest("Invalid path");
+            }
+
+            var fullPath = Path.GetFullPath(Path.Combine(docsPath, normalizedPath));
+            var docsFullPath = Path.GetFullPath(docsPath);
+
+            // Security check
+            if (!fullPath.StartsWith(docsFullPath, StringComparison.OrdinalIgnoreCase) || !File.Exists(fullPath))
+            {
+                return Results.NotFound();
+            }
+
+            // Redirect to API endpoint for proper JSON response
+            var encodedPath = Uri.EscapeDataString(normalizedPath);
+            return Results.Redirect($"/api/documents/{encodedPath}");
         });
     }
 
@@ -186,21 +280,36 @@ public sealed class WebCommand : Command<WebCommand.Settings>
             return documents;
         }
 
-        var files = Directory.GetFiles(docsPath, "*.md", SearchOption.AllDirectories);
-
-        foreach (var file in files)
+        try
         {
-            var relativePath = Path.GetRelativePath(docsPath, file);
-            var info = new FileInfo(file);
+            var files = Directory.GetFiles(docsPath, "*.md", SearchOption.AllDirectories);
 
-            documents.Add(new DocumentInfo
+            foreach (var file in files)
             {
-                Name = Path.GetFileName(file),
-                Path = relativePath.Replace('\\', '/'),
-                Size = info.Length,
-                LastModified = info.LastWriteTime,
-                Type = GetDocumentType(Path.GetFileName(file))
-            });
+                try
+                {
+                    var relativePath = Path.GetRelativePath(docsPath, file);
+                    var info = new FileInfo(file);
+
+                    documents.Add(new DocumentInfo
+                    {
+                        Name = Path.GetFileName(file),
+                        Path = relativePath.Replace('\\', '/'),
+                        Size = info.Length,
+                        LastModified = info.LastWriteTime,
+                        Type = GetDocumentType(Path.GetFileName(file))
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // Log but continue processing other files
+                    System.Diagnostics.Debug.WriteLine($"Error processing file {file}: {ex.Message}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error reading documents directory: {ex.Message}");
         }
 
         return documents.OrderByDescending(d => d.LastModified).ToList();
@@ -216,19 +325,53 @@ public sealed class WebCommand : Command<WebCommand.Settings>
         return "DOC";
     }
 
-    private static string GetEmbeddedResource(string resourceName)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var fullResourceName = $"DocToolkit.web.{resourceName}";
+    // Cache embedded resources for performance (they don't change at runtime)
+    private static readonly Dictionary<string, string> _resourceCache = new();
+    private static readonly object _resourceCacheLock = new();
 
-        using var stream = assembly.GetManifestResourceStream(fullResourceName);
+    private static string GetEmbeddedResource(string fileName)
+    {
+        // Check cache first
+        lock (_resourceCacheLock)
+        {
+            if (_resourceCache.TryGetValue(fileName, out var cached))
+            {
+                return cached;
+            }
+        }
+
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceNames = assembly.GetManifestResourceNames();
+        
+        // Try both patterns: "web.{fileName}" and "{namespace}.web.{fileName}"
+        var possibleNames = new[]
+        {
+            $"web.{fileName}",
+            $"{assembly.GetName().Name}.web.{fileName}"
+        };
+
+        var resourceName = possibleNames.FirstOrDefault(name => resourceNames.Contains(name));
+        if (resourceName == null)
+        {
+            throw new FileNotFoundException($"Embedded resource not found. Tried: {string.Join(", ", possibleNames)}");
+        }
+
+        using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
         {
-            throw new FileNotFoundException($"Embedded resource not found: {fullResourceName}");
+            throw new FileNotFoundException($"Could not load embedded resource: {resourceName}");
         }
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
-        return reader.ReadToEnd();
+        var content = reader.ReadToEnd();
+
+        // Cache the result
+        lock (_resourceCacheLock)
+        {
+            _resourceCache[fileName] = content;
+        }
+
+        return content;
     }
 
     private static NavigationNode GetNavigationStructure(string docsPath)
@@ -292,49 +435,73 @@ public sealed class WebCommand : Command<WebCommand.Settings>
     private static List<TocItem> GenerateTableOfContents(string markdown)
     {
         var toc = new List<TocItem>();
+        
+        if (string.IsNullOrWhiteSpace(markdown))
+        {
+            return toc;
+        }
+
         var lines = markdown.Split('\n');
-        var idCounter = new Dictionary<int, int>();
+        var idCounter = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var line in lines)
         {
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                continue;
+            }
+
             var headerMatch = Regex.Match(line, @"^(#{1,6})\s+(.+)$");
             if (headerMatch.Success)
             {
                 var level = headerMatch.Groups[1].Value.Length;
                 var text = headerMatch.Groups[2].Value.Trim();
 
-                // Generate anchor ID
-                var anchorId = GenerateAnchorId(text, idCounter);
-
-                toc.Add(new TocItem
+                if (!string.IsNullOrWhiteSpace(text))
                 {
-                    Level = level,
-                    Text = text,
-                    Anchor = anchorId
-                });
+                    // Generate anchor ID
+                    var anchorId = GenerateAnchorId(text, idCounter);
+
+                    toc.Add(new TocItem
+                    {
+                        Level = level,
+                        Text = text,
+                        Anchor = anchorId
+                    });
+                }
             }
         }
 
         return toc;
     }
 
-    private static string GenerateAnchorId(string text, Dictionary<int, int> idCounter)
+    private static string GenerateAnchorId(string text, Dictionary<string, int> idCounter)
     {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return "header";
+        }
+
         // Convert to lowercase, replace spaces with hyphens, remove special chars
         var anchor = Regex.Replace(text.ToLowerInvariant(), @"[^\w\s-]", "")
             .Replace(" ", "-")
             .Replace("--", "-")
             .Trim('-');
 
-        // Handle duplicates
-        if (idCounter.ContainsKey(anchor.GetHashCode()))
+        if (string.IsNullOrEmpty(anchor))
         {
-            idCounter[anchor.GetHashCode()]++;
-            anchor = $"{anchor}-{idCounter[anchor.GetHashCode()]}";
+            anchor = "header";
+        }
+
+        // Handle duplicates using the actual anchor string as key (more reliable than hash)
+        if (idCounter.TryGetValue(anchor, out var count))
+        {
+            idCounter[anchor] = count + 1;
+            anchor = $"{anchor}-{count + 1}";
         }
         else
         {
-            idCounter[anchor.GetHashCode()] = 0;
+            idCounter[anchor] = 0;
         }
 
         return anchor;
@@ -343,40 +510,61 @@ public sealed class WebCommand : Command<WebCommand.Settings>
     private static List<SearchResult> SearchDocuments(string docsPath, string query)
     {
         var results = new List<SearchResult>();
-        var queryLower = query.ToLowerInvariant();
-        var queryTerms = queryLower.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-        if (!Directory.Exists(docsPath))
+        if (string.IsNullOrWhiteSpace(query) || !Directory.Exists(docsPath))
         {
             return results;
         }
 
-        var files = Directory.GetFiles(docsPath, "*.md", SearchOption.AllDirectories);
-
-        foreach (var file in files)
+        var queryLower = query.ToLowerInvariant();
+        var queryTerms = queryLower.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        
+        if (queryTerms.Length == 0)
         {
-            var content = File.ReadAllText(file);
-            var contentLower = content.ToLowerInvariant();
+            return results;
+        }
 
-            // Simple full-text search - count matching terms
-            var matchCount = queryTerms.Count(term => contentLower.Contains(term));
-            if (matchCount > 0)
+        try
+        {
+            var files = Directory.GetFiles(docsPath, "*.md", SearchOption.AllDirectories);
+
+            foreach (var file in files)
             {
-                var relativePath = Path.GetRelativePath(docsPath, file);
-                var fileName = Path.GetFileName(file);
-
-                // Extract context snippet (first 200 chars containing query)
-                var snippet = ExtractSnippet(content, queryLower, 200);
-
-                results.Add(new SearchResult
+                try
                 {
-                    Name = fileName,
-                    Path = relativePath.Replace('\\', '/'),
-                    Snippet = snippet,
-                    Relevance = matchCount,
-                    Type = GetDocumentType(fileName)
-                });
+                    var content = File.ReadAllText(file);
+                    var contentLower = content.ToLowerInvariant();
+
+                    // Simple full-text search - count matching terms
+                    var matchCount = queryTerms.Count(term => contentLower.Contains(term));
+                    if (matchCount > 0)
+                    {
+                        var relativePath = Path.GetRelativePath(docsPath, file);
+                        var fileName = Path.GetFileName(file);
+
+                        // Extract context snippet (first 200 chars containing query)
+                        var snippet = ExtractSnippet(content, queryLower, 200);
+
+                        results.Add(new SearchResult
+                        {
+                            Name = fileName,
+                            Path = relativePath.Replace('\\', '/'),
+                            Snippet = snippet,
+                            Relevance = matchCount,
+                            Type = GetDocumentType(fileName)
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log but continue processing other files
+                    System.Diagnostics.Debug.WriteLine($"Error searching file {file}: {ex.Message}");
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error reading documents directory for search: {ex.Message}");
         }
 
         return results.OrderByDescending(r => r.Relevance).Take(20).ToList();

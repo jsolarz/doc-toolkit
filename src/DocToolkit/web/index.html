@@ -23,7 +23,10 @@
             <div class="sidebar">
                 <div class="sidebar-header">
                     <h2>Documents</h2>
-                    <button id="refreshBtn" class="btn-icon" title="Refresh">🔄</button>
+                    <div style="display: flex; gap: 0.25rem;">
+                        <button id="homeBtn" class="btn-icon" title="Home">🏠</button>
+                        <button id="refreshBtn" class="btn-icon" title="Refresh">🔄</button>
+                    </div>
                 </div>
                 <div class="search-container">
                     <input type="text" id="searchInput" class="search-input" placeholder="Search documents...">
@@ -37,9 +40,8 @@
             <div class="content">
                 <div class="content-wrapper">
                     <div id="documentViewer" class="document-viewer">
-                        <div class="welcome">
-                            <h2>Welcome</h2>
-                            <p>Select a document from the sidebar to view it.</p>
+                        <div class="welcome" id="welcomeScreen">
+                            <!-- Welcome content will be populated by JavaScript -->
                         </div>
                     </div>
                     <div id="tableOfContents" class="table-of-contents">

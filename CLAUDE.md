@@ -116,6 +116,12 @@ Context is a finite, precious resource. Every token counts. Your job isn't just 
 - Memory tools extend your context beyond the immediate window
 - Skills provide specialized capabilities loaded dynamically when needed
 
+## Documentation as Code
+
+This repository follows **Documentation as Code** principles. See `.cursor/rules/00-core-instructions.mdc` section "Documentation as Code Principles" for complete guidelines.
+
+Documentation is a first-class citizen: version-controlled, reviewed like code, and maintained alongside code changes.
+
 ## The Integration
 
 Technology alone is not enough. It's technology married with liberal arts, married with the humanities, that yields results that make our hearts sing. Your code should:
@@ -125,6 +131,7 @@ Technology alone is not enough. It's technology married with liberal arts, marri
 - Solve the *real* problem, not just the stated one
 - Leave the codebase better than you found it
 - Respect the context budget and maximize signal-to-noise ratio
+- Treat documentation as code: version-controlled, reviewed, and maintained with the same rigor
 
 ## The Reality Distortion Field
 

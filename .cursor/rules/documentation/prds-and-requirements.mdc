@@ -3,14 +3,25 @@ alwaysApply: true
 ---
 # PRD and Requirements Rules
 
+## Requirements Quality
+
 - Capture functional and non-functional requirements separately.
 - Requirements must be:
   - Testable
   - Unambiguous
   - Atomic
   - Traceable
-- Use “The system shall…” format for formal requirements.
-- Include user stories where appropriate:
-  - As a [role], I want [capability], so that [value].
+- Use "The system shall…" format for formal requirements.
 - Provide acceptance criteria using Gherkin or bullet lists.
 - Avoid mixing design decisions into requirement documents.
+
+## PRD Structure (Linear-style)
+
+For Product Requirements Documents, use narrative-driven usage scenarios:
+
+- **Usage Scenarios**: Present real-life usage narratives anchored to actual users at actual moments in time
+- **Format**: "When [Person] was [doing X] in [Month Year], they [used feature Y] to [achieve Z]..."
+- **Purpose**: Help product, sales, and marketing visualize who we're building for
+- **Guidelines**: Tell a story, not just list features. Reference real people and real moments (even if anonymized). Show the feature in action within a workflow.
+
+Traditional user stories (As a [role], I want [capability], so that [value]) can still be used in Milestones section for engineering team coordination, but Usage Scenarios should be the primary format for the Usage Scenarios section.

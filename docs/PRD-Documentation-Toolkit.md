@@ -9,30 +9,38 @@
 
 ## 1. Executive Summary
 
-The Documentation Toolkit is a comprehensive, reusable framework that centralizes documentation rules, templates, and semantic intelligence capabilities for all projects. It eliminates duplication, ensures consistency, and adds AI-powered knowledge engineering to every project workspace. The toolkit provides a beautiful CLI application built with C# and .NET 9.0, offering document generation, semantic indexing, knowledge graph generation, and document summarization capabilities.
+The Documentation Toolkit is a comprehensive, reusable framework that centralizes documentation rules, templates, and automation for all projects. It eliminates duplication, ensures consistency, and provides a complete docs-as-code workflow. The toolkit provides a beautiful CLI application built with C# and .NET 9.0, offering project scaffolding, document generation, static site building, and automated deployment capabilities.
 
 **Expected Impact**: 
 - 80% reduction in documentation setup time for new projects
 - 100% consistency across all project documentation
 - Zero duplication of templates, rules, and scripts
-- Enhanced project intelligence through semantic search and knowledge graphs
+- Complete docs-as-code workflow with automated build and deployment
+- Opinionated organization for customer-facing and developer-facing documentation
 
 ---
 
 ## 2. Purpose & Scope
 
+The Documentation Toolkit exists to solve the problem of fragmented, inconsistent documentation across projects. It 
+provides a single source of truth for documentation standards, templates, and knowledge engineering capabilities.
+
 ### Purpose
-The Documentation Toolkit exists to solve the problem of fragmented, inconsistent documentation across projects. It provides a single source of truth for documentation standards, templates, and knowledge engineering capabilities.
+The Documentation Toolkit is a project scaffolding and publishing tool that initializes documentation projects (like `dotnet new` or Yeoman) and enables publishing to multiple formats. It follows [docs-as-code](https://www.writethedocs.org/guide/docs-as-code/) principles from Write the Docs: version control, markdown-based, automated workflows, and static site generation.
+
+**Primary Use Case**: Initialize a documentation project with opinionated structure, generate documents from templates, build static sites from markdown, and deploy compiled documentation automatically.
 
 ### In Scope
-- CLI application for document generation and semantic operations
+- CLI application for document generation and build operations
 - 12+ document templates (PRD, RFP, Tender, SOW, Architecture, Solution, SLA, Spec, API, Data, Blog, Weekly Log)
-- Semantic indexing using ONNX embeddings
-- Knowledge graph generation from source documents
-- Document summarization
+- Opinionated project organization (customer-facing, developer-facing, shared)
+- Static site generation (markdown → HTML)
+- Cross-reference resolution and validation
+- Documentation index generation
+- Template guidance system
+- CI/CD automation (GitHub Actions workflows)
 - Project initialization with consistent structure
 - Event-driven architecture with SQLite persistence
-- Memory monitoring capabilities
 - Comprehensive testing (unit, integration, benchmarking)
 - Full IDesign Method™ compliance
 
@@ -43,6 +51,7 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 - Real-time collaboration
 - Version control integration beyond Git initialization
 - Document editing capabilities (templates only)
+- Semantic intelligence features (moved to future enhancements - see README)
 
 ---
 
@@ -80,29 +89,30 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 
 ### Product Objectives
 - Provide a beautiful, intuitive CLI interface
-- Support 10+ document types
-- Enable semantic indexing with sub-second search
-- Generate knowledge graphs automatically
+- Support 12+ document types
+- Enable static site generation from markdown
+- Provide opinionated documentation organization
+- Automate build and deployment workflows
 - Maintain 100% consistency across generated documents
 
 ### KPIs and Measurable Success Criteria
 - **Setup Time**: < 5 minutes to initialize a new project (target: 80% reduction)
 - **Document Generation**: < 2 seconds to generate any document template
-- **Indexing Performance**: < 30 seconds to index 100 documents
-- **Search Performance**: < 200ms average query response time
+- **Build Performance**: < 10 seconds to build static site from 100 markdown files
+- **Link Validation**: < 5 seconds to validate all cross-references
 - **Consistency**: 100% template compliance across all generated documents
-- **Memory Efficiency**: < 200MB memory usage during indexing operations
+- **Deployment**: Automated deployment completes within 2 minutes of Git push
 
 ---
 
 ## 5. Stakeholders
 
-| Role | Name | Responsibility |
-|------|------|----------------|
-| Product Owner | TBD | Product vision and prioritization |
-| Lead Developer | TBD | Architecture and implementation |
-| Technical Writer | TBD | Template quality and documentation standards |
-| End Users | Project Teams | Usage feedback and requirements |
+| Role             | Name          | Responsibility                               |
+| ---------------- | ------------- | -------------------------------------------- |
+| Product Owner    | TBD           | Product vision and prioritization            |
+| Lead Developer   | TBD           | Architecture and implementation              |
+| Technical Writer | TBD           | Template quality and documentation standards |
+| End Users        | Project Teams | Usage feedback and requirements              |
 
 ---
 
@@ -136,13 +146,16 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 
 *As a **Technical Writer**, I want to generate documents from templates, so that all documents follow consistent company standards.*
 
-*As a **Developer**, I want to search project documentation semantically, so that I can find relevant information quickly without reading entire documents.*
 
-*As a **Solution Architect**, I want to build knowledge graphs from source documents, so that I can visualize relationships and entities across the project.*
+*As a **Project Manager**, I want to organize documentation by audience (customer vs developer), so that I can publish appropriate documentation to different stakeholders.*
 
-*As a **Project Manager**, I want to monitor memory usage during operations, so that I can optimize performance for large document collections.*
+*As a **Technical Writer**, I want the tool to suggest which templates to use, so that I know what documents are missing from my project.*
 
-*As a **Technical Writer**, I want to summarize source files, so that I can quickly understand project context without reading all files.*
+*As a **Developer**, I want documentation to build automatically on Git push, so that the published site is always up-to-date.*
+
+*As a **Solution Architect**, I want to cross-reference documents, so that readers can navigate between related content.*
+
+*As a **Project Manager**, I want a central index of all documentation, so that I can see what documents exist and their status.*
 
 ---
 
@@ -167,46 +180,7 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
   - Preserves template structure
   - Completes in < 2 seconds
 
-### FR3: Semantic Indexing
-- **Requirement**: Build searchable semantic index from source documents
-- **Acceptance Criteria**:
-  - Extracts text from PDF, DOCX, PPTX, TXT, MD, CSV, JSON files
-  - Chunks text with configurable size and overlap
-  - Generates embeddings using ONNX model
-  - Stores vectors in binary format
-  - Stores metadata in JSON format
-  - Supports progress reporting
-  - Handles 100+ documents in < 30 seconds
-
-### FR4: Semantic Search
-- **Requirement**: Search semantic index with natural language queries
-- **Acceptance Criteria**:
-  - Accepts natural language query
-  - Generates query embedding
-  - Calculates cosine similarity
-  - Returns top-K results with scores
-  - Displays results in formatted table
-  - Completes in < 200ms
-
-### FR5: Knowledge Graph Generation
-- **Requirement**: Build knowledge graph from source documents
-- **Acceptance Criteria**:
-  - Extracts entities (capitalized phrases)
-  - Extracts topics (frequent meaningful words)
-  - Builds relationships (co-occurrence, containment)
-  - Generates JSON, Graphviz, and Markdown outputs
-  - Handles 100+ documents in < 15 seconds
-
-### FR6: Document Summarization
-- **Requirement**: Generate summary documents from source files
-- **Acceptance Criteria**:
-  - Processes all files in source directory
-  - Extracts text from supported formats
-  - Generates summary with file metadata
-  - Outputs to Markdown file
-  - Handles 50+ files in < 20 seconds
-
-### FR7: Memory Monitoring
+### FR3: Memory Monitoring
 - **Requirement**: Monitor memory usage during operations
 - **Acceptance Criteria**:
   - Tracks current memory usage
@@ -216,14 +190,78 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
   - Optional flag to enable/disable
   - Displays in formatted table
 
-### FR8: Setup Validation
+### FR4: Setup Validation
 - **Requirement**: Validate toolkit setup and dependencies
 - **Acceptance Criteria**:
-  - Checks ONNX model availability
-  - Verifies NuGet packages
+  - Checks NuGet packages
   - Validates template directory
   - Reports missing dependencies
   - Provides fix suggestions
+
+### FR5: Opinionated Project Organization
+- **Requirement**: Create organized folder structure based on project type
+- **Acceptance Criteria**:
+  - Prompts user for project type (customer-facing, developer-facing, mixed)
+  - Creates appropriate folder structure:
+    - `docs/customer/` for customer-facing docs (PRDs, proposals, requirements)
+    - `docs/developer/` for developer-facing docs (architecture, design, specs)
+    - `docs/shared/` for shared docs (glossary, decisions, changelog)
+  - Generates README explaining the structure
+  - Completes in < 5 seconds
+
+### FR6: Static Site Generation
+- **Requirement**: Build static HTML site from markdown files
+- **Acceptance Criteria**:
+  - Compiles all markdown files to HTML using Markdig
+  - Generates anchor links for headers
+  - Resolves cross-references between documents
+  - Validates internal links
+  - Generates navigation structure
+  - Outputs to `publish/web/` directory
+  - Handles 100+ documents in < 10 seconds
+  - Reports broken links
+
+### FR7: Cross-Reference System
+- **Requirement**: Resolve and validate cross-references between documents
+- **Acceptance Criteria**:
+  - Resolves markdown links (`[text](./file.md)`)
+  - Validates link targets exist
+  - Converts markdown links to HTML anchor links
+  - Supports section anchors (`#section-name`)
+  - Reports broken links with file and line number
+  - Completes validation in < 5 seconds for 100 documents
+
+### FR8: Documentation Index Generation
+- **Requirement**: Auto-generate central documentation index
+- **Acceptance Criteria**:
+  - Scans all documents in `docs/` directory
+  - Extracts metadata (title, category, date, status)
+  - Organizes by category (customer/developer/shared)
+  - Generates markdown index with links
+  - Includes document counts and statistics
+  - Updates automatically on `doc build`
+  - Completes in < 2 seconds
+
+### FR9: Template Guidance System
+- **Requirement**: Suggest templates based on project state
+- **Acceptance Criteria**:
+  - Analyzes existing documents in project
+  - Identifies missing document types
+  - Suggests templates based on project type
+  - Provides context for each suggestion (when to use, what it's for)
+  - Shows template descriptions and use cases
+  - Completes analysis in < 1 second
+
+### FR10: CI/CD Automation
+- **Requirement**: Automated build and deployment workflows
+- **Acceptance Criteria**:
+  - GitHub Actions workflow for build on push/PR
+  - Automated deployment to GitHub Pages
+  - Preview builds for pull requests
+  - Link validation in CI pipeline
+  - Build validation before deployment
+  - Workflows generated in `doc init`
+  - Deployment completes within 2 minutes
 
 ---
 
@@ -231,10 +269,11 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 
 ### Performance
 - Document generation: < 2 seconds
-- Semantic indexing: < 30 seconds for 100 documents
-- Semantic search: < 200ms average query time
-- Knowledge graph generation: < 15 seconds for 100 documents
-- Memory usage: < 200MB during indexing operations
+- Static site build: < 10 seconds for 100 markdown files
+- Link validation: < 5 seconds for 100 documents
+- Index generation: < 2 seconds
+- Template suggestion: < 1 second
+- Memory usage: < 200MB during build operations
 
 ### Security
 - No network access required (all processing local)
@@ -251,11 +290,11 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 - Validation before destructive operations
 
 ### Scalability
-- Handles 1000+ documents in semantic index
-- Supports large file sizes (up to 100MB per file)
+- Handles 1000+ markdown files in static site
+- Supports large file sizes (up to 10MB per markdown file)
 - Efficient memory usage with pre-allocated collections
-- Batch processing for embeddings
-- Configurable chunk sizes for different use cases
+- Parallel processing of markdown files where safe
+- Incremental builds (only rebuild changed files)
 
 ### Compliance
 - Follows IDesign Method™ architecture principles
@@ -277,41 +316,42 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 - Clear error messages with suggestions
 
 ### Command Structure
-- Intuitive command names (`init`, `generate`, `index`, `search`, `graph`, `summarize`, `validate`)
+- Intuitive command names (`init`, `generate`, `build`, `suggest`, `validate`, `web`, `publish`)
 - Short aliases for common commands (`gen`, `sum`)
 - Consistent option naming (`--source`, `--output`, `--chunk-size`)
 - Help text for all commands and options
 
 ### User Flow
-1. Initialize project → 2. Add source files → 3. Build index → 4. Search/Generate documents
+1. Initialize project → 2. Generate documents → 3. Build static site → 4. Deploy
 
 ---
 
 ## 11. Data Requirements
 
 ### Data Inputs
-- Source documents (PDF, DOCX, PPTX, TXT, MD, CSV, JSON)
-- ONNX embedding model file (~90MB)
-- Document templates (Markdown files)
+- Source markdown files (documentation)
+- Document templates (Markdown files, embedded as resources)
 - Configuration files (optional)
+- YAML front matter (document metadata)
 
 ### Data Outputs
 - Generated documents (Markdown files)
-- Semantic index (vectors.bin, index.json)
-- Knowledge graph (graph.json, graph.md, graph.gv)
-- Summary documents (Markdown files)
+- Compiled static site (HTML files in `publish/web/`)
+- Navigation structure (JSON)
+- Documentation index (Markdown)
+- Link validation report
 - Event log (SQLite database)
 
 ### Storage
 - Local file system only
-- Semantic index stored in `semantic-index/` directory
-- Knowledge graph stored in `knowledge-graph/` directory
+- Source documents in `docs/` directory (organized by category)
+- Compiled site in `publish/web/` directory
 - Events persisted to `%LocalAppData%\DocToolkit\events.db`
 
 ### Retention
 - User-controlled (no automatic deletion)
 - Events retained indefinitely in SQLite database
-- Index files can be regenerated from source
+- Compiled sites can be regenerated from source markdown
 
 ### Privacy
 - All processing local (no cloud uploads)
@@ -330,9 +370,9 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 
 ### Metrics
 - Document generation time
-- Indexing performance
-- Search query response time
-- Memory usage during operations
+- Build performance
+- Link validation time
+- Memory usage during build operations
 - GC statistics
 
 ### Dashboards
@@ -344,29 +384,32 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 
 ### Assumptions
 - Users have .NET 9.0 SDK installed
-- Users have ONNX model file available
-- Source documents are in supported formats
-- Users have sufficient disk space for indexes
+- Source documents are in Markdown format
+- Users have Git installed (for CI/CD workflows)
+- Users have sufficient disk space for compiled sites
 - Users are comfortable with CLI interfaces
+- Users have GitHub repository (for CI/CD automation)
 
 ### Constraints
 - Local file system only (no cloud storage)
 - Single-user operation (no multi-user support)
 - No real-time collaboration
-- Limited to supported file formats
-- ONNX model size (~90MB) required
+- Markdown source format required (templates generate markdown)
+- Static site generation only (no server-side processing)
+- CI/CD requires GitHub (other platforms future enhancement)
 
 ---
 
 ## 14. Risks & Mitigations
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| ONNX model not found | High | Medium | Clear error message with download instructions |
-| Large document collections cause memory issues | Medium | Low | Memory monitoring, pre-allocation, batch processing |
-| Corrupted files cause crashes | Medium | Low | Graceful error handling, skip corrupted files |
-| Incompatible file formats | Low | Medium | Clear error messages, format validation |
-| Performance degradation with large indexes | Medium | Low | Benchmark tests, optimization, configurable chunk sizes |
+| Risk                                           | Impact | Probability | Mitigation                                              |
+| ---------------------------------------------- | ------ | ----------- | ------------------------------------------------------- |
+| Broken links in documentation                  | Medium | Medium      | Link validation during build, clear error reporting     |
+| Large document collections cause build issues   | Medium | Low         | Incremental builds, parallel processing, optimization   |
+| Corrupted markdown files cause crashes         | Medium | Low         | Graceful error handling, skip corrupted files           |
+| Invalid YAML front matter                      | Low    | Medium      | Clear error messages, validation, sensible defaults     |
+| CI/CD workflow failures                        | Medium | Low         | Comprehensive error handling, clear failure messages     |
+| Performance degradation with large sites       | Medium | Low         | Benchmark tests, optimization, incremental builds       |
 
 ---
 
@@ -396,18 +439,30 @@ The Documentation Toolkit exists to solve the problem of fragmented, inconsisten
 - Developer guides
 - Comprehensive CHANGELOG
 
+### Phase 5: Docs-as-Code Features (In Progress)
+- Opinionated project organization
+- Static site generation
+- Cross-reference system
+- Documentation index generation
+- Template guidance system
+- CI/CD automation
+
 ---
 
 ## 16. Decision Log
 
-| Date | Decision | Rationale | Alternatives Considered |
-|------|----------|-----------|------------------------|
-| 2024 | Use .NET 9.0 | Latest stable version, performance improvements | .NET 8.0, .NET 10.0 (not released) |
-| 2024 | ONNX Runtime for embeddings | C# native, no Python dependency | Python with sentence-transformers |
-| 2024 | Spectre.Console for CLI | Beautiful terminal UI, cross-platform | System.Console, ConsoleTables |
-| 2024 | IDesign Method™ architecture | Volatility-based decomposition, maintainability | Traditional layered architecture |
-| 2024 | SQLite for event persistence | Lightweight, embedded, no external dependencies | File-based, in-memory only |
-| 2024 | Binary vector storage | Performance, compact format | JSON, CSV, NumPy format |
+| Date | Decision                     | Rationale                                       | Alternatives Considered            |
+| ---- | ---------------------------- | ----------------------------------------------- | ---------------------------------- |
+| 2024 | Use .NET 9.0                 | Latest stable version, performance improvements | .NET 8.0, .NET 10.0 (not released) |
+| 2024 | ONNX Runtime for embeddings  | C# native, no Python dependency                 | Python with sentence-transformers  |
+| 2024 | Spectre.Console for CLI      | Beautiful terminal UI, cross-platform           | System.Console, ConsoleTables      |
+| 2024 | IDesign Method™ architecture | Volatility-based decomposition, maintainability | Traditional layered architecture   |
+| 2024 | SQLite for event persistence | Lightweight, embedded, no external dependencies | File-based, in-memory only         |
+| 2024 | Binary vector storage        | Performance, compact format                     | JSON, CSV, NumPy format            |
+| 2024 | Markdig for markdown rendering | C# native, GitHub Flavored Markdown support      | CommonMark.NET, custom parser      |
+| 2024 | Opinionated organization    | Clear separation of customer/developer docs       | Flat structure, user-defined      |
+| 2024 | Static site generation      | Deployable HTML without server                   | Server-side rendering, CMS         |
+| 2024 | GitHub Actions for CI/CD    | Industry standard, free for open source          | Azure DevOps, GitLab CI, Jenkins  |
 
 ---
 

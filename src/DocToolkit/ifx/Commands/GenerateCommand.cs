@@ -50,14 +50,22 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
         if (!_templateAccessor.TemplateExists(settings.Type))
         {
             AnsiConsole.MarkupLine($"[red]Error:[/] Template '{settings.Type}' not found");
+            AnsiConsole.WriteLine();
+            AnsiConsole.Write(new Rule("[bold yellow]Available Templates[/]").RuleStyle(Color.Yellow));
 
             var available = _templateAccessor.GetAvailableTemplates();
-            var table = new Table();
-            table.AddColumn("Available Templates");
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .BorderColor(Color.Yellow)
+                .Title("[bold yellow]Available Templates[/]")
+                .Caption($"[dim]{available.Count} template(s) available[/]")
+                .AddColumn(new TableColumn("[bold]Template Name[/]").LeftAligned());
+
             foreach (var template in available)
             {
-                table.AddRow(template);
+                table.AddRow($"[cyan]{template}[/]");
             }
+
             AnsiConsole.Write(table);
             return 1;
         }
@@ -71,12 +79,19 @@ public sealed class GenerateCommand : Command<GenerateCommand.Settings>
 
         var outputPath = _templateAccessor.GenerateDocument(settings.Type, settings.Name, finalOutputDir);
 
+        var filePath = new TextPath(outputPath)
+            .RootStyle(new Style(Color.Green))
+            .SeparatorStyle(new Style(Color.Grey))
+            .StemStyle(new Style(Color.Yellow))
+            .LeafStyle(new Style(Color.White, decoration: Decoration.Bold));
+
         var panel = new Panel(
             new Rows(
-                new Text($"[green]✓[/] Document created: [bold]{outputPath}[/]"),
+                new Text("[green]✓[/] Document created:"),
+                filePath,
                 new Text(""),
-                new Text($"[dim]Template:[/] {settings.Type}"),
-                new Text($"[dim]Name:[/] {settings.Name}")
+                new Text($"[dim]Template:[/] [cyan]{settings.Type}[/]"),
+                new Text($"[dim]Name:[/] [cyan]{settings.Name}[/]")
             ))
         {
             Header = new PanelHeader("Document Generated", Justify.Left),

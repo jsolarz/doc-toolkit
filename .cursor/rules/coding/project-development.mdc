@@ -1,0 +1,73 @@
+---
+alwaysApply: true
+---
+
+# Project Development Methodology & Context Engineering
+
+You are an expert in LLM project development and context engineering. Apply these principles when the user asks to "start an LLM project", "design batch pipeline", "evaluate task-model fit", "structure agent project", or choose between LLM and traditional approaches.
+
+## Core Philosophy: Validate Before Automating
+
+**Rule #1:** Never start by writing the full automation pipeline.
+* **The Manual Prototype:** Before writing code, manually test one representative example with the target model.
+* **Goal:** Validate "Task-Model Fit". If the model cannot solve the task manually with a perfect prompt, no amount of Python code will fix it.
+
+## 1. The 5-Stage Pipeline Architecture
+
+Structure LLM applications as a linear pipeline rather than a monolithic script.
+
+1.  **Acquire**: Fetch raw data from sources (APIs, files, databases).
+2.  **Prepare**: Transform data into the final prompt format.
+3.  **Process**: Execute LLM calls (isolate this expensive, non-deterministic step).
+4.  **Parse**: Extract structured data from LLM outputs (JSON/Markdown).
+5.  **Render**: Generate final outputs (reports, files, visualizations).
+
+**Benefits:**
+* **Idempotency**: File existence gates execution.
+* **Debugging**: All intermediate state is saved and human-readable.
+* **Cost**: You can re-run the `Parse` step without paying for the `Process` step again.
+
+## 2. Structured Output & Parsing
+
+Design prompts and parsers to be robust against minor model variations.
+
+* **Section Markers**: Use explicit headers (e.g., `## ANALYSIS`, `## JSON`) to delimit sections.
+* **Format Examples**: Show the model exactly what the output should look like (few-shot).
+* **Rationale Disclosure**: Tell the model: "I will be parsing this programmatically."
+* **Resilient Parsers**:
+    * Use regex that tolerates minor whitespace/formatting shifts.
+    * Provide sensible defaults if non-critical sections are missing.
+    * **Log, don't crash:** Record parsing failures for review instead of halting the pipeline.
+
+## 3. Agent-Assisted Development Loop
+
+When using an AI (like Cursor) to build the system:
+
+1.  **Describe** the project goal and constraints clearly.
+2.  **Generate** the initial implementation.
+3.  **Test** a specific component and identify failures.
+4.  **Refine** the architecture or prompts based on results.
+5.  **Iterate**: Break large projects into discrete components and test each before moving on.
+
+## 4. Batch Processing & Cost Estimation
+
+Before running a pipeline on N items:
+
+1.  **Estimate Tokens**: (Input Tokens + Output Tokens) per item.
+2.  **Calculate Total**: Items × Tokens × Price.
+3.  **Buffer**: Add 20-30% for retries and failures.
+4.  **Optimize**:
+    * Truncate context where possible.
+    * Use smaller/cheaper models for simple items.
+    * Cache partial results.
+    * Parallelize for speed (this reduces time, not cost).
+
+## Project Planning Template
+
+Use this checklist when scoping a new LLM feature:
+
+* **[ ] Task Analysis**: What is the input/output? Is it synthesis, classification, or extraction?
+* **[ ] Manual Validation**: Did we test one example? What was the quality?
+* **[ ] Architecture**: Single pipeline or multi-agent? Storage strategy?
+* **[ ] Cost Est**: Is the value per successful completion > cost per run?
+* **[ ] Dev Plan**: Milestones for Acquire, Prepare, Process, Parse, Render.

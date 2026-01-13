@@ -22,7 +22,7 @@ public static class EventSubscriptions
         // Example: KnowledgeGraphManager could subscribe to IndexBuiltEvent
         // to automatically rebuild graph when index changes
         // This is commented out as it's optional - uncomment if needed
-        
+
         /*
         eventBus.Subscribe<IndexBuiltEvent>(async (evt) =>
         {
@@ -35,31 +35,31 @@ public static class EventSubscriptions
         });
         */
 
-        // Log all events for observability (internal logging, not user-facing)
-        eventBus.Subscribe<IndexBuiltEvent>(evt =>
-        {
-            logger?.LogInformation("Index built: {IndexPath} ({EntryCount} entries, {VectorCount} vectors)", 
-                evt.IndexPath, evt.EntryCount, evt.VectorCount);
-        });
-
-        eventBus.Subscribe<GraphBuiltEvent>(evt =>
-        {
-            logger?.LogInformation("Graph built: {GraphPath} ({FileCount} files, {EntityCount} entities, {TopicCount} topics)", 
-                evt.GraphPath, evt.FileCount, evt.EntityCount, evt.TopicCount);
-        });
-
-        eventBus.Subscribe<SummaryCreatedEvent>(evt =>
-        {
-            logger?.LogInformation("Summary created: {SummaryPath} ({FileCount} files)", 
-                evt.SummaryPath, evt.FileCount);
-        });
+        // Semantic Intelligence Event Subscriptions - Removed for now, see Future Enhancements in README
+        // eventBus.Subscribe<IndexBuiltEvent>(evt =>
+        // {
+        //     logger?.LogInformation("Index built: {IndexPath} ({EntryCount} entries, {VectorCount} vectors)", 
+        //         evt.IndexPath, evt.EntryCount, evt.VectorCount);
+        // });
+        //
+        // eventBus.Subscribe<GraphBuiltEvent>(evt =>
+        // {
+        //     logger?.LogInformation("Graph built: {GraphPath} ({FileCount} files, {EntityCount} entities, {TopicCount} topics)", 
+        //         evt.GraphPath, evt.FileCount, evt.EntityCount, evt.TopicCount);
+        // });
+        //
+        // eventBus.Subscribe<SummaryCreatedEvent>(evt =>
+        // {
+        //     logger?.LogInformation("Summary created: {SummaryPath} ({FileCount} files)", 
+        //         evt.SummaryPath, evt.FileCount);
+        // });
 
         eventBus.Subscribe<DocumentProcessedEvent>(evt =>
         {
             // Log document processing (can be verbose, so only log important ones)
             if (evt.CharacterCount > 10000)
             {
-                logger?.LogDebug("Large document processed: {FilePath} ({CharacterCount} chars)", 
+                logger?.LogDebug("Large document processed: {FilePath} ({CharacterCount} chars)",
                     evt.FilePath, evt.CharacterCount);
             }
         });

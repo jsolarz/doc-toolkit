@@ -2,8 +2,6 @@ using DocToolkit.Accessors;
 using DocToolkit.Engines;
 using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IEngines;
-using DocToolkit.ifx.Interfaces.IManagers;
-using DocToolkit.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -52,24 +50,28 @@ public static class ServiceConfiguration
         // Engines (Singleton - stateless or expensive to create)
         services.AddSingleton<IDocumentExtractionEngine>(sp => 
             new DocumentExtractionEngine(sp.GetService<ILogger<DocumentExtractionEngine>>()));
-        services.AddSingleton<IEmbeddingEngine>(sp => 
-            new EmbeddingEngine(null, sp.GetService<ILogger<EmbeddingEngine>>()));
-        services.AddSingleton<ITextChunkingEngine, TextChunkingEngine>();
-        services.AddSingleton<ISimilarityEngine, SimilarityEngine>();
-        services.AddSingleton<IEntityExtractionEngine, EntityExtractionEngine>();
-        services.AddSingleton<ISummarizationEngine, SummarizationEngine>();
+        
+        // Semantic Intelligence Engines - Removed for now, see Future Enhancements in README
+        // services.AddSingleton<IEmbeddingEngine>(sp => 
+        //     new EmbeddingEngine(null, sp.GetService<ILogger<EmbeddingEngine>>()));
+        // services.AddSingleton<ITextChunkingEngine, TextChunkingEngine>();
+        // services.AddSingleton<ISimilarityEngine, SimilarityEngine>();
+        // services.AddSingleton<IEntityExtractionEngine, EntityExtractionEngine>();
+        // services.AddSingleton<ISummarizationEngine, SummarizationEngine>();
 
         // Accessors (Singleton - stateless)
-        services.AddSingleton<IVectorStorageAccessor>(sp => 
-            new VectorStorageAccessor(sp.GetService<ILogger<VectorStorageAccessor>>()));
+        // Semantic Intelligence Accessors - Removed for now, see Future Enhancements in README
+        // services.AddSingleton<IVectorStorageAccessor>(sp => 
+        //     new VectorStorageAccessor(sp.GetService<ILogger<VectorStorageAccessor>>()));
         services.AddSingleton<ITemplateAccessor, TemplateAccessor>();
         services.AddSingleton<IProjectAccessor, ProjectAccessor>();
 
         // Managers (Scoped - may have state per operation)
-        services.AddScoped<ISemanticIndexManager, SemanticIndexManager>();
-        services.AddScoped<ISemanticSearchManager, SemanticSearchManager>();
-        services.AddScoped<IKnowledgeGraphManager, KnowledgeGraphManager>();
-        services.AddScoped<ISummarizeManager, SummarizeManager>();
+        // Semantic Intelligence Managers - Removed for now, see Future Enhancements in README
+        // services.AddScoped<ISemanticIndexManager, SemanticIndexManager>();
+        // services.AddScoped<ISemanticSearchManager, SemanticSearchManager>();
+        // services.AddScoped<IKnowledgeGraphManager, KnowledgeGraphManager>();
+        // services.AddScoped<ISummarizeManager, SummarizeManager>();
 
         return services;
     }

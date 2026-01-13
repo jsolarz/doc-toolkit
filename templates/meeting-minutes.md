@@ -63,3 +63,4 @@
 2. **Highlight "Blockers":** If something stops progress, put a **[BLOCKER]** tag next to it
 3. **Immediate Send:** Try to send this out within **2 hours** of the meeting ending
 4. **Update Status:** Update action item status in subsequent meetings
+    

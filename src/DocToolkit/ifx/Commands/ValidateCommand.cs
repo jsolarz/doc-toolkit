@@ -10,32 +10,17 @@ public sealed class ValidateCommand : Command
     {
         AnsiConsole.MarkupLine("[cyan]Validating Documentation Toolkit Setup[/]");
         AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule("[bold cyan]Validation Checks[/]").RuleStyle(Color.Cyan1));
 
         var validationService = new ValidationService();
         var result = validationService.Validate();
-
-        // Check ONNX model
-        AnsiConsole.MarkupLine("[yellow]Checking embedding model...[/]");
-        var modelAvailable = validationService.CheckOnnxModelAvailable();
-        if (modelAvailable)
-        {
-            AnsiConsole.MarkupLine("  [green]✓[/] ONNX model found");
-        }
-        else
-        {
-            AnsiConsole.MarkupLine("  [yellow]⚠[/] ONNX model not found");
-            AnsiConsole.MarkupLine("     [dim]Download all-MiniLM-L6-v2.onnx and place in models/ directory[/]");
-        }
-
-        AnsiConsole.WriteLine();
 
         // Check document libraries
         AnsiConsole.MarkupLine("[yellow]Checking document libraries...[/]");
         var libraries = new Dictionary<string, bool>
         {
             { "DocumentFormat.OpenXml", validationService.CheckDocumentLibraryAvailable("DocumentFormat.OpenXml") },
-            { "UglyToad.PdfPig", validationService.CheckDocumentLibraryAvailable("UglyToad.PdfPig") },
-            { "Microsoft.ML.OnnxRuntime", validationService.CheckDocumentLibraryAvailable("Microsoft.ML.OnnxRuntime") }
+            { "UglyToad.PdfPig", validationService.CheckDocumentLibraryAvailable("UglyToad.PdfPig") }
         };
 
         foreach (var (library, available) in libraries)
@@ -51,6 +36,7 @@ public sealed class ValidateCommand : Command
         }
 
         AnsiConsole.WriteLine();
+        AnsiConsole.Write(new Rule().RuleStyle(Color.Grey));
 
         // Check external tools
         AnsiConsole.MarkupLine("[yellow]Checking external tools...[/]");

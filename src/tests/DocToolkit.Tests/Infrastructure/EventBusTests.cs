@@ -23,10 +23,10 @@ public class EventBusTests : IDisposable
     {
         // Arrange
         var eventReceived = false;
-        _eventBus.Subscribe<IndexBuiltEvent>(evt => eventReceived = true);
+        _eventBus.Subscribe<DocumentProcessedEvent>(evt => eventReceived = true);
 
         // Act
-        _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
+        _eventBus.Publish(new DocumentProcessedEvent { FilePath = "test.txt", CharacterCount = 12 });
 
         // Assert
         Assert.True(eventReceived);
@@ -37,11 +37,11 @@ public class EventBusTests : IDisposable
     {
         // Arrange
         var callCount = 0;
-        _eventBus.Subscribe<IndexBuiltEvent>(evt => callCount++);
-        _eventBus.Subscribe<IndexBuiltEvent>(evt => callCount++);
+        _eventBus.Subscribe<DocumentProcessedEvent>(evt => callCount++);
+        _eventBus.Subscribe<DocumentProcessedEvent>(evt => callCount++);
 
         // Act
-        _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
+        _eventBus.Publish(new DocumentProcessedEvent { FilePath = "test.txt", CharacterCount = 12 });
 
         // Assert
         Assert.Equal(2, callCount);
@@ -52,14 +52,14 @@ public class EventBusTests : IDisposable
     {
         // Arrange
         var eventReceived = false;
-        _eventBus.Subscribe<IndexBuiltEvent>(async evt => 
+        _eventBus.Subscribe<DocumentProcessedEvent>(async evt => 
         {
             await Task.Delay(10);
             eventReceived = true;
         });
 
         // Act
-        _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
+        _eventBus.Publish(new DocumentProcessedEvent { FilePath = "test.txt", CharacterCount = 12 });
 
         // Assert
         Thread.Sleep(100); // Wait for async handler
@@ -70,26 +70,26 @@ public class EventBusTests : IDisposable
     public void Publish_WithDifferentEventTypes_OnlyCallsMatchingSubscribers()
     {
         // Arrange
-        var indexEventReceived = false;
-        var graphEventReceived = false;
+        var documentEventReceived = false;
+        var summaryEventReceived = false;
         
-        _eventBus.Subscribe<IndexBuiltEvent>(evt => indexEventReceived = true);
-        _eventBus.Subscribe<GraphBuiltEvent>(evt => graphEventReceived = true);
+        _eventBus.Subscribe<DocumentProcessedEvent>(evt => documentEventReceived = true);
+        _eventBus.Subscribe<SummaryCreatedEvent>(evt => summaryEventReceived = true);
 
         // Act
-        _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test" });
+        _eventBus.Publish(new DocumentProcessedEvent { FilePath = "test.txt", CharacterCount = 12 });
 
         // Assert
-        Assert.True(indexEventReceived);
-        Assert.False(graphEventReceived);
+        Assert.True(documentEventReceived);
+        Assert.False(summaryEventReceived);
     }
 
     [Fact]
     public void Publish_WithMultipleEvents_PersistsAll()
     {
         // Act
-        _eventBus.Publish(new IndexBuiltEvent { IndexPath = "./test1", EntryCount = 100 });
-        _eventBus.Publish(new GraphBuiltEvent { GraphPath = "./test2" });
+        _eventBus.Publish(new DocumentProcessedEvent { FilePath = "test1.txt", CharacterCount = 10 });
+        _eventBus.Publish(new SummaryCreatedEvent { SummaryPath = "./test2.md", FileCount = 5, SourcePath = "./source" });
 
         // Assert
         // Events are persisted internally - we verify by checking subscribers are called

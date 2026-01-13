@@ -37,10 +37,8 @@ public static class BenchmarkRunner
         var summaries = new List<Summary>();
         
         // Run each benchmark class
-        summaries.Add(BenchmarkDotNet.Running.BenchmarkRunner.Run<DocToolkit.Tests.Benchmarks.TextChunkingBenchmarks>());
-        summaries.Add(BenchmarkDotNet.Running.BenchmarkRunner.Run<DocToolkit.Tests.Benchmarks.SimilarityBenchmarks>());
-        summaries.Add(BenchmarkDotNet.Running.BenchmarkRunner.Run<DocToolkit.Tests.Benchmarks.EntityExtractionBenchmarks>());
-        summaries.Add(BenchmarkDotNet.Running.BenchmarkRunner.Run<DocToolkit.Tests.Benchmarks.SummarizationBenchmarks>());
+        summaries.Add(BenchmarkDotNet.Running.BenchmarkRunner.Run<DocToolkit.Tests.Benchmarks.DocumentExtractionBenchmarks>());
+        summaries.Add(BenchmarkDotNet.Running.BenchmarkRunner.Run<DocToolkit.Tests.Benchmarks.ProjectAccessorBenchmarks>());
         
         stopwatch.Stop();
 

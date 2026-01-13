@@ -27,14 +27,8 @@ public class ValidationService
     {
         var result = new ValidationResult { Success = true };
 
-        // Check ONNX model
-        if (!CheckOnnxModelAvailable())
-        {
-            result.Warnings.Add("ONNX model not found. Download all-MiniLM-L6-v2.onnx and place in models/ directory");
-        }
-
         // Check document libraries
-        var libraries = new[] { "DocumentFormat.OpenXml", "UglyToad.PdfPig", "Microsoft.ML.OnnxRuntime" };
+        var libraries = new[] { "DocumentFormat.OpenXml", "UglyToad.PdfPig" };
         foreach (var library in libraries)
         {
             if (!CheckDocumentLibraryAvailable(library))
@@ -45,22 +39,6 @@ public class ValidationService
         }
 
         return result;
-    }
-
-    /// <summary>
-    /// Checks if ONNX model is available.
-    /// </summary>
-    /// <returns>True if model is available</returns>
-    public bool CheckOnnxModelAvailable()
-    {
-        var modelPaths = new[]
-        {
-            Path.Combine("models", "all-MiniLM-L6-v2.onnx"),
-            Path.Combine(Directory.GetCurrentDirectory(), "models", "all-MiniLM-L6-v2.onnx"),
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "models", "all-MiniLM-L6-v2.onnx")
-        };
-
-        return modelPaths.Any(File.Exists);
     }
 
     /// <summary>

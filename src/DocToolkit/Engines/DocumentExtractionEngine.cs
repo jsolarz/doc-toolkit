@@ -16,7 +16,7 @@ namespace DocToolkit.Engines;
 /// Component Type: Engine (Algorithm Volatility)
 /// Volatility: Document format support and extraction algorithms
 /// Pattern: Pure function - accepts file path, returns extracted text
-/// Service Boundary: Called by Managers (SemanticIndexManager, KnowledgeGraphManager, SummarizeManager)
+/// Service Boundary: Called by Managers (when needed for document processing)
 /// </remarks>
 public class DocumentExtractionEngine : IDocumentExtractionEngine
 {

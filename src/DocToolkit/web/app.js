@@ -4,13 +4,48 @@ class DocumentViewer {
         this.documents = [];
         this.navigation = null;
         this.currentDocument = null;
+        this.marked = null;
         this.init();
     }
 
     async init() {
         this.initTheme();
         this.setupEventListeners();
+        await this.initMarked();
+        // Initialize welcome screen
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        if (welcomeScreen) {
+            welcomeScreen.innerHTML = this.getWelcomeContent();
+        }
         await this.loadDocuments();
+    }
+
+    async initMarked() {
+        try {
+            // Import marked.js from CDN with timeout
+            const importPromise = import('https://cdn.jsdelivr.net/npm/marked@15.0.12/+esm');
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('marked.js load timeout')), 10000)
+            );
+
+            const { marked } = await Promise.race([importPromise, timeoutPromise]);
+
+            // Configure marked.js options for better security and rendering
+            if (marked.setOptions) {
+                marked.setOptions({
+                    breaks: false,
+                    gfm: true,
+                    headerIds: true,
+                    mangle: false
+                });
+            }
+
+            this.marked = marked;
+        } catch (error) {
+            console.warn('Failed to initialize marked.js, using fallback parser:', error.message);
+            // Fallback to custom parser if marked.js fails
+            this.marked = null;
+        }
     }
 
     initTheme() {
@@ -43,6 +78,11 @@ class DocumentViewer {
     }
 
     setupEventListeners() {
+        const homeBtn = document.getElementById('homeBtn');
+        if (homeBtn) {
+            homeBtn.addEventListener('click', () => this.goHome());
+        }
+
         const refreshBtn = document.getElementById('refreshBtn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.loadDocuments());
@@ -71,22 +111,40 @@ class DocumentViewer {
 
     async loadDocuments() {
         const listElement = document.getElementById('documentList');
+        const welcomeScreen = document.getElementById('welcomeScreen');
         if (!listElement) return;
+
+        // Show welcome screen when loading documents (if no document is selected)
+        if (welcomeScreen && !this.currentDocument) {
+            welcomeScreen.style.display = 'block';
+        }
 
         listElement.innerHTML = '<div class="loading">Loading documents...</div>';
 
         try {
-            const response = await fetch('/api/documents');
+            const response = await fetch('/api/documents', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
             if (!response.ok) {
-                throw new Error('Failed to load documents');
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
             const data = await response.json();
-            this.documents = data.documents || [];
+            this.documents = Array.isArray(data.documents) ? data.documents : [];
             this.navigation = data.navigation || null;
             this.renderNavigation();
         } catch (error) {
-            listElement.innerHTML = `<div class="error">Error loading documents: ${error.message}</div>`;
+            console.error('Error loading documents:', error);
+            listElement.innerHTML = `
+                <div class="error">
+                    <p>Error loading documents: ${this.escapeHtml(error.message)}</p>
+                    <button class="btn-link" onclick="documentViewer.loadDocuments()">Retry</button>
+                </div>
+            `;
         }
     }
 
@@ -99,7 +157,10 @@ class DocumentViewer {
                 <div class="empty">
                     <div class="empty-icon">📄</div>
                     <p>No documents found</p>
-                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Generate documents using: <code>doc generate</code></p>
+                    <p style="font-size: 0.875rem; margin-top: 0.5rem; color: var(--text-muted);">
+                        Generate documents using:<br>
+                        <code style="margin-top: 0.5rem; display: inline-block;">doc generate prd "Document Name"</code>
+                    </p>
                 </div>
             `;
             return;
@@ -139,12 +200,16 @@ class DocumentViewer {
         if (!listElement) return;
 
         listElement.querySelectorAll('.nav-file').forEach(item => {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const path = item.getAttribute('data-path');
-                this.loadDocument(path);
+                if (path) {
+                    this.loadDocument(path);
 
-                listElement.querySelectorAll('.nav-file').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
+                    // Update active state
+                    listElement.querySelectorAll('.nav-file, .nav-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                }
             });
         });
 
@@ -170,21 +235,39 @@ class DocumentViewer {
             return;
         }
 
+        // Debounce: don't search for very short queries
+        if (query.length < 2) {
+            return;
+        }
+
         const listElement = document.getElementById('documentList');
         if (!listElement) return;
 
         listElement.innerHTML = '<div class="loading">Searching...</div>';
 
         try {
-            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+            const encodedQuery = encodeURIComponent(query);
+            const response = await fetch(`/api/search?q=${encodedQuery}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
             if (!response.ok) {
-                throw new Error('Search failed');
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
             const data = await response.json();
-            this.renderSearchResults(data.results || [], query);
+            this.renderSearchResults(Array.isArray(data.results) ? data.results : [], query);
         } catch (error) {
-            listElement.innerHTML = `<div class="error">Search error: ${error.message}</div>`;
+            console.error('Search error:', error);
+            listElement.innerHTML = `
+                <div class="error">
+                    <p>Search error: ${this.escapeHtml(error.message)}</p>
+                    <button class="btn-link" onclick="documentViewer.loadDocuments()">Clear Search</button>
+                </div>
+            `;
         }
     }
 
@@ -240,35 +323,113 @@ class DocumentViewer {
         return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
 
+    goHome() {
+        const viewerElement = document.getElementById('documentViewer');
+        const tocElement = document.getElementById('tableOfContents');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        
+        // Clear current document
+        this.currentDocument = null;
+        
+        // Show welcome screen
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'block';
+            welcomeScreen.innerHTML = this.getWelcomeContent();
+        }
+        
+        // Clear TOC
+        if (tocElement) {
+            tocElement.innerHTML = '';
+        }
+        
+        // Clear viewer if welcome screen doesn't exist
+        if (viewerElement && !welcomeScreen) {
+            viewerElement.innerHTML = '<div class="welcome" id="welcomeScreen">' + this.getWelcomeContent() + '</div>';
+        }
+        
+        // Remove active state from navigation items
+        const listElement = document.getElementById('documentList');
+        if (listElement) {
+            listElement.querySelectorAll('.nav-file, .nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+    }
+
     async loadDocument(path) {
         const viewerElement = document.getElementById('documentViewer');
         const tocElement = document.getElementById('tableOfContents');
-        if (!viewerElement) return;
+        if (!viewerElement || !path) return;
+
+        // Hide welcome screen
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'none';
+        }
 
         viewerElement.innerHTML = '<div class="loading">Loading document...</div>';
         if (tocElement) tocElement.innerHTML = '';
 
         try {
-            const response = await fetch(`/api/documents/${encodeURIComponent(path)}`);
+            // Ensure path is properly encoded and doesn't start with /
+            const cleanPath = path.replace(/^\/+/, '').replace(/\\/g, '/');
+            const encodedPath = encodeURIComponent(cleanPath).replace(/%2F/g, '/');
+            
+            const response = await fetch(`/api/documents/${encodedPath}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
             if (!response.ok) {
-                throw new Error('Failed to load document');
+                if (response.status === 404) {
+                    throw new Error(`Document not found: ${cleanPath}`);
+                }
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
             const doc = await response.json();
+            if (!doc || !doc.content) {
+                throw new Error('Invalid document format');
+            }
+
             this.currentDocument = doc;
             this.renderDocument(doc);
         } catch (error) {
-            viewerElement.innerHTML = `<div class="error">Error loading document: ${error.message}</div>`;
+            console.error('Error loading document:', error);
+            viewerElement.innerHTML = `
+                <div class="error">
+                    <p>Error loading document: ${this.escapeHtml(error.message)}</p>
+                    <button class="btn-link" onclick="documentViewer.goHome()">Back to Home</button>
+                </div>
+            `;
         }
     }
 
     renderDocument(doc) {
         const viewerElement = document.getElementById('documentViewer');
         const tocElement = document.getElementById('tableOfContents');
+        const welcomeScreen = document.getElementById('welcomeScreen');
         if (!viewerElement) return;
 
-        // Render markdown client-side (raw markdown, no preprocessing)
-        const html = this.parseMarkdown(doc.content || '');
+        // Hide welcome screen when showing a document
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'none';
+        }
+
+        // Render markdown using marked.js or fallback to custom parser
+        let html;
+        if (this.marked) {
+            try {
+                html = this.marked.parse(doc.content || '');
+            } catch (error) {
+                console.error('marked.js rendering failed, using fallback:', error);
+                html = this.parseMarkdown(doc.content || '');
+            }
+        } else {
+            html = this.parseMarkdown(doc.content || '');
+        }
 
         viewerElement.innerHTML = `
             <div class="document-content">
@@ -308,11 +469,13 @@ class DocumentViewer {
     }
 
     generateAnchorId(text) {
+        if (!text) return 'header';
+
         return text.toLowerCase()
             .replace(/[^\w\s-]/g, '')
             .replace(/\s+/g, '-')
             .replace(/-+/g, '-')
-            .trim('-');
+            .replace(/^-+|-+$/g, '') || 'header';
     }
 
     renderTableOfContents(toc, tocElement) {
@@ -474,8 +637,17 @@ class DocumentViewer {
     }
 
     formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (!dateString) return 'Unknown';
+
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Invalid date';
+            }
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } catch (error) {
+            return 'Invalid date';
+        }
     }
 
     formatSize(bytes) {
@@ -488,6 +660,105 @@ class DocumentViewer {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    getWelcomeContent() {
+        return `
+            <div class="welcome-header">
+                <h1>Documentation Toolkit</h1>
+                <p>A comprehensive framework for generating professional documentation and building semantic knowledge bases for your projects.</p>
+            </div>
+
+            <div class="welcome-section">
+                <h2>Getting Started</h2>
+                <p>This web interface displays all markdown documents from your <code>docs/</code> folder. Navigate through the folder structure in the sidebar to view your documents.</p>
+                
+                <h3>Using the CLI Application</h3>
+                <p>Generate documents using the command-line interface:</p>
+                
+                <div class="command-grid">
+                    <div class="command-card">
+                        <h4>📝 Generate Document</h4>
+                        <code>doc generate &lt;type&gt; "Name"</code>
+                        <p>Create a new document from a template. Types: prd, rfp, tender, sow, architecture, solution, spec, api, data, blog, weekly-log</p>
+                    </div>
+                    
+                    <div class="command-card">
+                        <h4>📁 Organize Documents</h4>
+                        <code>doc gen prd "Name" --subfolder "folder"</code>
+                        <p>Generate documents in subfolders to organize your documentation structure.</p>
+                    </div>
+                    
+                    <div class="command-card">
+                        <h4>🔍 Semantic Search</h4>
+                        <code>doc search "query"</code>
+                        <p>Search your project knowledge using semantic search after building an index.</p>
+                    </div>
+                    
+                    <div class="command-card">
+                        <h4>📊 Build Index</h4>
+                        <code>doc index</code>
+                        <p>Build a semantic index from your source files for intelligent search capabilities.</p>
+                    </div>
+                    
+                    <div class="command-card">
+                        <h4>🕸️ Knowledge Graph</h4>
+                        <code>doc graph</code>
+                        <p>Generate a knowledge graph showing relationships between entities and topics in your project.</p>
+                    </div>
+                    
+                    <div class="command-card">
+                        <h4>🌐 Web Interface</h4>
+                        <code>doc web</code>
+                        <p>Start this web server to view and share your documents. Use <code>--port</code> and <code>--host</code> options to customize.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="welcome-section">
+                <h2>Navigation</h2>
+                <ul>
+                    <li><strong>Sidebar:</strong> Browse your document folder structure. Click folders to expand/collapse, click documents to view them.</li>
+                    <li><strong>Search:</strong> Use the search bar to find documents by content. Results show snippets with highlighted matches.</li>
+                    <li><strong>Table of Contents:</strong> When viewing a document, the right sidebar shows an auto-generated table of contents for easy navigation.</li>
+                    <li><strong>Theme Toggle:</strong> Switch between light and dark themes using the button in the header.</li>
+                </ul>
+            </div>
+
+            <div class="welcome-section">
+                <h2>Document Types</h2>
+                <p>The toolkit supports 12+ document templates:</p>
+                <ul>
+                    <li><strong>PRD</strong> - Product Requirements Document</li>
+                    <li><strong>RFP</strong> - Request for Proposal</li>
+                    <li><strong>Tender</strong> - Tender Response</li>
+                    <li><strong>SOW</strong> - Statement of Work</li>
+                    <li><strong>Architecture</strong> - Architecture Design Document</li>
+                    <li><strong>Solution</strong> - Solution Proposal</li>
+                    <li><strong>Spec</strong> - Engineering Specification</li>
+                    <li><strong>API</strong> - API Design Document</li>
+                    <li><strong>Data</strong> - Data Model Documentation</li>
+                    <li><strong>Blog</strong> - Blog Post Template</li>
+                    <li><strong>Weekly Log</strong> - Weekly Progress Log</li>
+                </ul>
+            </div>
+
+            <div class="welcome-section">
+                <h2>Tips</h2>
+                <ul>
+                    <li>Documents are organized by date and type in the filename: <code>YYYY-MM-DD-type-name.md</code></li>
+                    <li>Use subfolders to organize related documents (e.g., <code>architecture/</code>, <code>requirements/</code>)</li>
+                    <li>The web interface automatically updates when you refresh the page or click the refresh button</li>
+                    <li>All documents are served as raw markdown and rendered client-side for optimal performance</li>
+                </ul>
+            </div>
+
+            <div class="welcome-section">
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.875rem; margin-top: 2rem;">
+                    Select a document from the sidebar to start viewing, or generate new documents using the CLI commands above.
+                </p>
+            </div>
+        `;
     }
 }
 

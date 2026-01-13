@@ -3,7 +3,7 @@
 
 ## Overview
 
-The Documentation Toolkit is a reusable framework for generating professional documents and building semantic knowledge bases for projects. It provides templates, automation scripts, and AI-powered indexing capabilities.
+The Documentation Toolkit is a reusable framework for generating professional documents and building static documentation sites following docs-as-code principles. It provides templates, automation scripts, opinionated organization, and automated build and deployment capabilities.
 
 ## Architecture (IDesign Method™)
 
@@ -18,15 +18,16 @@ The toolkit follows the IDesign Method™ principle of **volatility-based decomp
    - Future: Web UI, API, scheduled tasks
 
 2. **Workflow Volatility** (Manager)
-   - Orchestration logic could change (indexing workflow, search workflow)
-   - Future: Different indexing strategies, search algorithms
+   - Orchestration logic could change (build workflow, structure creation)
+   - Future: Different build strategies, deployment workflows
 
 3. **Algorithm Volatility** (Engine)
-   - Embedding model could change (different ONNX models)
-   - Extraction logic could change (new file formats, OCR improvements)
+   - Markdown rendering could change (different markdown processors)
+   - Link resolution logic could change (different link formats)
+   - Build process could change (different static site generators)
 
 4. **Storage Volatility** (Accessor)
-   - Vector storage format could change (file-based → database)
+   - Build output format could change (HTML → other formats)
    - Template location could change (local → cloud)
    - File system operations could change (local → cloud storage)
 
@@ -48,10 +49,11 @@ The toolkit follows a service-oriented architecture with clear boundaries and cl
 │  └──────────────┘  └──────────────┘  └──────────────┘  │
 │                                                           │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │         Semantic Processing Layer                 │  │
-│  │  - Text Extraction (PDF, DOCX, PPTX, Images)    │  │
-│  │  - Vector Embeddings (Sentence Transformers)    │  │
-│  │  - Knowledge Graph Generation                   │  │
+│  │         Build & Publishing Layer                 │  │
+│  │  - Markdown Compilation (Markdig)                 │  │
+│  │  - Link Resolution & Validation                   │  │
+│  │  - Navigation Generation                          │  │
+│  │  - Static Site Generation                        │  │
 │  └──────────────────────────────────────────────────┘  │
 │                                                           │
 │  ┌──────────────────────────────────────────────────┐  │
@@ -71,10 +73,10 @@ The architecture follows the IDesign Method™ component taxonomy:
 
 | Component Type | Components | Volatility Encapsulated |
 |---------------|------------|------------------------|
-| **Client** | `InitCommand`, `GenerateCommand`, `IndexCommand`, `SearchCommand`, `GraphCommand`, `SummarizeCommand`, `ValidateCommand` | User interface volatility (CLI could become Web/API) |
-| **Manager** | `SemanticIndexManager`, `SemanticSearchManager`, `KnowledgeGraphManager`, `SummarizeManager` | Workflow volatility (orchestration logic) |
-| **Engine** | `EmbeddingEngine`, `DocumentExtractionEngine`, `TextChunkingEngine`, `SimilarityEngine`, `EntityExtractionEngine`, `SummarizationEngine` | Algorithm volatility (embedding models, extraction logic) |
-| **Accessor** | `VectorStorageAccessor`, `TemplateAccessor`, `ProjectAccessor` | Storage volatility (file system, storage technology) |
+| **Client** | `InitCommand`, `GenerateCommand`, `BuildCommand`, `SuggestCommand`, `ValidateCommand`, `WebCommand`, `PublishCommand` | User interface volatility (CLI could become Web/API) |
+| **Manager** | `BuildManager`, `StructureManager` | Workflow volatility (orchestration logic) |
+| **Engine** | `BuildEngine`, `LinkResolver`, `NavigationGenerator`, `IndexGenerator`, `MetadataParser`, `TemplateSuggester`, `DocumentExtractionEngine` | Algorithm volatility (markdown rendering, link resolution, build process) |
+| **Accessor** | `BuildAccessor`, `TemplateAccessor`, `ProjectAccessor` | Storage volatility (file system, storage technology) |
 
 ### Static Architecture View
 
@@ -83,43 +85,49 @@ The architecture follows the IDesign Method™ component taxonomy:
 │                    Client Layer                          │
 │  (UI Volatility - Initiation)                           │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ │
-│  │ InitCmd  │ │ GenCmd   │ │ IndexCmd │ │SearchCmd │ │
+│  │ InitCmd  │ │ GenCmd   │ │ BuildCmd │ │SuggestCmd│ │
 │  └──────────┘ └──────────┘ └──────────┘ └──────────┘ │
 │  ┌──────────┐ ┌──────────┐ ┌──────────┐              │
-│  │GraphCmd │ │Summarize │ │ValidateCmd│              │
+│  │WebCmd   │ │PublishCmd│ │ValidateCmd│              │
 │  └──────────┘ └──────────┘ └──────────┘              │
 └─────────────────────────────────────────────────────────┘
                         ↓ (Service Boundary)
 ┌─────────────────────────────────────────────────────────┐
 │                    Manager Layer                         │
 │  (Workflow Volatility - Orchestration)                  │
-│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
-│  │SemanticIndex │ │SemanticSearch │ │KnowledgeGraph │  │
-│  └──────────────┘ └──────────────┘ └──────────────┘  │
-│  ┌──────────────┐                                      │
-│  │SummarizeSvc  │                                      │
-│  └──────────────┘                                      │
+│  ┌──────────────┐ ┌──────────────┐                     │
+│  │BuildManager │ │StructureMgr  │                     │
+│  └──────────────┘ └──────────────┘                     │
 └─────────────────────────────────────────────────────────┘
                         ↓ (Service Boundary)
 ┌─────────────────────────────────────────────────────────┐
 │         Engine Layer          │      Accessor Layer     │
 │  (Algorithm Volatility)       │  (Storage Volatility)   │
 │  ┌──────────────┐             │  ┌──────────────┐      │
-│  │EmbeddingSvc  │             │  │VectorStorage │      │
+│  │BuildEngine   │             │  │BuildAccessor │      │
 │  └──────────────┘             │  └──────────────┘      │
 │  ┌──────────────┐             │  ┌──────────────┐      │
-│  │DocumentExtract│             │  │TemplateService│     │
+│  │LinkResolver  │             │  │TemplateAccessor│     │
 │  └──────────────┘             │  └──────────────┘      │
-│                               │  ┌──────────────┐      │
-│                               │  │ProjectService│      │
-│                               │  └──────────────┘      │
+│  ┌──────────────┐             │  ┌──────────────┐      │
+│  │NavGenerator  │             │  │ProjectAccessor│     │
+│  └──────────────┘             │  └──────────────┘      │
+│  ┌──────────────┐                                      │
+│  │IndexGenerator│                                      │
+│  └──────────────┘                                      │
+│  ┌──────────────┐                                      │
+│  │MetadataParser│                                      │
+│  └──────────────┘                                      │
+│  ┌──────────────┐                                      │
+│  │TemplateSuggest│                                     │
+│  └──────────────┘                                      │
 └─────────────────────────────────────────────────────────┘
                         ↓ (Data Boundary)
 ┌─────────────────────────────────────────────────────────┐
 │                    Model Layer                           │
 │  (Data Layer)                                           │
 │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐  │
-│  │ IndexEntry   │ │ SearchResult  │ │  GraphData    │  │
+│  │BuildOptions  │ │DocumentMeta  │ │NavStructure  │  │
 │  └──────────────┘ └──────────────┘ └──────────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -135,33 +143,46 @@ The architecture follows the IDesign Method™ component taxonomy:
 
 ### Call Chain Examples
 
-**Use Case: Build Semantic Index**
+**Use Case: Build Static Site**
 
 ```
-IndexCommand (Client)
+BuildCommand (Client)
   ↓ (Service Boundary - Client → Manager)
-SemanticIndexManager (Manager)
+BuildManager (Manager)
   ↓ (Service Boundary - Manager → Engine/Accessor)
-DocumentExtractionEngine (Engine) → EmbeddingEngine (Engine) → VectorStorageAccessor (Accessor)
+MetadataParser (Engine) → BuildEngine (Engine) → LinkResolver (Engine) 
+  → NavigationGenerator (Engine) → IndexGenerator (Engine) → BuildAccessor (Accessor)
   ↓ (Data Boundary)
-IndexEntry (Model)
+Static HTML files in publish/web/
 ```
 
 **Pattern**: Client → Manager → Engine/Accessor (avoiding "staircase" and "fork" patterns)
 
-**Use Case: Semantic Search**
+**Use Case: Initialize Project with Opinionated Structure**
 
 ```
-SearchCommand (Client)
+InitCommand (Client)
   ↓ (Service Boundary)
-SemanticSearchManager (Manager)
+StructureManager (Manager)
   ↓ (Service Boundary)
-VectorStorageAccessor (Accessor) → EmbeddingEngine (Engine) → SimilarityEngine (Engine)
+ProjectAccessor (Accessor) - Creates customer/developer/shared folders
   ↓ (Data Boundary)
-SearchResult (Model)
+Project structure on file system
 ```
 
-**Pattern**: Manager orchestrates Accessor (get data) and Engine (process data). Engine receives data as parameter (pure function).
+**Pattern**: Manager orchestrates Accessor (create structure). Structure is based on project type selection.
+
+**Use Case: Suggest Templates**
+
+```
+SuggestCommand (Client)
+  ↓ (Service Boundary)
+TemplateSuggester (Engine) - Analyzes project, suggests templates
+  ↓ (Data Boundary)
+Template suggestions with context
+```
+
+**Pattern**: Direct Engine call from Command (simple analysis, no orchestration needed).
 
 ## Project Structure
 
@@ -270,7 +291,7 @@ The toolkit includes a robust event bus for decoupled cross-component communicat
 - **Event Bus**: In-memory pub/sub with SQLite persistence
 - **Event Persistence**: All events saved to SQLite database (`events.db`)
 - **Retry Policies**: Automatic retry of failed events (max 3 retries, 5-minute intervals)
-- **Event Types**: `IndexBuiltEvent`, `GraphBuiltEvent`, `SummaryCreatedEvent`, `DocumentProcessedEvent`
+- **Event Types**: `BuildCompletedEvent`, `DocumentProcessedEvent`, `LinkValidationCompletedEvent`
 
 **Architecture**:
 ```
@@ -291,8 +312,8 @@ Subscribers (Handlers)
 
 **Event Subscriptions**:
 - Event subscriptions configured at application startup
-- Console logging for major events (IndexBuiltEvent, GraphBuiltEvent, SummaryCreatedEvent, DocumentProcessedEvent)
-- Optional cross-manager subscriptions can be enabled (e.g., auto-rebuild graph when index changes)
+- Console logging for major events (BuildCompletedEvent, DocumentProcessedEvent, LinkValidationCompletedEvent)
+- Optional cross-manager subscriptions can be enabled (e.g., auto-rebuild navigation when documents change)
 - All subscriptions managed centrally in `EventSubscriptions.ConfigureSubscriptions()`
 
 ## Dependency Injection
@@ -319,25 +340,22 @@ All components use constructor injection with interfaces:
 **Purpose**: User interface and command orchestration.
 
 **Components**:
-- `InitCommand`: Project initialization
-- `GenerateCommand`: Document generation
-- `IndexCommand`: Semantic indexing
-- `SearchCommand`: Semantic search
-- `GraphCommand`: Knowledge graph generation
-- `SummarizeCommand`: Document summarization
+- `InitCommand`: Project initialization with opinionated structure
+- `GenerateCommand`: Document generation from templates
+- `BuildCommand`: Static site generation (markdown → HTML)
+- `SuggestCommand`: Template suggestions based on project state
 - `ValidateCommand`: Setup validation
 - `WebCommand`: Self-hosted web server for document viewing and sharing
+- `PublishCommand`: Package documentation for deployment
 
-**Service Boundaries**: Commands call Services only (closed architecture)
+**Service Boundaries**: Commands call Managers or Engines only (closed architecture)
 
 ### 2. Manager Layer (Orchestration)
 **Purpose**: Encapsulate workflow volatility. Knows "when" to do things, not "how".
 
 **Managers**:
-- `SemanticIndexManager`: Orchestrates indexing workflow (extract → embed → store)
-- `SemanticSearchManager`: Orchestrates search workflow (load → embed → search)
-- `KnowledgeGraphManager`: Orchestrates graph generation workflow (extract → analyze → build)
-- `SummarizeManager`: Orchestrates summarization workflow (extract → summarize → output)
+- `BuildManager`: Orchestrates build workflow (parse metadata → compile → resolve links → generate nav → generate index → write output)
+- `StructureManager`: Manages opinionated folder organization (creates customer/developer/shared structure)
 
 **Service Boundaries**: Managers call Engines and Accessors. They orchestrate the workflow but don't contain business logic.
 
@@ -345,12 +363,13 @@ All components use constructor injection with interfaces:
 **Purpose**: Encapsulate algorithm volatility. Knows "how" to do things. Pure functions (no I/O).
 
 **Engines**:
-- `EmbeddingEngine`: Encapsulates embedding algorithm (ONNX model could change)
+- `BuildEngine`: Encapsulates markdown → HTML compilation (Markdig could change to different processor)
+- `LinkResolver`: Encapsulates link resolution logic (link format could change)
+- `NavigationGenerator`: Encapsulates navigation generation (structure format could change)
+- `IndexGenerator`: Encapsulates index page generation (index format could change)
+- `MetadataParser`: Encapsulates YAML front matter parsing (metadata schema could change)
+- `TemplateSuggester`: Encapsulates template suggestion logic (suggestion algorithm could change)
 - `DocumentExtractionEngine`: Encapsulates extraction logic (format support could change)
-- `TextChunkingEngine`: Encapsulates text chunking strategy (size, overlap, method)
-- `SimilarityEngine`: Encapsulates similarity calculation (cosine, euclidean, etc.)
-- `EntityExtractionEngine`: Encapsulates entity/topic extraction (regex, NLP, ML models)
-- `SummarizationEngine`: Encapsulates summarization strategy (extractive, abstractive)
 
 **Service Boundaries**: Engines are "pure" - they accept data as parameters and return results. They should not call Accessors directly.
 
@@ -358,7 +377,7 @@ All components use constructor injection with interfaces:
 **Purpose**: Encapsulate storage volatility. Knows "where" data is stored. Dumb CRUD operations.
 
 **Accessors**:
-- `VectorStorageAccessor`: Abstracts vector storage (file format could change to database)
+- `BuildAccessor`: Abstracts build output storage (output format could change, location could change)
 - `TemplateAccessor`: Abstracts template storage (now uses embedded resources for self-contained deployment; could change to cloud/database)
 - `ProjectAccessor`: Abstracts file system operations (could move to cloud storage)
 
@@ -368,9 +387,10 @@ All components use constructor injection with interfaces:
 **Purpose**: Data structures and contracts. Stable business concepts.
 
 **Models**:
-- `IndexEntry`: Semantic index entry
-- `SearchResult`: Search result
-- `GraphData`: Knowledge graph structure
+- `BuildOptions`: Build configuration (source dir, output dir, options)
+- `DocumentMetadata`: Document metadata (title, category, status, date, tags)
+- `NavigationStructure`: Navigation hierarchy (folders, files, relationships)
+- `LinkValidationResult`: Link validation results (broken links, warnings)
 
 **Data Boundary**: Models are pure data structures (no dependencies). Components should pass IDs or lightweight data, not fat entities.
 
@@ -385,8 +405,6 @@ All components use constructor injection with interfaces:
 **Scripts**:
 - `init-project.ps1`: Creates new project workspace
 - `generate-doc.ps1`: Generates documents from templates
-- `semantic-index.ps1`: Builds vector embeddings (legacy)
-- `semantic-search.ps1`: Queries semantic index (legacy)
 - `build-knowledge-graph.ps1`: Extracts entities (legacy)
 - `summarize-source.ps1`: Creates context summaries (legacy)
 
@@ -394,31 +412,27 @@ All components use constructor injection with interfaces:
 
 ## Data Models
 
-### Semantic Index Entry
+### Document Metadata
 ```json
 {
-  "file": "document.pdf",
-  "path": "/path/to/document.pdf",
-  "chunk": "Text content chunk..."
+  "title": "Product Requirements Document",
+  "category": "customer",
+  "status": "draft",
+  "date": "2024-01-15",
+  "tags": ["prd", "requirements"]
 }
 ```
 
-### Knowledge Graph Node
+### Navigation Structure
 ```json
 {
-  "id": "entity:ProjectName",
-  "type": "entity",
-  "name": "ProjectName"
-}
-```
-
-### Knowledge Graph Edge
-```json
-{
-  "type": "FILE_CONTAINS_ENTITY",
-  "from": "file:/path/to/file",
-  "to": "entity:EntityName",
-  "weight": 5
+  "folders": [
+    {
+      "name": "customer",
+      "path": "docs/customer",
+      "files": ["prd.md", "proposal.md"]
+    }
+  ]
 }
 ```
 
@@ -426,23 +440,30 @@ All components use constructor injection with interfaces:
 
 ### Document Generation Workflow
 1. User selects document type
-2. Script copies template to docs/ directory
-3. User edits template with project-specific content
-4. Document is ready for use
+2. Template is copied from embedded resources
+3. Document is generated in appropriate folder (customer/developer/shared)
+4. User edits template with project-specific content
+5. Document is ready for use
 
-### Semantic Indexing Workflow
-1. Script scans source/ directory
-2. Extracts text from supported file types
-3. Chunks text into overlapping segments
-4. Generates embeddings for each chunk
-5. Saves vectors and metadata to semantic-index/
+### Build Static Site Workflow
+1. User runs `doc build`
+2. BuildManager orchestrates the process:
+   - MetadataParser extracts YAML front matter from all documents
+   - BuildEngine compiles markdown to HTML using Markdig
+   - LinkResolver resolves and validates all cross-references
+   - NavigationGenerator creates navigation structure
+   - IndexGenerator creates documentation index
+3. BuildAccessor writes all output to `publish/web/`
+4. Static site is ready for deployment
 
-### Knowledge Graph Workflow
-1. Script processes all source files
-2. Extracts entities (capitalized phrases)
-3. Extracts topics (frequent meaningful words)
-4. Builds relationships (co-occurrence, containment)
-5. Generates JSON, Graphviz, and Markdown outputs
+### Project Initialization Workflow
+1. User runs `doc init MyProject`
+2. User selects project type (customer-facing, developer-facing, mixed)
+3. StructureManager creates opinionated folder structure
+4. ProjectAccessor creates directories and configuration files
+5. Git repository is initialized
+6. CI/CD workflows are created
+7. Project is ready for documentation
 
 ## Integration Points
 
@@ -453,28 +474,27 @@ All components use constructor injection with interfaces:
 
 ### External Dependencies
 - **.NET 9.0 SDK**: Core runtime
-- **Microsoft.ML.OnnxRuntime**: Semantic embeddings (ONNX models)
+- **Markdig**: Markdown to HTML compilation (GitHub Flavored Markdown support)
 - **Microsoft.Data.Sqlite**: Event persistence
-- **DocumentFormat.OpenXml**: DOCX/PPTX text extraction
-- **UglyToad.PdfPig**: PDF text extraction
+- **DocumentFormat.OpenXml**: DOCX/PPTX text extraction (for source files)
+- **UglyToad.PdfPig**: PDF text extraction (for source files)
 - **Spectre.Console**: CLI user interface
-- **PowerShell 5+**: Script execution environment (legacy scripts)
-- **Python 3.10+**: Legacy scripts only (optional)
-- **Poppler**: PDF text extraction (optional, for advanced features)
-- **Tesseract**: OCR for images (optional)
+- **YamlDotNet**: YAML front matter parsing (optional, can use simple regex)
+- **Git**: Version control (for CI/CD workflows)
 
 ## Performance Considerations
 
-- **Chunking Strategy**: 800 words with 200 word overlap
-- **Embedding Model**: Lightweight (all-MiniLM-L6-v2) for speed
-- **Batch Processing**: Files processed sequentially to manage memory
+- **Build Performance**: Parallel processing of markdown files where possible
+- **Link Validation**: Incremental validation (only check changed files)
+- **Navigation Generation**: Single pass through folder structure
+- **Index Generation**: Efficient scanning with metadata caching
 - **Temporary Files**: Created in system temp directory, cleaned up after use
 
 ## Security Considerations
 
 - No network access required (all processing local)
 - User-provided source files only
-- No sensitive data stored in embeddings (only text chunks)
+- No sensitive data in compiled output (only public documentation)
 - Temporary files cleaned up after execution
 
 ## Self-Contained Deployment
@@ -522,17 +542,20 @@ File System (docs directory)
 
 ## Future Enhancements
 
-- Support for additional file formats
-- Configurable embedding models
-- Incremental indexing (update index without full rebuild)
+- Support for additional markdown extensions
+- Incremental builds (only rebuild changed files)
 - Enhanced web UI features (search, filters, document editing)
 - API for programmatic access
 - Multi-language support
+- PDF and CHM output formats
+- Custom theme support for static sites
 
 ## Design Decisions
 
 1. **Markdown Templates**: Easy to edit, version control friendly, widely supported
-2. **PowerShell + Python**: PowerShell for orchestration, Python for heavy processing
-3. **Sentence Transformers**: Balance between quality and performance
-4. **Simple Entity Extraction**: Heuristic-based for no external dependencies
-5. **Local Processing**: Privacy-focused, no cloud dependencies
+2. **Markdig for Rendering**: C# native, GitHub Flavored Markdown support, extensible
+3. **Opinionated Organization**: Clear separation of customer/developer docs reduces confusion
+4. **Static Site Generation**: Deployable anywhere, no server required, fast and simple
+5. **YAML Front Matter**: Standard metadata format, easy to parse, widely supported
+6. **GitHub Actions**: Industry standard, free for open source, easy to configure
+7. **Local Processing**: Privacy-focused, no cloud dependencies
