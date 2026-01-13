@@ -52,6 +52,31 @@ app.Configure(config =>
     //     .WithDescription("Summarize source files into context document")
     //     .WithExample(["summarize"]);
 
+    config.AddCommand<BuildCommand>("build")
+        .WithDescription("Build static site from markdown files")
+        .WithExample(["build"])
+        .WithExample(["build", "--source", "./docs", "--output", "./publish/web"]);
+
+    config.AddCommand<LintCommand>("lint")
+        .WithAlias("check")
+        .WithDescription("Validate document quality and compliance")
+        .WithExample(["lint"])
+        .WithExample(["lint", "./docs"])
+        .WithExample(["lint", "./docs", "--template", "prd"])
+        .WithExample(["lint", "./docs", "--strict"]);
+
+    config.AddCommand<ListCommand>("list")
+        .WithDescription("List documents with metadata")
+        .WithExample(["list"])
+        .WithExample(["list", "--dir", "./docs"])
+        .WithExample(["list", "--filter", "prd"])
+        .WithExample(["list", "--format", "tree"]);
+
+    config.AddCommand<InfoCommand>("info")
+        .WithDescription("Show detailed information about a document")
+        .WithExample(["info", "prd-feature.md"])
+        .WithExample(["info", "docs/prd-feature.md", "--dir", "./"]);
+
     config.AddCommand<ValidateCommand>("validate")
         .WithDescription("Validate setup and dependencies")
         .WithExample(["validate"]);

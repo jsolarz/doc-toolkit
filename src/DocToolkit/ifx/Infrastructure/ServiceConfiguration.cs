@@ -2,6 +2,8 @@ using DocToolkit.Accessors;
 using DocToolkit.Engines;
 using DocToolkit.ifx.Interfaces.IAccessors;
 using DocToolkit.ifx.Interfaces.IEngines;
+using DocToolkit.ifx.Interfaces.IManagers;
+using DocToolkit.Managers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -50,6 +52,10 @@ public static class ServiceConfiguration
         // Engines (Singleton - stateless or expensive to create)
         services.AddSingleton<IDocumentExtractionEngine>(sp => 
             new DocumentExtractionEngine(sp.GetService<ILogger<DocumentExtractionEngine>>()));
+        services.AddSingleton<IBuildEngine, BuildEngine>();
+        services.AddSingleton<ILinkResolver, LinkResolver>();
+        services.AddSingleton<INavigationGenerator, NavigationGenerator>();
+        services.AddSingleton<IDocumentValidator, DocumentValidator>();
         
         // Semantic Intelligence Engines - Removed for now, see Future Enhancements in README
         // services.AddSingleton<IEmbeddingEngine>(sp => 
@@ -67,6 +73,9 @@ public static class ServiceConfiguration
         services.AddSingleton<IProjectAccessor, ProjectAccessor>();
 
         // Managers (Scoped - may have state per operation)
+        services.AddScoped<IBuildManager, BuildManager>();
+        services.AddScoped<IDocumentManager, DocumentManager>();
+        
         // Semantic Intelligence Managers - Removed for now, see Future Enhancements in README
         // services.AddScoped<ISemanticIndexManager, SemanticIndexManager>();
         // services.AddScoped<ISemanticSearchManager, SemanticSearchManager>();

@@ -1,5 +1,11 @@
 # Documentation Toolkit
 
+[![CI](https://github.com/YOUR_USERNAME/doc-toolkit/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/doc-toolkit/actions/workflows/ci.yml)
+[![Release](https://github.com/YOUR_USERNAME/doc-toolkit/workflows/Release/badge.svg)](https://github.com/YOUR_USERNAME/doc-toolkit/actions/workflows/release.yml)
+[![License](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
+[![SemVer](https://img.shields.io/badge/semver-2.0.0-green.svg)](https://semver.org/)
+
 This toolkit provides a complete, reusable documentation framework for all projects.  
 It centralizes rules, templates, scripts, and automation so you never duplicate work.
 
@@ -359,9 +365,9 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ## 📝 Version
 
-Current version: **1.0.0**
+Current version: **0.0.1-alpha.1**
 
-See [CHANGELOG.md](CHANGELOG.md) for complete version history and all development steps.
+This project follows [Semantic Versioning 2.0.0](https://semver.org/). See [CHANGELOG.md](CHANGELOG.md) for complete version history and all development steps.
 
 ---
 
@@ -373,7 +379,11 @@ We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guid
 
 ## 📄 License
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)** - see [LICENSE](LICENSE) for details.
+
+**Why AGPL-3.0?** This license ensures that any modifications or derivative works must also be open source, including when used in network services. This protects the open-source nature of the project while allowing commercial use with the requirement to contribute back improvements.
+
+For alternative licensing options, see [LICENSE-OPTIONS.md](LICENSE-OPTIONS.md).
 
 ---
 

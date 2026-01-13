@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for version calculation
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+    
+    - name: Test
+      run: dotnet test --no-build --configuration Release --verbosity normal
+    
+    - name: Calculate version
+      id: version
+      run: |
+        # Read current version from VERSION file
+        CURRENT_VERSION=$(cat VERSION | tr -d '[:space:]')
+        
+        # Determine if this is a pre-release (alpha/beta/rc)
+        if [[ "${{ github.ref }}" == "refs/heads/develop" ]] || [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          # For develop branch or PRs, use alpha pre-release
+          VERSION="${CURRENT_VERSION}-alpha.$(date +%s)"
+        else
+          # For main branch, use the version as-is
+          VERSION="${CURRENT_VERSION}"
+        fi
+        
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Calculated version: ${VERSION}"
+    
+    - name: Set version in project
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        dotnet build --no-restore -p:Version=${VERSION} -p:AssemblyVersion=${VERSION} -p:FileVersion=${VERSION}
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          src/DocToolkit/bin/Release/**/*
+          src/MCPHostApp/bin/Release/**/*
+        retention-days: 7

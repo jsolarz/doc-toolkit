@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Text.Json;
 using DocToolkit.ifx.Interfaces.IAccessors;
+using DocToolkit.ifx.Interfaces.IEngines;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -12,14 +13,17 @@ namespace DocToolkit.ifx.Commands;
 public sealed class PublishCommand : Command<PublishCommand.Settings>
 {
     private readonly ITemplateAccessor _templateAccessor;
+    private readonly INavigationGenerator _navigationGenerator;
 
     /// <summary>
     /// Initializes a new instance of the PublishCommand.
     /// </summary>
     /// <param name="templateAccessor">Template accessor</param>
-    public PublishCommand(ITemplateAccessor templateAccessor)
+    /// <param name="navigationGenerator">Navigation generator</param>
+    public PublishCommand(ITemplateAccessor templateAccessor, INavigationGenerator navigationGenerator)
     {
         _templateAccessor = templateAccessor ?? throw new ArgumentNullException(nameof(templateAccessor));
+        _navigationGenerator = navigationGenerator ?? throw new ArgumentNullException(nameof(navigationGenerator));
     }
 
     public sealed class Settings : CommandSettings
@@ -545,6 +549,9 @@ public sealed class PublishCommand : Command<PublishCommand.Settings>
             return;
         }
 
+        var navigation = _navigationGenerator.GenerateNavigation(docsPath);
+        var index = _navigationGenerator.GenerateIndex(docsPath);
+
         var files = Directory.GetFiles(docsPath, "*.md", SearchOption.AllDirectories)
             .OrderBy(f => f)
             .ToList();
@@ -563,63 +570,31 @@ public sealed class PublishCommand : Command<PublishCommand.Settings>
             };
         }).ToList();
 
-        var navigation = BuildNavigationStructure(docsPath, files);
-
         var data = new
         {
             documents,
-            navigation
+            navigation = new
+            {
+                rootNodes = navigation.RootNodes.Select(n => ConvertNavigationNode(n)).ToList(),
+                totalDocuments = navigation.TotalDocuments,
+                documentCountsByType = navigation.DocumentCountsByType
+            }
         };
 
         var navJson = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(Path.Combine(outputPath, "data.json"), navJson);
     }
 
-    private object BuildNavigationStructure(string docsPath, List<string> files)
+    private object ConvertNavigationNode(NavigationNode node)
     {
-        var root = new NavigationNode { Name = "Documents", Path = "", IsFile = false, Children = new List<NavigationNode>() };
-
-        foreach (var file in files)
+        return new
         {
-            var relativePath = Path.GetRelativePath(docsPath, file).Replace('\\', '/');
-            var parts = relativePath.Split('/');
-
-            var currentNode = root;
-            for (int i = 0; i < parts.Length; i++)
-            {
-                var part = parts[i];
-                var isFile = i == parts.Length - 1;
-
-                if (isFile)
-                {
-                    currentNode.Children.Add(new NavigationNode
-                    {
-                        Name = Path.GetFileNameWithoutExtension(part),
-                        Path = relativePath,
-                        IsFile = true,
-                        Type = GetDocumentType(part)
-                    });
-                }
-                else
-                {
-                    var folderNode = currentNode.Children.FirstOrDefault(n => n.Name == part && !n.IsFile);
-                    if (folderNode == null)
-                    {
-                        folderNode = new NavigationNode
-                        {
-                            Name = part,
-                            Path = string.Join("/", parts.Take(i + 1)),
-                            IsFile = false,
-                            Children = new List<NavigationNode>()
-                        };
-                        currentNode.Children.Add(folderNode);
-                    }
-                    currentNode = folderNode;
-                }
-            }
-        }
-
-        return root;
+            name = node.Name,
+            path = node.Path,
+            isFile = node.IsFile,
+            type = node.Type,
+            children = node.Children.Select(ConvertNavigationNode).ToList()
+        };
     }
 
     private string GetDocumentType(string fileName)
@@ -630,15 +605,6 @@ public sealed class PublishCommand : Command<PublishCommand.Settings>
             return parts[1].ToUpperInvariant();
         }
         return "DOC";
-    }
-
-    private class NavigationNode
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Path { get; set; } = string.Empty;
-        public bool IsFile { get; set; }
-        public string Type { get; set; } = string.Empty;
-        public List<NavigationNode> Children { get; set; } = new();
     }
 
     private void CreateDeploymentConfig(string outputPath, string target, Settings settings)

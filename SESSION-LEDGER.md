@@ -2,6 +2,50 @@
 
 This file tracks all AI interactions, decisions, and context across all AI sessions.
 
+## 2025-01-27 - GitHub CI/CD, Semantic Versioning, License Update, and Documentation
+
+**Timestamp**: 2025-01-27
+
+**User Request**: Update `.github/agents/docs-agent.md`, add GitHub Copilot rules, add GitHub CI to build and create releases (start with alpha), add dynamic semver, update README with badges, update license to something more restrictive than MIT but still open source.
+
+**AI Actions**:
+- Updated `.github/agents/docs-agent.md` with correct project information (C#/.NET 9.0, IDesign Method™ architecture)
+- Created `.github/copilot-instructions.md` with comprehensive GitHub Copilot guidelines
+- Created `.github/workflows/ci.yml` for continuous integration (build, test, version calculation)
+- Created `.github/workflows/release.yml` for automated releases with semantic versioning
+- Updated `LICENSE` from MIT to AGPL-3.0 (GNU Affero General Public License v3.0)
+- Created `LICENSE-OPTIONS.md` with detailed comparison of alternative licenses
+- Updated `README.md` with badges (CI, Release, License, .NET, SemVer)
+- Updated version reference in README to reflect alpha pre-release format
+
+**Files Modified**:
+- Modified: `.github/agents/docs-agent.md` (updated with C#/.NET project info, IDesign Method™)
+- Created: `.github/copilot-instructions.md` (GitHub Copilot guidelines)
+- Created: `.github/workflows/ci.yml` (CI workflow with version calculation)
+- Created: `.github/workflows/release.yml` (Release workflow with semantic versioning)
+- Modified: `LICENSE` (changed from MIT to AGPL-3.0)
+- Created: `LICENSE-OPTIONS.md` (license comparison and alternatives)
+- Modified: `README.md` (added badges, updated license section, version format)
+
+**Context/Notes**:
+- **CI Workflow**: Builds and tests on push/PR, calculates version (alpha for develop branch, stable for main)
+- **Release Workflow**: Creates releases from tags (v*.*.* format), validates semantic versioning, publishes binaries for Windows/Linux/macOS, creates checksums, extracts changelog
+- **Semantic Versioning**: Follows SemVer 2.0.0 specification (https://semver.org/)
+  - Format: `MAJOR.MINOR.PATCH` (e.g., `1.0.0`)
+  - Pre-release: `MAJOR.MINOR.PATCH-alpha.1`, `-beta.1`, `-rc.1`
+  - Version stored in `VERSION` file and `DocToolkit.csproj`
+- **License Change**: Changed from MIT to AGPL-3.0
+  - AGPL-3.0 ensures all modifications and derivative works remain open source
+  - Includes network service clause (SaaS must share source code)
+  - More restrictive than MIT but still allows commercial use
+  - See `LICENSE-OPTIONS.md` for alternatives (GPL-3.0, LGPL-3.0, MPL-2.0, Apache-2.0)
+- **Badges**: Added CI, Release, License (AGPL-3.0), .NET 9.0, and SemVer badges
+  - Note: User needs to replace `YOUR_USERNAME` in badge URLs with actual GitHub username/repo
+- **GitHub Copilot Instructions**: Comprehensive guide for Copilot including architecture, coding standards, naming conventions, common tasks
+- **Docs Agent**: Updated with correct tech stack (C#/.NET 9.0), IDesign Method™ architecture, proper file structure
+
+**Status**: Completed
+
 ## 2025-01-27 - Cleanup: Removed Unnecessary Documentation Files
 
 **Timestamp**: 2025-01-27
